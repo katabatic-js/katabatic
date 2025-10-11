@@ -46,7 +46,7 @@ export function Attribute(node, ctx) {
             return
         }
 
-        const stmt = b.$effect([b.setAttribute(rootId, node.name, expressions[0])])
+        const stmt = b.$effect([b.setAttribute(rootId, b.literal(node.name), expressions[0])])
         ctx.state.effects.push(stmt)
         return
     }

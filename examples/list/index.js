@@ -1,8 +1,8 @@
-import { List } from './wc/ex-list'
+import { ExList } from './wc/ex-list'
 //import { signal } from "../../src/signals/signal2"
 //import { effect } from "../../src/signals/effect"
 
-customElements.define('ex-list', List)
+customElements.define('ex-list', ExList)
 
 
 

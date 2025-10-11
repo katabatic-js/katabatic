@@ -38,6 +38,10 @@ export function querySelector(node) {
     )
 }
 
+export function constructor(node) {
+    return node.type === 'MethodDefinition' && node.kind === 'constructor'
+}
+
 export function connectedCallback(node) {
     return node.type === 'MethodDefinition' && node.key.name === 'connectedCallback'
 }

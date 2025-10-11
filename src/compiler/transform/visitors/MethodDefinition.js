@@ -33,13 +33,19 @@ export function MethodDefinition(node, ctx) {
         const shadowRootMode = ctx.state.template.metadata?.shadowRootMode
 
         const stmts1 = []
+        const stmts2 = []
         if (shadowRootMode) {
             stmts1.push(b.assignment(b.shadow(), b.attachShadow(shadowRootMode)))
         }
         if (node.value.body.body.length > 0) {
-            stmts1.push(b.$boundary(node.value.body.body))
+            stmts2.push(b.$boundary(node.value.body.body))
         }
-        const stmt = b.ifStmt(b.$lifecycle('connected'), [...stmts1, ctx.state.template.block])
+        
+        const stmt = b.ifStmt(b.$lifecycle('connected'), [
+            ...stmts1,
+            ctx.state.template.block,
+            ...stmts2
+        ])
 
         return {
             ...node,

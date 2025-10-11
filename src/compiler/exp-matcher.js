@@ -11,6 +11,8 @@ export function matchExpression(expression, program, blocks) {
                 case 'CallExpression':
                     if (parentNode.callee === node) {
                         setMethodMetadata(node)
+                    } else {
+                        setMetadata(node)
                     }
                     break
                 case 'MemberExpression':

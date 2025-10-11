@@ -1,36 +1,22 @@
 <script type="module">
-    import { signal } from '../../src/signals/index.js'
+    import { effect } from '../../src/signals/index.js'
 
     export class Counter extends HTMLElement {
-        constructor() {
-            super()
-            this.count = 0
-            this.countries = ['FR', 'CA']
-        }
+        count = 0
 
-        increment(inc = 1) {
-            this.count += inc
-
+        connectedCallback() {
             const button = this.querySelector('button')
-            button.style.color = 'red'
 
-            this.countries = [...this.countries, 'US' + this.count]
+            effect(() => {
+                button.style.color = this.count % 2 ? 'red' : 'blue'
+            })
         }
     }
 </script>
 
 <template>
     <div>
-        <span>cc</span>
-        {#each countries as country }
-        <span>{country}</span>
-        {#if count > 3 && count < 5}
-            <span>LL</span>
-        {:else if count === 2}
-            <span>OO</span>
-        {/if}
-        {/each}
-        <button onclick="{increment()}">counter is {count}</button>
+        <button onclick="{count++}">counter is {count}</button>
     </div>
     <style>
         div {

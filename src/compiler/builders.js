@@ -1072,6 +1072,38 @@ export function $effect(body) {
     }
 }
 
+export function constructor(body = []) {
+    return {
+        type: 'MethodDefinition',
+        static: false,
+        computed: false,
+        key: {
+            type: 'Identifier',
+            name: 'constructor'
+        },
+        kind: 'constructor',
+        value: {
+            type: 'FunctionExpression',
+            id: null,
+            expression: false,
+            generator: false,
+            async: false,
+            params: [],
+            body: {
+                type: 'BlockStatement',
+                body: [
+                    {
+                        type: 'CallExpression',
+                        callee: { type: 'Super' },
+                        arguments: [],
+                        optional: false
+                    }
+                ]
+            }
+        }
+    }
+}
+
 export function connectedCallback(body = []) {
     return {
         type: 'MethodDefinition',

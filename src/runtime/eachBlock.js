@@ -1,5 +1,6 @@
-import { Effect, track, Tracker } from '../signals/effect.js'
+import { Effect, track } from '../signals/effect.js'
 import { Signal, SignalEvent } from '../signals/signal.js'
+import { Tracker } from '../signals/tracker.js'
 import { Client } from './client.js'
 
 export class EachBlock extends Map {
@@ -16,7 +17,6 @@ export class EachBlock extends Map {
 
     #insertBlockAfter(block, tail) {
         const anchor = tail.nextNode
-
         this.fn(block, anchor, block.getValue)
         block.anchor = anchor.previousSibling
 
@@ -27,8 +27,9 @@ export class EachBlock extends Map {
     }
 
     #moveBlockAfter(block, tail) {
-        const anchor = tail.nextNode
+        if (block === tail) return block
 
+        const anchor = tail.nextNode
         let node = block.previousBlock.nextNode
         while (true) {
             const nextNode = node.nextSibling
@@ -70,7 +71,6 @@ export class EachBlock extends Map {
             const iterable = this.getIterable()
 
             for (const block of this.#getRemovedBlocks(iterable)) {
-                console.log('REM')
                 this.#removeBlock(block)
             }
 

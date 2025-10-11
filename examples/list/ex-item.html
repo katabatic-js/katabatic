@@ -1,27 +1,32 @@
 <script type="module">
-    import { signal, effect } from '../../src/signals/index.js'
+    import * as List from './list.js'
 
-    class Item extends HTMLElement {
-        static observedAttributes = ["code"];
+    class ExItem extends HTMLElement {
+        static observedAttributes = ['color']
 
-        value
-        
-        constructor() {
-            super()
-        }
-
-        connectedCallback() {
-            effect(() => {
-                console.log(this.getAttribute('code'))
-            })
-        }
-
+        item
     }
 </script>
 
 <template>
-    <div>
-        <span>X {getAttribute('code')}</span>
-    </div>
-    <style>div {background-color: aqua;}</style>
+    <li style="{`--color: ${getAttribute('color')}`}">
+        <span>{item.name}</span>
+        <button onclick="{List.up(item)}">up</button>
+        <button onclick="{List.down(item)}">down</button>
+        <button onclick="{List.remove(item)}">remove</button>
+    </li>
+    <style>
+        li {
+            display: flex;
+            gap: 0.5rem;
+            min-width: 400px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--color);
+        }
+
+        span {
+            flex: 1;
+        }
+    </style>
 </template>

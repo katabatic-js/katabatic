@@ -1,45 +1,22 @@
 <script type="module">
-    import { signal, effect } from '../../src/signals/index.js'
+    import * as List from './list.js'
 
-    export class List extends HTMLElement {
-        constructor() {
-            super()
-            this.count = signal({ value: 0 })
-            this.countries = signal([
-                { code: 'FR', label: 'fr' },
-                { code: 'CA', label: 'ca' }
-            ])
-        }
-
-        #increment(inc = 1) {
-            this.count.value += inc
-
-            const button = this.shadow.querySelector('button')
-            button.style.color = 'red'
-
-            this.countries.push({ code: 'US' + this.count.value, label: 'us' })
-        }
-        #move() {
-            this.countries.push(this.countries.shift())
-        }
-        #remove() {
-            this.countries[0] = { code: 'FR', label: 'fr1' }
-            //this.countries[0].label = 'fr11'
-            //this.countries.code = 'FR'
-        }
-    }
+    export class ExList extends HTMLElement {}
 </script>
 
 <template shadowRootMode="open">
     <div>
-        <ul>
-            {#each countries as country (country.code)}
-            <ex-item code="{country.label}">OO</ex-item>
-            {/each}
-        </ul>
-        <button onclick="{increment()}">counter is {count.value}</button>
-        <button onclick="{move()}">move</button>
-        <button onclick="{remove()}">remove</button>
+        <article>
+            <ul>
+                {#each List.items as item (item.name)}
+                <ex-item
+                    item="{item}"
+                    color="{`hsla(240, 100%, ${List.items.length}0%, 50%)`}"
+                ></ex-item>
+                {/each}
+            </ul>
+            <button onclick="{List.add()}">add</button>
+        </article>
     </div>
     <style>
         div {
@@ -47,6 +24,16 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+        }
+        article {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
         }
         button {
             display: block;
