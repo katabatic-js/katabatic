@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { effect, signal } from '../../src/signals'
-import { setAsync } from '../../src/signals/tracker'
+import { effect, signal } from '../src/index.js'
+import { setAsync } from '../src/tracker.js'
 
 setAsync(false)
 

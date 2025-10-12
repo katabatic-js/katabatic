@@ -17,12 +17,7 @@ const rootPath = path.resolve(argv.option('root')) ?? process.cwd()
 const srcDirPath = path.join(rootPath, argv.option('srcDir') ?? './src')
 const outDirPath = path.join(rootPath, argv.option('outDir') ?? './wc')
 const routesDirPath = path.join(srcDirPath, argv.option('routesDir') ?? './routes')
-
 const hasRoutes = existsSync(routesDirPath)
-
-let binDirPath = path.dirname(fileURLToPath(import.meta.url))
-binDirPath = path.relative(process.cwd(), path.join(binDirPath, '../..')) ? undefined : binDirPath
-const runtimeDirPath = binDirPath ? path.join(binDirPath, '../runtime/index.js') : undefined
 
 const registry = new Registry()
 
@@ -134,9 +129,6 @@ function resolve(srcFilePath, isModule) {
     let routerImport = `./${path.relative(outDirPath, filePath)}`
 
     if (isModule) {
-        const runtimeImport = runtimeDirPath
-            ? path.relative(parentPath, runtimeDirPath)
-            : 'drop/runtime'
         const importShift = path.relative(parentPath, srcParentPath)
         const name = path.basename(fileName, '.js')
         const moduleHash = hash(srcFilePath)
@@ -153,7 +145,6 @@ function resolve(srcFilePath, isModule) {
         return {
             ref,
             name,
-            runtimeImport,
             importShift,
             customElementName: `${name}-${moduleHash}`,
             route,

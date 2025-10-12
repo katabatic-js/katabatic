@@ -1,4 +1,4 @@
-import { signal } from '../../src/signals/index.js'
+import { signal } from '@drop/signals'
 
 export const items = signal([{ name: 'Item 1' }, { name: 'Item 2' }])
 

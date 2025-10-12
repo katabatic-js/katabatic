@@ -3,7 +3,7 @@ import * as b from '../../builders.js'
 export function Program(node, ctx) {
     node = ctx.next() ?? node
 
-    const importStmts = [b.importSpecifier('$$', ctx.state.context.runtimeImport)]
+    const importStmts = [b.importSpecifier('$$', '@drop/runtime')]
     const defineStmts = []
 
     // html template

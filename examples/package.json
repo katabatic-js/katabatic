@@ -1,0 +1,17 @@
+{
+    "name": "examples",
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "counter": "node ../packages/compiler/src/bin/index.js -root ./counter -srcDir .",
+        "list": "node ../packages/compiler/src/bin/index.js -root ./list -srcDir .",
+        "site": "node ../packages/compiler/src/bin/index.js -root ./site -srcDir ."
+    },
+    "dependencies": {
+        "@drop/runtime": "^0.0.0",
+        "@drop/signals": "^0.0.0"
+    },
+    "devDependencies": {
+        "@drop/compiler": "^0.0.0"
+    }
+}

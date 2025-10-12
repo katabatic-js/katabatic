@@ -1,28 +1,9 @@
 {
-  "name": "drop",
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "test": "vitest",
-    "examples:counter": "node ./src/bin/index.js -root ./examples/counter -srcDir .",
-    "examples:list": "node ./src/bin/index.js -root ./examples/list -srcDir .",
-    "examples:site": "node ./src/bin/index.js -root ./examples/site -srcDir ."
-  },
-  "bin": {
-    "drop": "./src/bin/index.js"
-  },
-  "devDependencies": {
-    "@types/css-tree": "^2.3.10",
-    "@types/node": "^22.15.21",
-    "@webreflection/signal": "^2.1.2",
-    "typescript": "~5.7.2",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "@web/dev-server": "^0.4.6",
-    "acorn": "^8.14.1",
-    "css-tree": "^3.1.0",
-    "esrap": "^1.4.6",
-    "zimmerframe": "^1.1.2"
-  }
+    "name": "drop",
+    "workspaces": [
+        "packages/compiler",
+        "packages/runtime",
+        "packages/signals",
+        "examples"
+    ]
 }

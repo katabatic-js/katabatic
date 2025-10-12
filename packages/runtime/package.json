@@ -1,0 +1,13 @@
+{
+    "name": "@drop/runtime",
+    "version": "0.0.0",
+    "type": "module",
+    "exports": {
+		".": {
+			"import": "./src/index.js"
+		}
+	},
+    "dependencies": {
+        "@drop/signals": "^0.0.0"
+    }
+}

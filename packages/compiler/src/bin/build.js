@@ -1,6 +1,6 @@
 import path from 'path'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
-import { compile } from '../compiler/index.js'
+import { compile } from '../index.js'
 import { createRouter } from '../router/index.js'
 import { compileHtmlIndex } from '../router/html.js'
 

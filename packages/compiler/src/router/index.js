@@ -1,5 +1,5 @@
 import { print } from 'esrap'
-import * as b from '../compiler/builders.js'
+import * as b from '../builders.js'
 
 export function createRouter(registry) {
     const routes = b.object()

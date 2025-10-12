@@ -1,6 +1,5 @@
-import { Boundary, Effect, track } from '../signals/effect.js'
-import { Signal, SignalEvent } from '../signals/signal.js'
-import { AttributeTracker, PropertyTracker } from '../signals/tracker.js'
+import { Signal, SignalEvent, Boundary, Effect, track } from '@drop/signals'
+import { AttributeTracker, PropertyTracker } from '@drop/signals/tracker'
 import { Client } from './client.js'
 import { EachBlock } from './eachBlock.js'
 import { IfBlock } from './ifBlock.js'

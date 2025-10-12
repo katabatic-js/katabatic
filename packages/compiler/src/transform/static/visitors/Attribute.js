@@ -1,5 +1,5 @@
 import * as b from '../../../builders.js'
-import { append } from '../../../../utils/misc.js'
+import { append } from '../../../utils/misc.js'
 import { clx } from '../../../css.js'
 
 export function Attribute(node, ctx) {

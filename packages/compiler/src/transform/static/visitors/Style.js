@@ -1,5 +1,5 @@
 import { generate } from 'css-tree'
-import { append } from '../../../../utils/misc.js'
+import { append } from '../../../utils/misc.js'
 
 export function Style(node, ctx) {
     node = ctx.next() ?? node

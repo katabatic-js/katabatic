@@ -1,0 +1,19 @@
+{
+  "name": "@drop/signals",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+		".": {
+			"import": "./src/index.js"
+		},
+		"./tracker": {
+			"import": "./src/tracker.js"
+		}
+	},
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
+}

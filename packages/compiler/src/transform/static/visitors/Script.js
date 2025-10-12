@@ -1,5 +1,5 @@
 import { print } from 'esrap'
-import { append } from '../../../../utils/misc.js'
+import { append } from '../../../utils/misc.js'
 
 export function Script(node, ctx) {
     node = ctx.next() ?? node

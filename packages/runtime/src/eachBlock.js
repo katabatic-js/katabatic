@@ -1,6 +1,5 @@
-import { Effect, track } from '../signals/effect.js'
-import { Signal, SignalEvent } from '../signals/signal.js'
-import { Tracker } from '../signals/tracker.js'
+import { Signal, SignalEvent, Effect, track } from '@drop/signals'
+import { Tracker } from '@drop/signals/tracker'
 import { Client } from './client.js'
 
 export class EachBlock extends Map {
