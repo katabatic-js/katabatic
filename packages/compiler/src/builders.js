@@ -29,7 +29,7 @@ export function binary(operator, left, right) {
     }
 }
 
-export function template(text, expressions) {
+export function template({ text, expressions }) {
     if (text.length === expressions.length) {
         // template literals must start and end with a text
         text.push('')
@@ -145,6 +145,14 @@ export function importSpecifier(name, source) {
         },
         attributes: []
     }
+}
+
+export function importNamespaceSpecifier(local) {
+    if (typeof local === 'string') {
+        local = { type: 'Identifier', name: local }
+    }
+
+    return { type: 'ImportNamespaceSpecifier', local }
 }
 
 export function property(key, value) {
@@ -501,48 +509,39 @@ export function getCustomElement(value) {
     }
 }
 
-export function $define(object) {
+export function $name(object) {
     if (typeof object === 'string') {
         object = { type: 'Identifier', name: object }
     }
 
     return {
-        type: 'ExpressionStatement',
-        expression: {
-            type: 'CallExpression',
-            callee: {
-                type: 'MemberExpression',
-                object,
-                property: {
-                    type: 'Identifier',
-                    name: '$define'
-                },
-                computed: false,
-                optional: false
-            },
-            arguments: [],
-            optional: false
-        }
+        type: 'MemberExpression',
+        object,
+        property: {
+            type: 'Identifier',
+            name: '$name'
+        },
+        computed: false,
+        optional: false
     }
 }
 
-export function $defineDecl(body) {
+export function $nameDecl(value) {
     return {
         type: 'ExportNamedDeclaration',
         declaration: {
-            type: 'FunctionDeclaration',
-            id: {
-                type: 'Identifier',
-                name: '$define'
-            },
-            expression: false,
-            generator: false,
-            async: false,
-            params: [],
-            body: {
-                type: 'BlockStatement',
-                body
-            }
+            type: 'VariableDeclaration',
+            declarations: [
+                {
+                    type: 'VariableDeclarator',
+                    id: {
+                        type: 'Identifier',
+                        name: '$name'
+                    },
+                    init: { type: 'Literal', value }
+                }
+            ],
+            kind: 'const'
         },
         specifiers: [],
         source: null

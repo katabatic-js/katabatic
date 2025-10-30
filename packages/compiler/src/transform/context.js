@@ -12,11 +12,6 @@ export function nextBlockId(ctx) {
     return b.id(`block_${ctx.state.blocks.length + 1}`)
 }
 
-export function getModuleId(ctx, name) {
-    let index = [...ctx.state.modules].indexOf(name)
-    if (index >= 0) return b.id(`$Module_${index + 1}`)
-}
-
 export function pathStmt(ctx, node) {
     const subPath = []
 

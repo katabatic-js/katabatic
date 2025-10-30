@@ -1,8 +1,9 @@
 import * as b from '../../builders.js'
+import { appendText } from '../../utils/template.js'
 import { nextElementId, pathStmt } from '../context.js'
 
 export function EachBlock(node, ctx) {
-    const template = []
+    const template = { text: [''], expressions: [] }
     const init = { elem: [], text: [] }
     const effects = []
     const handlers = []
@@ -12,11 +13,11 @@ export function EachBlock(node, ctx) {
 
     const stmts1 = [
         b.declaration('template', b.createElement('template')),
-        b.assignment(b.innerHTML('template'), b.literal(template.join('')))
+        b.assignment(b.innerHTML('template'), b.template(template))
     ]
     const stmts2 = [...init.elem, ...init.text, ...effects, ...handlers, ...blocks]
     const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))
-    
+
     const anchorId = nextElementId(ctx)
     const bodyStmt = [...stmts1, ...stmts2, stmt3]
     const expressionStmt = ctx.visit(node.expression)
@@ -25,5 +26,5 @@ export function EachBlock(node, ctx) {
 
     ctx.state.init.elem.push(anchorStmt)
     ctx.state.blocks.push(blockStmt)
-    ctx.state.template.push('<!>')
+    appendText(ctx.state.template, '<!-- -->')
 }

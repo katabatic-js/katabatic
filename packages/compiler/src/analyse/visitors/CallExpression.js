@@ -28,4 +28,9 @@ export function CallExpression(node, ctx) {
         node.metadata.selectorList = selectorList
         return
     }
+
+    if (is.defineCustomElement(node)) {
+        const name = node.arguments[0].value
+        ctx.state.customElement.name = name
+    }
 }

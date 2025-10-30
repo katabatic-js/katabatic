@@ -1,4 +1,5 @@
 import * as b from '../../builders.js'
+import { appendText } from '../../utils/template.js'
 import { nextElementId, nextTextId, pathStmt } from '../context.js'
 
 export function Fragment(node, ctx) {
@@ -30,7 +31,7 @@ export function Fragment(node, ctx) {
 
         if (expressions.length === 0) {
             // no expression
-            ctx.state.template.push(text.join(''))
+            appendText(ctx.state.template, text.join(''))
 
             text = []
             expressions = []
@@ -50,9 +51,9 @@ export function Fragment(node, ctx) {
         ctx.state.init.text.push(textStmt)
 
         const effectStmt = b.$effect([
-            b.assignment(b.textContent(textId), b.template(text, expressions))
+            b.assignment(b.textContent(textId), b.template({ text, expressions }))
         ])
-        ctx.state.template.push(' ')
+        appendText(ctx.state.template, ' ')
         ctx.state.effects.push(effectStmt)
 
         text = []

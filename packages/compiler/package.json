@@ -5,6 +5,11 @@
   "bin": {
     "drop": "./src/bin/index.js"
   },
+  "exports": {
+		".": {
+			"import": "./src/index.js"
+		}
+	},
   "devDependencies": {
     "@types/css-tree": "^2.3.10",
     "@types/node": "^22.15.21",

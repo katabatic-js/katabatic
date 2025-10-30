@@ -1,4 +1,5 @@
 import { generate } from 'css-tree'
+import { appendText } from '../../utils/template.js'
 
 export function Style(node, ctx) {
     node = ctx.next() ?? node
@@ -6,5 +7,5 @@ export function Style(node, ctx) {
     const css = generate(node.content)
 
     ctx.state.css.push(css)
-    ctx.state.template.push(`<!>`)
+    appendText(ctx.state.template, '<!-- -->')
 }

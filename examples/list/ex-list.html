@@ -1,7 +1,10 @@
 <script type="module">
+    import './ex-item.html'
     import * as List from './list.js'
 
     export class ExList extends HTMLElement {}
+
+    customElements.define('ex-list', ExList)
 </script>
 
 <template shadowRootMode="open">

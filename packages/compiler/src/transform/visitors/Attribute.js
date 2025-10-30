@@ -1,6 +1,7 @@
-import { getModuleId, nextElementId, pathStmt } from '../context.js'
+import { nextElementId, pathStmt } from '../context.js'
 import * as b from '../../builders.js'
 import { clx } from '../../css.js'
+import { appendText } from '../../utils/template.js'
 
 export function Attribute(node, ctx) {
     let value = node.value
@@ -38,9 +39,8 @@ export function Attribute(node, ctx) {
             return
         }
 
-        const module = ctx.state.module
-        if (module) {
-            const moduleId = getModuleId(ctx, module.name)
+        const moduleId = ctx.state.moduleId
+        if (moduleId) {
             const stmt = b.$effect([b.$set(moduleId, rootId, node.name, expressions[0])])
             ctx.state.effects.push(stmt)
             return
@@ -52,5 +52,5 @@ export function Attribute(node, ctx) {
     }
 
     // text attribute
-    ctx.state.template.push(` ${node.name}="${text[0] ?? 'true'}"`)
+    appendText(ctx.state.template, ` ${node.name}="${text[0] ?? 'true'}"`)
 }

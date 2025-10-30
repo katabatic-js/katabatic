@@ -1,4 +1,5 @@
 import * as b from '../../builders.js'
+import { appendText } from '../../utils/template.js'
 
 export function Element(node, ctx) {
     let attributes = node.attributes
@@ -6,11 +7,11 @@ export function Element(node, ctx) {
         attributes = [...attributes, b.attribute('class', '', { isScoped: true })]
     }
 
-    ctx.state.template.push(`<${node.name}`)
+    appendText(ctx.state.template, `<${node.name}`)
     for (const attribute of attributes) {
         ctx.visit(attribute)
     }
-    ctx.state.template.push('>')
+    appendText(ctx.state.template, '>')
     ctx.visit(node.fragment)
-    ctx.state.template.push(`</${node.name}>`)
+    appendText(ctx.state.template, `</${node.name}>`)
 }

@@ -6,7 +6,7 @@ export function IfBlock(node, ctx) {
     const expressions = []
 
     ctx.visit(node.consequent, { ...ctx.state, text, expressions })
-    const stmt1 = b.returnStmt(b.template(text, expressions))
+    const stmt1 = b.returnStmt(b.template({ text, expressions }))
 
     let stmt2
     if (node.alternate) {
@@ -14,7 +14,7 @@ export function IfBlock(node, ctx) {
         const expressions = []
 
         ctx.visit(node.alternate, { ...ctx.state, text, expressions })
-        stmt2 = b.returnStmt(b.template(text, expressions))
+        stmt2 = b.returnStmt(b.template({ text, expressions }))
     } else {
         stmt2 = b.returnStmt(b.literal(''))
     }

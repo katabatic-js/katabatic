@@ -7,6 +7,6 @@ export function Template(node, ctx) {
 
     ctx.visit(node.fragment, { ...ctx.state, text, expressions, blocks })
 
-    const template = b.template(text, expressions)
+    const template = b.template({ text, expressions })
     return { type: 'TemplateMod', template, blocks }
 }

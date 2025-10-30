@@ -38,6 +38,21 @@ export function querySelector(node) {
     )
 }
 
+export function defineCustomElement(node) {
+    if (node.type === 'ExpressionStatement') {
+        node = node.expression
+    }
+
+    return (
+        node.type === 'CallExpression' &&
+        node.callee.type === 'MemberExpression' &&
+        node.callee.object.type === 'Identifier' &&
+        node.callee.object.name === 'customElements' &&
+        node.callee.property.type === 'Identifier' &&
+        node.callee.property.name === 'define'
+    )
+}
+
 export function constructor(node) {
     return node.type === 'MethodDefinition' && node.kind === 'constructor'
 }

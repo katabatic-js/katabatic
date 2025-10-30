@@ -12,7 +12,7 @@ export function EachBlock(node, ctx) {
     const block = b.func(blockId, [
         b.declaration(resultId, b.literal(''), 'let'),
         b.forStmt(node.context, node.expression, [
-            b.assignment(resultId, b.template(text, expressions), '+=')
+            b.assignment(resultId, b.template({ text, expressions }), '+=')
         ]),
         b.returnStmt(resultId)
     ])

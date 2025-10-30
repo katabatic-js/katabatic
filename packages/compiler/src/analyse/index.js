@@ -13,9 +13,12 @@ import { EachBlock } from './visitors/EachBlock.js'
 import { AssignmentExpression } from './visitors/AssignmentExpression.js'
 import { MethodDefinition } from './visitors/MethodDefinition.js'
 import { PropertyDefinition } from './visitors/PropertyDefinition.js'
+import { ImportDeclaration } from './visitors/ImportDeclaration.js'
+import { CustomElement } from './visitors/CustomElement.js'
 
 const visitors = {
     Program,
+    ImportDeclaration,
     CallExpression,
     ClassDeclaration,
     ClassBody,
@@ -24,6 +27,7 @@ const visitors = {
     PropertyDefinition,
     Template,
     Element,
+    CustomElement,
     Attribute,
     ExpressionTag,
     IfBlock,

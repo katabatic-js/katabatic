@@ -1,6 +1,8 @@
+import * as is from '../../checkers.js'
+
 export function Program(node, ctx) {
+    const modules = []
     const customElement = {
-        className: [],
         properties: [],
         methods: ['getAttribute'],
         setters: [],
@@ -11,11 +13,12 @@ export function Program(node, ctx) {
         }
     }
 
-    ctx.next({ ...ctx.state, customElement })
+    ctx.next({ ...ctx.state, modules, customElement })
+
+    const hasDefineCustomElement = node.body.some(is.defineCustomElement)
 
     node.metadata ??= {}
-    node.metadata.customElement = {
-        ...customElement,
-        className: customElement.className[0] ?? false
-    }
+    node.metadata.hasDefineCustomElement = hasDefineCustomElement
+    node.metadata.modules = modules
+    node.metadata.customElement = customElement
 }

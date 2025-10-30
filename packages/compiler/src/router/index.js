@@ -3,14 +3,9 @@ import * as b from '../builders.js'
 
 export function createRouter(registry) {
     const routes = b.object()
-    const imports = {
-        page: [],
-        layout: []
-    }
+    const imports = { page: [], layout: [] }
 
-    imports.index = b.importSpecifier('renderIndex', registry.getIndex().routerImport)
-
-    for (const entry of registry.listModules()) {
+    for (const entry of Object.values(registry)) {
         if (entry.isPage) {
             const node = makeNode(routes, entry.route)
             const pageId = b.id(`page_${imports.page.length + 1}`)
@@ -24,6 +19,11 @@ export function createRouter(registry) {
             const layoutId = b.id(`layout_${imports.layout.length + 1}`)
             imports.layout.push(b.importNamespace(layoutId, entry.routerImport))
             node.properties.push(b.property('_layout', layoutId))
+            continue
+        }
+
+        if (entry.isIndex) {
+            imports.index = b.importSpecifier('renderIndex', entry.routerImport)
             continue
         }
     }
