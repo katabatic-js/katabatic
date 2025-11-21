@@ -97,6 +97,12 @@ export function idAttribute(node, withExpressionTag) {
     return result
 }
 
+export function bindAttribute(node) {
+    return (
+        node.type === 'Attribute' && node.name === 'bind' && node.value[0]?.type === 'ExpressionTag'
+    )
+}
+
 export function staticAttribute(node) {
     return (
         node.type === 'Attribute' &&

@@ -10,7 +10,10 @@
 <template shadowRootMode="open">
     <div>
         <article>
-            <ul>
+            <ul>{#if List.items.length > 5}
+                ooo
+                {/if}
+                {List.items.length}
                 {#each List.items as item (item.name)}
                 <ex-item
                     item="{item}"

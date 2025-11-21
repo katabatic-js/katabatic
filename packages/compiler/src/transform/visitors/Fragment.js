@@ -1,18 +1,17 @@
 import * as b from '../../builders.js'
-import { appendText } from '../../utils/template.js'
-import { nextElementId, nextTextId, pathStmt } from '../context.js'
+import { appendText, hasExpression, isEmpty } from '../../utils/template.js'
+import { nextTextId, pathStmt } from '../context.js'
 
 export function Fragment(node, ctx) {
-    let text = []
-    let expressions = []
-    let index = 0
-    let rootId
+    let template = { text: [''], expressions: [] }
+    let textNode
 
     for (const child of node.nodes) {
         switch (child.type) {
             case 'Text':
             case 'ExpressionTag':
-                ctx.visit(child, { text, expressions, analysis: ctx.state.analysis })
+                textNode = child
+                ctx.visit(child, { template, analysis: ctx.state.analysis })
                 break
             default:
                 finalize()
@@ -23,41 +22,21 @@ export function Fragment(node, ctx) {
     finalize()
 
     function finalize() {
-        if (text.length == 0) {
-            // no text or expression
-            index++
-            return
+        if (hasExpression(template)) {
+            const textId = nextTextId(ctx)
+            const textStmt = b.declaration(textId, pathStmt(ctx, [node, textNode]))
+            ctx.state.init.text.push(textStmt)
+
+            const effectStmt = b.$effect([
+                b.assignment(b.textContent(textId), b.template(template))
+            ])
+            ctx.state.effects.push(effectStmt)
+
+            appendText(ctx.state.template, ' ')
+            template = { text: [''], expressions: [] }
+        } else if (!isEmpty(template)) {
+            appendText(ctx.state.template, template.text.join(''))
+            template = { text: [''], expressions: [] }
         }
-
-        if (expressions.length === 0) {
-            // no expression
-            appendText(ctx.state.template, text.join(''))
-
-            text = []
-            expressions = []
-            index += 2
-            return
-        }
-
-        // reactive
-        if (!rootId) {
-            rootId = nextElementId(ctx)
-            const rootStmt = b.declaration(rootId, pathStmt(ctx))
-            ctx.state.init.elem.push(rootStmt)
-        }
-
-        const textId = nextTextId(ctx)
-        const textStmt = b.declaration(textId, b.sibling(b.child(rootId), index))
-        ctx.state.init.text.push(textStmt)
-
-        const effectStmt = b.$effect([
-            b.assignment(b.textContent(textId), b.template({ text, expressions }))
-        ])
-        appendText(ctx.state.template, ' ')
-        ctx.state.effects.push(effectStmt)
-
-        text = []
-        expressions = []
-        index += 2
     }
 }

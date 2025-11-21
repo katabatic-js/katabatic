@@ -4,30 +4,32 @@ import { getTemplate } from '../context.js'
 export function ImportDeclaration(node, ctx) {
     const template = getTemplate(ctx)
 
-    const { dirname, basename } = parse(node.source.value)
-    if (basename.includes('-')) {
+    const { dirname, filename, extension } = parse(node.source.value)
+    if (filename.includes('-')) {
         const index = ctx.state.modules.length
-        const isModule = matchModule(basename, index, template)
+        const isModule = matchModule(filename, index, template)
 
         if (isModule) {
             node.metadata ??= {}
             node.metadata.isModule = isModule
-            node.metadata.basename = basename
             node.metadata.dirname = dirname
+            node.metadata.filename = filename
+            node.metadata.extension = extension
             node.metadata.index = index
 
-            ctx.state.modules.push(basename)
+            ctx.state.modules.push(filename)
         }
     }
 }
 
-function parse(filename) {
-    const tokens = filename.split('/')
-    const basename = tokens.pop()
-    const index = basename.lastIndexOf('.')
+function parse(path) {
+    const dirnameTokens = path.split('/')
+    const filenameTokens = dirnameTokens.pop().split('.')
+    const extension = filenameTokens.pop()
 
     return {
-        dirname: tokens.join('/'),
-        basename: index >= 0 ? basename.substring(0, index) : basename
+        dirname: dirnameTokens.join('/'),
+        filename: filenameTokens.join('.'),
+        extension
     }
 }

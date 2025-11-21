@@ -16,7 +16,7 @@ export class PropertyTracker {
     callback = (event) => {
         if (event.signal !== event.currentSignal) return
         if (event.property !== this.property) return
-        ASYNC ? this.effect.schedule() : this.effect.run()
+        ASYNC && this.effect.async ? this.effect.schedule() : this.effect.run()
     }
 
     dispose() {
@@ -37,7 +37,7 @@ export class AttributeTracker {
     callback = (event) => {
         if (event.signal !== event.currentSignal) return
         if (event.name !== this.name) return
-        ASYNC ? this.effect.schedule() : this.effect.run()
+        ASYNC && this.effect.async ? this.effect.schedule() : this.effect.run()
     }
 
     dispose() {
@@ -55,7 +55,7 @@ export class Tracker {
 
     callback = (event) => {
         if (event.signal !== event.currentSignal) return
-        ASYNC ? this.effect.schedule() : this.effect.run()
+        ASYNC && this.effect.async ? this.effect.schedule() : this.effect.run()
     }
 
     dispose() {

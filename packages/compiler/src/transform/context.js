@@ -12,7 +12,11 @@ export function nextBlockId(ctx) {
     return b.id(`block_${ctx.state.blocks.length + 1}`)
 }
 
-export function pathStmt(ctx, node) {
+export function nextBindingId(ctx) {
+    return b.id(`binding_${ctx.state.init.binding.length + 1}`)
+}
+
+export function pathStmt(ctx, nodes) {
     const subPath = []
 
     for (const node of ctx.path.toReversed()) {
@@ -20,9 +24,11 @@ export function pathStmt(ctx, node) {
         subPath.unshift(node)
     }
 
-    if (node) {
-        subPath.push(node)
+    if (nodes) {
+        subPath.push(...(Array.isArray(nodes) ? nodes : [nodes]))
     }
+
+console.log(subPath)
 
     let stmt = b.member('template', 'content')
     let fragment
@@ -31,6 +37,8 @@ export function pathStmt(ctx, node) {
             case 'Fragment':
                 fragment = node
                 break
+            case 'Text':
+            case 'ExpressionTag':
             case 'Element':
             case 'CustomElement':
             case 'IfBlock':
@@ -43,12 +51,10 @@ export function pathStmt(ctx, node) {
 }
 
 function position(fragment, node) {
-    let position = 0
+    let position = -1
 
     const nodes = fragment.nodes
     for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i] === node) break
-
         if (
             (nodes[i].type === 'ExpressionTag' || nodes[i].type === 'Text') &&
             (nodes[i - 1]?.type === 'ExpressionTag' || nodes[i - 1]?.type === 'Text')
@@ -58,14 +64,10 @@ function position(fragment, node) {
         }
 
         position++
+        if (nodes[i] === node) break
     }
     return position
 }
-
-export function getElement(ctx) {
-    return ctx.path.at(-1)
-}
-
 
 export function getProgram(ctx) {
     return ctx.path[0]

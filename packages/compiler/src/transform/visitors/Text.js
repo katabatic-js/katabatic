@@ -1,3 +1,5 @@
+import { appendText } from '../../utils/template.js'
+
 export function Text(node, ctx) {
-    ctx.state.text.push(node.data)
+    appendText(ctx.state.template, node.data)
 }

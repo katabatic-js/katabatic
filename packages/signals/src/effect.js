@@ -2,9 +2,10 @@ export let track
 let add
 
 export class Effect extends Set {
-    constructor(fn, orphaned = false) {
+    constructor(fn, { orphaned = false, async = true } = {}) {
         super()
         this.fn = fn
+        this.async = async
         this.microtask = false
 
         if (!orphaned) {
@@ -79,7 +80,7 @@ export function effect(fn) {
 }
 
 export class Boundary extends Set {
-    constructor(fn, orphaned = false) {
+    constructor(fn, { orphaned = false } = {}) {
         super()
         this.fn = fn
 

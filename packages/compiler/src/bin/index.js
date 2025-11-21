@@ -17,6 +17,8 @@ const outDirPath = path.join(rootPath, argv.option('outDir') ?? '.')
 const routesDirPath = path.join(srcDirPath, argv.option('routesDir') ?? './routes')
 const hasRoutes = existsSync(routesDirPath)
 
+const rewriteRelativeImportExtensions = argv.option('rewriteRelativeImportExtensions') ?? false
+
 switch (command) {
     case 'build':
         build()
@@ -125,6 +127,7 @@ function resolve(srcFilePath, isModule) {
             isLayout,
             routerImport,
             hash: moduleHash,
+            rewriteRelativeImportExtensions,
             src: {
                 filePath: srcFilePath
             },

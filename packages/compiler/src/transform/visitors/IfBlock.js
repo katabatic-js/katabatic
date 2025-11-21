@@ -6,7 +6,7 @@ export function IfBlock(node, ctx) {
     function branchStmt(node, hasElseif = false) {
         if (node) {
             const template = { text: [''], expressions: [] }
-            const init = { elem: [], text: [] }
+            const init = { elem: [], text: [], binding: [] }
             const effects = []
             const handlers = []
             const blocks = []
@@ -18,7 +18,7 @@ export function IfBlock(node, ctx) {
                     b.declaration('template', b.createElement('template')),
                     b.assignment(b.innerHTML('template'), b.template(template))
                 ]
-                const stmts2 = [...init.elem, ...init.text, ...effects, ...handlers, ...blocks]
+                const stmts2 = [...init.elem, ...init.text, ...init.binding, ...effects, ...handlers, ...blocks]
                 const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))
 
                 return [...stmts1, ...stmts2, stmt3]

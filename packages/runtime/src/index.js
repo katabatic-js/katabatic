@@ -8,7 +8,7 @@ export { EachBlock, IfBlock }
 
 export function $$(customElement) {
     Client.prototype.effect ??= function (fn) {
-        const effect = new Effect(fn, true).run()
+        const effect = new Effect(fn, { orphaned: true, async: false }).run()
         this.add(effect)
         return effect
     }
@@ -27,9 +27,10 @@ export function $$(customElement) {
 
     const client = new Client()
     let signal
+    let locked = false
 
     client.boundary = function (fn) {
-        const boundary = new Boundary(fn, true).init()
+        const boundary = new Boundary(fn, { orphaned: true }).init()
         this.add(boundary)
         return boundary
     }
@@ -93,6 +94,30 @@ export function $$(customElement) {
             signal ??= new Signal(undefined, customElement)
             signal.dispatchEvent(new SignalEvent('attributeChanged', { name }))
         }
+    }
+
+    client.getBindingProp = function (object, property, fn) {
+        if (
+            !!Object.getOwnPropertyDescriptor(object, property)?.get ||
+            !!Object.getOwnPropertyDescriptor(Object.getPrototypeOf(object), property)?.get
+        ) {
+            locked = true
+            fn(object[property])
+            locked = false
+            return true
+        }
+        return false
+    }
+
+    client.setBindingProp = function (object, property, value) {
+        if (
+            !!Object.getOwnPropertyDescriptor(object, property)?.set ||
+            !!Object.getOwnPropertyDescriptor(Object.getPrototypeOf(object), property)?.set
+        ) {
+            if (!locked) object[property] = value
+            return true
+        }
+        return false
     }
 
     return client

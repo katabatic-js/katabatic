@@ -1,7 +1,6 @@
-import { nextElementId, pathStmt } from '../context.js'
 import * as b from '../../builders.js'
 import { clx } from '../../css.js'
-import { appendText } from '../../utils/template.js'
+import { appendText, hasExpression } from '../../utils/template.js'
 
 export function Attribute(node, ctx) {
     let value = node.value
@@ -20,37 +19,53 @@ export function Attribute(node, ctx) {
         }
     }
 
-    const text = []
-    const expressions = []
-
+    const template = { text: [''], expressions: [] }
     for (const val of value) {
-        ctx.visit(val, { ...ctx.state, text, expressions })
+        ctx.visit(val, { ...ctx.state, template })
     }
 
-    if (expressions.length > 0) {
+    if (hasExpression(template)) {
         // expression attribute
-        const rootId = nextElementId(ctx)
-        const rootStmt = b.declaration(rootId, pathStmt(ctx))
-        ctx.state.init.elem.push(rootStmt)
+        const elementId = ctx.state.getElementId()
+        const moduleId = ctx.state.getModuleId?.()
+        const bindingId = ctx.state.getBindingId?.()
 
-        if (node.name.startsWith('on')) {
-            const stmt = b.assignment(b.member(rootId, node.name), b.arrowFunc(expressions[0]))
+        if (node.name === 'bind') {
+            // binding handled in element visitor
+        } else if (node.name.startsWith('on')) {
+            const stmt = b.assignment(
+                b.member(elementId, node.name),
+                b.eventListener(template.expressions[0])
+            )
             ctx.state.handlers.push(stmt)
-            return
-        }
-
-        const moduleId = ctx.state.moduleId
-        if (moduleId) {
-            const stmt = b.$effect([b.$set(moduleId, rootId, node.name, expressions[0])])
+        } else if (moduleId) {
+            const stmt = b.$effect([
+                b.$set(moduleId, elementId, node.name, template.expressions[0])
+            ])
             ctx.state.effects.push(stmt)
-            return
+        } else if (bindingId) {
+            const stmt = b.$effect([
+                b.logical(
+                    '||',
+                    b.$setBindingProp(bindingId, node.name, template.expressions[0]),
+                    b.setAttribute(elementId, b.literal(node.name), template.expressions[0])
+                )
+            ])
+            ctx.state.effects.push(stmt)
+
+            const stmt2 = b.$getBindingProp(
+                bindingId,
+                node.name,
+                b.assignment(template.expressions[0], b.id('v'))
+            )
+            ctx.state.changed.push(stmt2)
+        } else {
+            const stmt = b.$effect([
+                b.setAttribute(elementId, b.literal(node.name), template.expressions[0])
+            ])
+            ctx.state.effects.push(stmt)
         }
-
-        const stmt = b.$effect([b.setAttribute(rootId, b.literal(node.name), expressions[0])])
-        ctx.state.effects.push(stmt)
-        return
+    } else {
+        appendText(ctx.state.template, ` ${node.name}="${template.text[0] ?? 'true'}"`)
     }
-
-    // text attribute
-    appendText(ctx.state.template, ` ${node.name}="${text[0] ?? 'true'}"`)
 }

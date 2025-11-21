@@ -49,13 +49,10 @@ export function template({ text, expressions }) {
 
 export function assignment(left, right, operator = '=') {
     return {
-        type: 'ExpressionStatement',
-        expression: {
-            type: 'AssignmentExpression',
-            operator,
-            left,
-            right
-        }
+        type: 'AssignmentExpression',
+        operator,
+        left,
+        right
     }
 }
 
@@ -91,14 +88,14 @@ export function thisMember(property) {
     }
 }
 
-export function arrowFunc(body) {
+export function eventListener(body) {
     return {
         type: 'ArrowFunctionExpression',
         id: null,
         expression: false,
         generator: false,
         async: false,
-        params: [],
+        params: [{ type: 'Identifier', name: 'event' }],
         body: {
             type: 'BlockStatement',
             body: [body]
@@ -263,6 +260,15 @@ export function unary(operator, argument) {
         operator,
         prefix: true,
         argument
+    }
+}
+
+export function logical(operator, left, right) {
+    return {
+        type: 'LogicalExpression',
+        operator,
+        left,
+        right
     }
 }
 
@@ -655,8 +661,73 @@ export function $instrument(value) {
             computed: false,
             optional: false
         },
-
         arguments: [{ type: 'Literal', value }],
+        optional: false
+    }
+}
+
+export function $getBindingProp(object, value, body) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: { type: 'ThisExpression' },
+            property: {
+                type: 'MemberExpression',
+                object: {
+                    type: 'Identifier',
+                    name: '$'
+                },
+                property: {
+                    type: 'Identifier',
+                    name: 'getBindingProp'
+                },
+                computed: false,
+                optional: false
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [
+            object,
+            { type: 'Literal', value },
+            {
+                type: 'ArrowFunctionExpression',
+                id: null,
+                expression: false,
+                generator: false,
+                async: false,
+                params: [{ type: 'Identifier', name: 'v' }],
+                body
+            }
+        ],
+        optional: false
+    }
+}
+
+export function $setBindingProp(object, value, arg) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: { type: 'ThisExpression' },
+            property: {
+                type: 'MemberExpression',
+                object: {
+                    type: 'Identifier',
+                    name: '$'
+                },
+                property: {
+                    type: 'Identifier',
+                    name: 'setBindingProp'
+                },
+                computed: false,
+                optional: false
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [object, { type: 'Literal', value }, arg],
         optional: false
     }
 }
@@ -1060,6 +1131,46 @@ export function $effect(body) {
                     generator: false,
                     async: false,
                     params: [],
+                    body: {
+                        type: 'BlockStatement',
+                        body
+                    }
+                }
+            ],
+            optional: false
+        }
+    }
+}
+
+export function addEventListener(object, value, body) {
+    return {
+        type: 'ExpressionStatement',
+        expression: {
+            type: 'CallExpression',
+            callee: {
+                type: 'MemberExpression',
+                object,
+                property: {
+                    type: 'Identifier',
+                    name: 'addEventListener'
+                },
+                computed: false,
+                optional: false
+            },
+            arguments: [
+                { type: 'Literal', value },
+                {
+                    type: 'ArrowFunctionExpression',
+                    id: null,
+                    expression: false,
+                    generator: false,
+                    async: false,
+                    params: [
+                        {
+                            type: 'Identifier',
+                            name: 'event'
+                        }
+                    ],
                     body: {
                         type: 'BlockStatement',
                         body

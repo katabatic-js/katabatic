@@ -4,7 +4,7 @@ import { nextElementId, pathStmt } from '../context.js'
 
 export function EachBlock(node, ctx) {
     const template = { text: [''], expressions: [] }
-    const init = { elem: [], text: [] }
+    const init = { elem: [], text: [], binding: [] }
     const effects = []
     const handlers = []
     const blocks = []
@@ -15,7 +15,7 @@ export function EachBlock(node, ctx) {
         b.declaration('template', b.createElement('template')),
         b.assignment(b.innerHTML('template'), b.template(template))
     ]
-    const stmts2 = [...init.elem, ...init.text, ...effects, ...handlers, ...blocks]
+    const stmts2 = [...init.elem, ...init.text, ...init.binding, ...effects, ...handlers, ...blocks]
     const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))
 
     const anchorId = nextElementId(ctx)
