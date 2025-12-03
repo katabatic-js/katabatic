@@ -5,6 +5,7 @@
     "scripts": {
         "counter": "node ../packages/compiler/src/bin/index.js -root ./counter -rewriteRelativeImportExtensions true",
         "list": "node ../packages/compiler/src/bin/index.js -root ./list -rewriteRelativeImportExtensions true",
+        "animation": "node ../packages/compiler/src/bin/index.js -root ./animation -rewriteRelativeImportExtensions true",
         "site": "node ../packages/compiler/src/bin/index.js -root ./site -rewriteRelativeImportExtensions true"
     },
     "dependencies": {

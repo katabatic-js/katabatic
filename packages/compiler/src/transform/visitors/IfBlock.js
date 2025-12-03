@@ -8,17 +8,26 @@ export function IfBlock(node, ctx) {
             const template = { text: [''], expressions: [] }
             const init = { elem: [], text: [], binding: [] }
             const effects = []
+            const animates = []
             const handlers = []
             const blocks = []
 
-            ctx.visit(node, { ...ctx.state, template, init, effects, handlers, blocks })
+            ctx.visit(node, { ...ctx.state, template, init, effects, animates, handlers, blocks })
 
             if (!hasElseif) {
                 const stmts1 = [
                     b.declaration('template', b.createElement('template')),
                     b.assignment(b.innerHTML('template'), b.template(template))
                 ]
-                const stmts2 = [...init.elem, ...init.text, ...init.binding, ...effects, ...handlers, ...blocks]
+                const stmts2 = [
+                    ...init.elem,
+                    ...init.text,
+                    ...init.binding,
+                    ...effects,
+                    ...animates,
+                    ...handlers,
+                    ...blocks
+                ]
                 const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))
 
                 return [...stmts1, ...stmts2, stmt3]

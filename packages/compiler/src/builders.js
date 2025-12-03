@@ -1142,6 +1142,41 @@ export function $effect(body) {
     }
 }
 
+export function $animate(value, body) {
+    return {
+        type: 'ExpressionStatement',
+        expression: {
+            type: 'CallExpression',
+            callee: {
+                type: 'MemberExpression',
+                object: {
+                    type: 'Identifier',
+                    name: '$'
+                },
+                property: {
+                    type: 'Identifier',
+                    name: 'animate'
+                },
+                computed: false,
+                optional: false
+            },
+            arguments: [
+                { type: 'Literal', value },
+                {
+                    type: 'ArrowFunctionExpression',
+                    id: null,
+                    expression: false,
+                    generator: false,
+                    async: false,
+                    params: [{ type: 'Identifier', name: 'o' }],
+                    body
+                }
+            ],
+            optional: false
+        }
+    }
+}
+
 export function addEventListener(object, value, body) {
     return {
         type: 'ExpressionStatement',

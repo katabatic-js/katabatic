@@ -32,6 +32,14 @@ export function Attribute(node, ctx) {
 
         if (node.name === 'bind') {
             // binding handled in element visitor
+        } else if (node.name === 'in' || node.name === 'out' || node.name === 'animate') {
+            const direction = node.name === 'animate' ? 'both' : node.name
+            const animateExpression = template.expressions[0]
+            const stmt = b.$animate(direction, {
+                ...animateExpression,
+                arguments: [elementId, animateExpression.arguments[0] ?? b.object(), b.id('o')]
+            })
+            ctx.state.animates.push(stmt)
         } else if (node.name.startsWith('on')) {
             const stmt = b.assignment(
                 b.member(elementId, node.name),

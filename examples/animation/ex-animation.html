@@ -1,0 +1,75 @@
+<script type="module">
+    import { effect } from '@drop/signals'
+
+    function rotate(element) {
+        return element.animate(
+            [
+                { transform: 'rotate(0) translate3d(-50%, -50%, 0)', color: 'black' },
+                { color: '#431236', offset: 0.3 },
+                { transform: 'rotate(360deg) translate3d(-50%, -50%, 0)', color: 'black' }
+            ],
+            {
+                duration: 3000,
+                iterations: Infinity
+            }
+        )
+    }
+
+    function fade(element, {duration= 1000} = {}, {direction = 'in'} = {}) {
+        return element.animate(
+            [
+                { opacity: direction === 'out' ?  1 : 0 }, // Start with opacity 0
+                { opacity: direction === 'out' ?  0 : 1 } // End with opacity 1
+            ],
+            {
+                duration, // Animation duration in milliseconds (e.g., 1000ms = 1 second)
+                easing: 'ease-in-out', // Easing function for a smoother animation
+                fill: 'forwards'
+            }
+        )
+    }
+
+    export class Animation extends HTMLElement {
+        visible = false
+
+        connectedCallback() {
+            const button = this.querySelector('button')
+            const paragraph = this.querySelector('p')
+
+            effect(() => {
+                button.style.color = this.count % 2 ? 'red' : 'blue'
+            })
+        }
+    }
+
+    customElements.define('ex-animation', Animation)
+</script>
+
+<template>
+    <div>
+        {#if visible}
+        <p out="{fade({duration: 3000})}">block 1</p>
+        {:else}
+        <p out="{fade()}">block 2</p>
+        {/if}
+        <button onclick="{visible = !visible}">toggle</button>
+    </div>
+    <style>
+        div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        p {
+            padding: 2rem;
+            background-color: aqua;
+        }
+        button {
+            display: block;
+            padding: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+    </style>
+</template>

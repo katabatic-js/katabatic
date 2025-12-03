@@ -91,7 +91,7 @@ export class EachBlock extends Map {
 
                 index++
             }
-        }, true).run()
+        }, { orphaned: true, async: false }).run()
 
         return this
     }

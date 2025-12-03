@@ -5,6 +5,7 @@ export function Template(node, ctx) {
     const template = { text: [''], expressions: [] }
     const init = { elem: [], text: [], binding: [] }
     const effects = []
+    const animates = []
     const handlers = []
     const blocks = []
 
@@ -14,6 +15,7 @@ export function Template(node, ctx) {
         template,
         init,
         effects,
+        animates,
         handlers,
         blocks
     })
@@ -24,7 +26,15 @@ export function Template(node, ctx) {
         b.declaration('template', b.createElement('template')),
         b.assignment(b.innerHTML('template'), b.binary('+', b.id('TEMPLATE'), b.id('STYLE')))
     ]
-    const stmts2 = [...init.elem, ...init.text, ...init.binding, ...effects, ...handlers, ...blocks]
+    const stmts2 = [
+        ...init.elem,
+        ...init.text,
+        ...init.binding,
+        ...effects,
+        ...animates,
+        ...handlers,
+        ...blocks
+    ]
     const stmt3 = b.replaceChildren(rootId, b.member('template', 'content'))
 
     const bodyStmt = [...stmts1, ...stmts2, stmt3]

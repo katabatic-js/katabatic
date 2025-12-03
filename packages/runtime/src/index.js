@@ -1,4 +1,4 @@
-import { Signal, SignalEvent, Boundary, Effect, track } from '@drop/signals'
+import { Signal, SignalEvent, Boundary, track } from '@drop/signals'
 import { AttributeTracker, PropertyTracker } from '@drop/signals/tracker'
 import { Client } from './client.js'
 import { EachBlock } from './eachBlock.js'
@@ -7,12 +7,7 @@ import { IfBlock } from './ifBlock.js'
 export { EachBlock, IfBlock }
 
 export function $$(customElement) {
-    Client.prototype.effect ??= function (fn) {
-        const effect = new Effect(fn, { orphaned: true, async: false }).run()
-        this.add(effect)
-        return effect
-    }
-
+    
     Client.prototype.ifBlock ??= function (anchor, getCondition, concequent, alternate) {
         const block = new IfBlock(anchor, getCondition, concequent, alternate).init()
         this.add(block)
