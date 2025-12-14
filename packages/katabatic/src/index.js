@@ -3,11 +3,11 @@
 import path from 'path'
 import { watch as watchDir, existsSync } from 'fs'
 import { startDevServer } from '@web/dev-server'
-import { walkDir } from '../utils/files.js'
-import * as argv from '../utils/argv.js'
+import { walkDir } from './utils/files.js'
+import * as argv from './utils/argv.js'
 import { serve } from './serve.js'
 import { buildIndex, buildModule, buildRouter } from './build.js'
-import { hash } from '../utils/misc.js'
+import { hash } from './utils/misc.js'
 
 const command = argv.command()
 
@@ -42,7 +42,7 @@ function build() {
             return
         }
 
-        if (entry.name.endsWith('.html')) {
+        if (entry.name.endsWith('.html') || entry.name.endsWith('.ktb')) {
             const srcFilePath = path.join(entry.parentPath, entry.name)
             const module = buildModule(resolve(srcFilePath, true))
             registry[module.ref] = module
@@ -67,7 +67,7 @@ function watch(registry) {
             return
         }
 
-        if (fileName.endsWith('.html')) {
+        if (fileName.endsWith('.html') || fileName.endsWith('.ktb')) {
             const srcFilePath = path.join(srcDirPath, fileName)
             const module = buildModule(resolve(srcFilePath, true))
             registry[module.ref] = module
@@ -102,7 +102,7 @@ function resolve(srcFilePath, isModule) {
     const srcParentPath = path.dirname(srcFilePath)
 
     const parentPath = path.join(outDirPath, path.relative(srcDirPath, srcParentPath))
-    const fileName = srcFileName.replace('.html', '.js')
+    const fileName = srcFileName.replace(/\.html|\.ktb$/, '.js')
     const filePath = path.join(parentPath, fileName)
 
     const ref = path.relative(srcDirPath, srcFilePath)
@@ -115,8 +115,8 @@ function resolve(srcFilePath, isModule) {
         let route = path.relative(routesDirPath, srcParentPath)
         route = route.startsWith('..') ? undefined : `/${route}`
         routerImport = !!route ? routerImport : undefined
-        const isPage = !!route && srcFileName === 'page.html'
-        const isLayout = !!route && srcFileName === 'layout.html'
+        const isPage = !!route && !!srcFileName.match(/^page(\.html|\.ktb)$/)
+        const isLayout = !!route && !!srcFileName.match(/^layout(\.html|\.ktb)$/)
 
         return {
             ref,

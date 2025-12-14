@@ -1,6 +1,8 @@
 import { print } from 'esrap'
 import * as b from '../builders.js'
 
+export * from './html.js'
+
 export function createRouter(registry) {
     const routes = b.object()
     const imports = { page: [], layout: [] }

@@ -20,7 +20,7 @@ export function Selector(node, ctx) {
 
     function scope() {
         if (unscoped.length > 0) {
-            unscoped.push(b.classSelector(`drop-${ctx.state.context.hash}`))
+            unscoped.push(b.classSelector(`ktb-${ctx.state.context.hash}`))
             children.push(...unscoped)
             unscoped = []
         }

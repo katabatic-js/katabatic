@@ -1,6 +1,6 @@
-import { Signal, SignalEvent, Effect, track } from '@drop/signals'
-import { Tracker } from '@drop/signals/tracker'
-import { Client } from './client.js'
+import { Signal, SignalEvent, Effect, track } from '@katabatic/signals'
+import { Tracker } from '@katabatic/signals/tracker'
+import { AnimatedClient } from './client.js'
 
 export class EachBlock extends Map {
     constructor(anchor, getIterable, getKey, fn) {
@@ -87,6 +87,7 @@ export class EachBlock extends Map {
                     }
                 } else {
                     tail = this.#insertBlockAfter(new Block(key, item), tail)
+                    if (this.#effect) tail.runAnimate('in')
                 }
 
                 index++
@@ -113,7 +114,7 @@ export function eachBlock(anchor, getIterable, getKey, body) {
     return new EachBlock(anchor, getIterable, getKey, body).init()
 }
 
-class Block extends Client {
+class Block extends AnimatedClient {
     constructor(key, value) {
         super()
         this.key = key

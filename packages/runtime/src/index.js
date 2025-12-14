@@ -1,5 +1,5 @@
-import { Signal, SignalEvent, Boundary, track } from '@drop/signals'
-import { AttributeTracker, PropertyTracker } from '@drop/signals/tracker'
+import { Signal, SignalEvent, Boundary, track } from '@katabatic/signals'
+import { AttributeTracker, PropertyTracker } from '@katabatic/signals/tracker'
 import { Client } from './client.js'
 import { EachBlock } from './eachBlock.js'
 import { IfBlock } from './ifBlock.js'

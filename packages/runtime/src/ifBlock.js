@@ -1,4 +1,4 @@
-import { Effect } from '@drop/signals'
+import { Effect } from '@katabatic/signals'
 import { AnimatedClient } from './client.js'
 
 export class IfBlock {

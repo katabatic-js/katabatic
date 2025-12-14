@@ -1,4 +1,4 @@
-import { Effect } from '@drop/signals'
+import { Effect } from '@katabatic/signals'
 import { Animate } from './animate.js'
 
 export class Client extends Set {

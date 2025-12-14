@@ -1,13 +1,19 @@
 {
-  "name": "@drop/compiler",
-  "version": "0.0.0",
+  "name": "@katabatic/compiler",
+  "license": "MIT",
+  "version": "1.0.0",
   "type": "module",
-  "bin": {
-    "drop": "./src/bin/index.js"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katabatic-js/katabatic.git",
+    "directory": "packages/compiler"
   },
   "exports": {
 		".": {
 			"import": "./src/index.js"
+		},
+		"./router": {
+			"import": "./src/router/index.js"
 		}
 	},
   "devDependencies": {

@@ -1,8 +1,7 @@
 import path from 'path'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs'
-import { compile } from '../index.js'
-import { createRouter } from '../router/index.js'
-import { compileHtmlIndex } from '../router/html.js'
+import { compile } from '@katabatic/compiler'
+import { createRouter, compileHtmlIndex } from '@katabatic/compiler/router'
 
 export function buildModule({ src, out, ...context }) {
     const source = readFileSync(src.filePath, { encoding: 'utf8' })

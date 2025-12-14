@@ -13,9 +13,9 @@ export function Attribute(node, ctx) {
     }
     if (node.name === 'class' && node.metadata?.isScoped) {
         if (value[0].type === 'Text') {
-            value = [b.text(clx(value[0].data, `drop-${ctx.state.context.hash}`))]
+            value = [b.text(clx(value[0].data, `ktb-${ctx.state.context.hash}`))]
         } else {
-            value = [...value, b.text(` drop-${ctx.state.context.hash}`)]
+            value = [...value, b.text(` ktb-${ctx.state.context.hash}`)]
         }
     }
 

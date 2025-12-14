@@ -1,13 +1,19 @@
 {
-    "name": "@drop/runtime",
-    "version": "0.0.0",
+    "name": "@katabatic/runtime",
+    "license": "MIT",
+    "version": "1.0.0",
     "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/katabatic-js/katabatic.git",
+        "directory": "packages/runtime"
+    },
     "exports": {
-		".": {
-			"import": "./src/index.js"
-		}
-	},
+        ".": {
+            "import": "./src/index.js"
+        }
+    },
     "dependencies": {
-        "@drop/signals": "^0.0.0"
+        "@katabatic/signals": "^1.0.0"
     }
 }

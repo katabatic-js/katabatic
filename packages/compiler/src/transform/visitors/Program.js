@@ -8,7 +8,7 @@ export function Program(node, ctx) {
     const stmts2 = []
 
     // import
-    stmt = b.importSpecifier('$$', '@drop/runtime')
+    stmt = b.importSpecifier('$$', '@katabatic/runtime')
     stmts1.push(stmt)
 
     // html template

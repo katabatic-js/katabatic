@@ -1,5 +1,5 @@
 export function compileHtmlIndex(source, context) {
-    const template = '`' + source.replace('%drop.body%', '${slot.body}') + '`'
+    const template = '`' + source.replace('%katabatic.body%', '${slot.body}') + '`'
 
     return {
         ...context,

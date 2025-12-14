@@ -1,9 +1,10 @@
 {
-    "name": "drop",
+    "name": "katabatic-workspace",
     "workspaces": [
         "packages/compiler",
         "packages/runtime",
         "packages/signals",
+        "packages/katabatic",
         "examples"
     ]
 }

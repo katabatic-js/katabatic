@@ -1,7 +1,13 @@
 {
-  "name": "@drop/signals",
-  "version": "0.0.0",
+  "name": "@katabatic/signals",
+  "license": "MIT",
+  "version": "1.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katabatic-js/katabatic.git",
+    "directory": "packages/signals"
+  },
   "exports": {
 		".": {
 			"import": "./src/index.js"

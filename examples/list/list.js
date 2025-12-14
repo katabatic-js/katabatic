@@ -1,4 +1,4 @@
-import { signal } from '@drop/signals'
+import { signal } from '@katabatic/signals'
 
 export const items = signal([{ name: 'Item 1' }, { name: 'Item 2' }])
 

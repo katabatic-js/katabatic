@@ -2,6 +2,20 @@
     import './ex-item.html'
     import * as List from './list.js'
 
+    function fade(element, {duration= 1000} = {}, {direction = 'in'} = {}) {
+        return element.animate(
+            [
+                { opacity: direction === 'out' ?  1 : 0 }, // Start with opacity 0
+                { opacity: direction === 'out' ?  0 : 1 } // End with opacity 1
+            ],
+            {
+                duration, // Animation duration in milliseconds (e.g., 1000ms = 1 second)
+                easing: 'ease-in-out', // Easing function for a smoother animation
+                fill: 'forwards'
+            }
+        )
+    }
+
     export class ExList extends HTMLElement {}
 
     customElements.define('ex-list', ExList)
@@ -16,6 +30,7 @@
                 {List.items.length}
                 {#each List.items as item (item.name)}
                 <ex-item
+                    animate="{fade()}"
                     item="{item}"
                     color="{`hsla(240, 100%, ${List.items.length}0%, 50%)`}"
                 ></ex-item>

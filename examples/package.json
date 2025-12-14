@@ -1,18 +1,18 @@
 {
     "name": "examples",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "counter": "node ../packages/compiler/src/bin/index.js -root ./counter -rewriteRelativeImportExtensions true",
-        "list": "node ../packages/compiler/src/bin/index.js -root ./list -rewriteRelativeImportExtensions true",
-        "animation": "node ../packages/compiler/src/bin/index.js -root ./animation -rewriteRelativeImportExtensions true",
-        "site": "node ../packages/compiler/src/bin/index.js -root ./site -rewriteRelativeImportExtensions true"
+        "counter": "node ../packages/katabatic/src/index.js -root ./counter -rewriteRelativeImportExtensions true",
+        "list": "node ../packages/katabatic/src/index.js -root ./list -rewriteRelativeImportExtensions true",
+        "animation": "node ../packages/katabatic/bin/index.js -root ./animation -rewriteRelativeImportExtensions true",
+        "site": "node ../packages/katabatic/src/index.js -root ./site -rewriteRelativeImportExtensions true"
     },
     "dependencies": {
-        "@drop/runtime": "^0.0.0",
-        "@drop/signals": "^0.0.0"
+        "@katabatic/runtime": "^1.0.0",
+        "@katabatic/signals": "^1.0.0"
     },
     "devDependencies": {
-        "@drop/compiler": "^0.0.0"
+        "katabatic": "^1.0.0"
     }
 }
