@@ -14,7 +14,6 @@ export function Element(node, ctx) {
     function getElementId() {
         if (!elementId) {
             elementId = nextElementId(ctx)
-            console.log('ELEM')
             const stmt = b.declaration(elementId, pathStmt(ctx))
             ctx.state.init.elem.push(stmt)
         }

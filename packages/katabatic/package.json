@@ -1,7 +1,7 @@
 {
   "name": "katabatic",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "repository": {
     "type": "git",
@@ -15,6 +15,9 @@
   ],
   "bin": {
     "katabatic": "src/index.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@katabatic/compiler": "^1.0.0",

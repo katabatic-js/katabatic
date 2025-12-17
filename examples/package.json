@@ -3,10 +3,10 @@
     "version": "1.0.0",
     "type": "module",
     "scripts": {
-        "counter": "node ../packages/katabatic/src/index.js -root ./counter -rewriteRelativeImportExtensions true",
-        "list": "node ../packages/katabatic/src/index.js -root ./list -rewriteRelativeImportExtensions true",
-        "animation": "node ../packages/katabatic/bin/index.js -root ./animation -rewriteRelativeImportExtensions true",
-        "site": "node ../packages/katabatic/src/index.js -root ./site -rewriteRelativeImportExtensions true"
+        "counter": "node ../packages/katabatic/src/index.js --root ./counter -ws --rewriteRelativeImportExtensions",
+        "list": "node ../packages/katabatic/src/index.js --root ./list -ws --rewriteRelativeImportExtensions",
+        "animation": "node ../packages/katabatic/src/index.js --root ./animation -ws --rewriteRelativeImportExtensions",
+        "site": "node ../packages/katabatic/src/index.js --root ./site -ws --rewriteRelativeImportExtensions"
     },
     "dependencies": {
         "@katabatic/runtime": "^1.0.0",

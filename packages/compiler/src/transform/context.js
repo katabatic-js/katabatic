@@ -28,8 +28,6 @@ export function pathStmt(ctx, nodes) {
         subPath.push(...(Array.isArray(nodes) ? nodes : [nodes]))
     }
 
-console.log(subPath)
-
     let stmt = b.member('template', 'content')
     let fragment
     for (const node of subPath) {
