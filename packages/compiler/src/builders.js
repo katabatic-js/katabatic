@@ -179,7 +179,7 @@ export function thisExp() {
     return { type: 'ThisExpression' }
 }
 
-export function exportDec(declaration) {
+export function exp(declaration) {
     return { type: 'ExportNamedDeclaration', declaration }
 }
 
@@ -192,6 +192,10 @@ export function program(body = []) {
 }
 
 export function func(id, body = []) {
+    if (typeof id === 'string') {
+        id = { type: 'Identifier', name: id }
+    }
+
     return {
         type: 'FunctionDeclaration',
         id,
@@ -529,28 +533,6 @@ export function $name(object) {
         },
         computed: false,
         optional: false
-    }
-}
-
-export function $nameDecl(value) {
-    return {
-        type: 'ExportNamedDeclaration',
-        declaration: {
-            type: 'VariableDeclaration',
-            declarations: [
-                {
-                    type: 'VariableDeclarator',
-                    id: {
-                        type: 'Identifier',
-                        name: '$name'
-                    },
-                    init: { type: 'Literal', value }
-                }
-            ],
-            kind: 'const'
-        },
-        specifiers: [],
-        source: null
     }
 }
 
@@ -933,54 +915,6 @@ export function appendChild(object, node) {
     }
 }
 
-export function queueMicrotask(body) {
-    return {
-        type: 'ExpressionStatement',
-        expression: {
-            type: 'CallExpression',
-            callee: { type: 'Identifier', name: 'queueMicrotask' },
-            arguments: [
-                {
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    expression: false,
-                    generator: false,
-                    async: false,
-                    params: [],
-                    body: {
-                        type: 'BlockStatement',
-                        body
-                    }
-                }
-            ],
-            optional: false
-        }
-    }
-}
-
-export function connectedMoveCallback() {
-    return {
-        type: 'ExpressionStatement',
-        expression: {
-            type: 'CallExpression',
-            callee: {
-                type: 'MemberExpression',
-                object: {
-                    type: 'ThisExpression'
-                },
-                property: {
-                    type: 'Identifier',
-                    name: 'connectedMoveCallback'
-                },
-                computed: false,
-                optional: false
-            },
-            arguments: [],
-            optional: true
-        }
-    }
-}
-
 export function $dispose() {
     return {
         type: 'CallExpression',
@@ -1010,7 +944,7 @@ export function $dispose() {
     }
 }
 
-export function $lifecycle(value) {
+export function $lifecycle(value, body) {
     return {
         type: 'CallExpression',
         callee: {
@@ -1034,7 +968,21 @@ export function $lifecycle(value) {
             computed: false,
             optional: false
         },
-        arguments: [{ type: 'Literal', value }],
+        arguments: [
+            { type: 'Literal', value },
+            {
+                type: 'ArrowFunctionExpression',
+                id: null,
+                expression: false,
+                generator: false,
+                async: false,
+                params: [],
+                body: {
+                    type: 'BlockStatement',
+                    body
+                }
+            }
+        ],
         optional: false
     }
 }

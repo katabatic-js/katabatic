@@ -5,6 +5,7 @@
         "packages/runtime",
         "packages/signals",
         "packages/katabatic",
+        "packages/dev-server-hmr",
         "examples"
     ]
 }

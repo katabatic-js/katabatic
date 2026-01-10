@@ -1,0 +1,25 @@
+{
+  "name": "@katabatic/dev-server-hmr",
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katabatic-js/katabatic.git",
+    "directory": "packages/dev-server-hmr"
+  },
+  "files": ["src", "types"],
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./types/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@web/dev-server-hmr": "^0.4.1"
+  },
+  "devDependencies": {
+    "@web/dev-server-core": "^0.7.5",
+    "typescript": "^5.9.3"
+  }
+}

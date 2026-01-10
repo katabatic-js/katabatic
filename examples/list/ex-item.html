@@ -5,6 +5,23 @@
         static observedAttributes = ['color']
 
         item
+
+        constructor() {
+            super()
+            console.log('CONST')
+        }
+
+        connectedCallback() {
+            console.log('CONN')
+        }
+
+        disconnectedCallback() {
+            console.log('DISC')
+        }
+
+        connectedMoveCallback() {
+            console.log('MOVED')
+        }
     }
 </script>
 

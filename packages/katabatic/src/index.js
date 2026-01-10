@@ -3,6 +3,7 @@ import path from 'path'
 import { watch as watchDir, existsSync } from 'fs'
 import { parseArgs } from 'node:util'
 import { startDevServer } from '@web/dev-server'
+import { hmrPlugin } from '@katabatic/dev-server-hmr'
 import { walkDir } from './utils/files.js'
 import { hash } from './utils/misc.js'
 import { printHelp, withHelp } from './utils/help.js'
@@ -21,6 +22,7 @@ const options = {
     help: { type: 'boolean', short: 'h', description: 'get help' },
     watch: { type: 'boolean', short: 'w', description: 'watches the file system' },
     serve: { type: 'boolean', short: 's', description: 'starts the development server' },
+    hot: { type: 'boolean', description: 'generate code to support hot module replacement' },
     rewriteRelativeImportExtensions: {
         type: 'boolean',
         description: 'rewrite imported katabatic files extension (.html or .ktb) in .js'
@@ -35,6 +37,7 @@ const outDirPath = path.join(rootPath, args.outDir ?? '.')
 const routesDirPath = path.join(srcDirPath, args.routesDir ?? './routes')
 const hasRoutes = existsSync(routesDirPath)
 
+const hot = (args.hot || args.serve) ?? false
 const rewriteRelativeImportExtensions = args.rewriteRelativeImportExtensions ?? false
 
 if (args.help) {
@@ -93,7 +96,7 @@ function watch(registry) {
 }
 
 function serve() {
-    const plugins = []
+    const plugins = [hmrPlugin()]
 
     if (hasRoutes) {
         plugins.push(route(outDirPath))
@@ -104,7 +107,7 @@ function serve() {
             rootDir: rootPath,
             port: 3000,
             watch: true,
-            open: true,
+            open: false,
             nodeResolve: true,
             plugins
         },
@@ -143,6 +146,7 @@ function resolve(srcFilePath, isModule) {
             isLayout,
             routerImport,
             hash: moduleHash,
+            hot,
             rewriteRelativeImportExtensions,
             src: {
                 filePath: srcFilePath

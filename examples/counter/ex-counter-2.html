@@ -1,10 +1,9 @@
 <script type="module">
     import { effect } from '@katabatic/signals'
-    import './ex-counter-2.html'
 
     export class Counter extends HTMLElement {
         count = 0
-        #test = 5
+        #test = 6
 
         connectedCallback() {
             const button = this.querySelector('button')
@@ -15,14 +14,12 @@
         }
     }
 
-    customElements.define('ex-counter', Counter)
 </script>
 
 <template>
     <div>
-        <ex-counter-2></ex-counter-2>
         {#if test}
-        <button onclick="{count++}">counter is I {count} {test}</button>
+        <button onclick="{count++}">counter is BBB {count} {test}</button>
         {/if}
     </div>
     <style>

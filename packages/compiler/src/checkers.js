@@ -6,6 +6,30 @@ export function thisMember(node) {
     return node.type === 'MemberExpression' && node.object.type === 'ThisExpression'
 }
 
+export function thisAssignment(node) {
+    if (node.type === 'ExpressionStatement') {
+        node = node.expression
+    }
+
+    return (
+        node.type === 'AssignmentExpression' &&
+        node.left.type === 'MemberExpression' &&
+        node.left.object.type === 'ThisExpression'
+    )
+}
+
+export function expression(node) {
+    return node.type === 'ExpressionStatement'
+}
+
+export function superCall(node) {
+    if (node.type === 'ExpressionStatement') {
+        node = node.expression
+    }
+
+    return node.type === 'CallExpression' && node.callee.type === 'Super'
+}
+
 export function privateId(node) {
     return node.type === 'PrivateIdentifier'
 }

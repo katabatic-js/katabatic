@@ -18,6 +18,7 @@ import { EachBlock } from './visitors/EachBlock.js'
 import { CustomElement } from './visitors/CustomElement.js'
 import { AssignmentExpression } from './visitors/AssignmentExpression.js'
 import { PropertyDefinition } from './visitors/PropertyDefinition.js'
+import { PrivateIdentifier } from './visitors/PrivateIdentifier.js'
 
 const templateVisitors = {
     Template,
@@ -43,7 +44,8 @@ const scriptVisitors = {
     ImportDeclaration,
     CallExpression,
     AssignmentExpression,
-    PropertyDefinition
+    PropertyDefinition,
+    PrivateIdentifier
 }
 
 export function transform(ast, analysis, context) {

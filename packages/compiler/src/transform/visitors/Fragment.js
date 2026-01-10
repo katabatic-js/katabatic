@@ -11,7 +11,7 @@ export function Fragment(node, ctx) {
             case 'Text':
             case 'ExpressionTag':
                 textNode = child
-                ctx.visit(child, { template, analysis: ctx.state.analysis })
+                ctx.visit(child, { ...ctx.state, template })
                 break
             default:
                 finalize()

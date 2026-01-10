@@ -30,7 +30,7 @@ export function ClassBody(node, ctx) {
         stmts2.push(stmt)
     }
 
-    if (stmts2.length >= 0) {
+    if (stmts1.length >= 0 || stmts2.length >= 0) {
         return { ...node, body: [...stmts1, ...node.body, ...stmts2] }
     }
 }

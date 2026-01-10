@@ -1,4 +1,5 @@
 import * as b from '../../builders.js'
+import { $hot } from '../../hot.js'
 
 export function Program(node, ctx) {
     node = ctx.next() ?? node
@@ -23,7 +24,22 @@ export function Program(node, ctx) {
     stmts1.push(stmt)
 
     // $name
-    stmt = b.$nameDecl(node.metadata?.customElement.name ?? ctx.state.context.customElementName)
+    stmt = b.exp(
+        b.declaration(
+            '$name',
+            b.literal(node.metadata?.customElement.name ?? ctx.state.context.customElementName)
+        )
+    )
+    stmts1.push(stmt)
+
+    // $class
+    stmt = b.exp(b.declaration('$class', b.id(node.metadata?.customElement.className)))
+    stmts2.push(stmt)
+
+    // $shadowRootMode
+    stmt = b.exp(
+        b.declaration('$shadowRootMode', b.literal(ctx.state.template.metadata?.shadowRootMode))
+    )
     stmts1.push(stmt)
 
     // $set
@@ -43,6 +59,11 @@ export function Program(node, ctx) {
         stmt = b.$setDecl([b.setAttribute('node', 'attribute', 'value')])
     }
     stmts1.push(stmt)
+
+    //$hot
+    if (ctx.state.context.hot) {
+        stmts1.push($hot(node))
+    }
 
     // defineCustomElement
     if (!node.metadata?.hasDefineCustomElement) {
