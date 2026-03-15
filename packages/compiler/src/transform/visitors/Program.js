@@ -18,9 +18,8 @@ export function Program(node, ctx) {
     stmts1.push(stmt)
 
     // style
-    const css = ctx.state.template.css
-    const style = css.length >= 0 ? `<style>${ctx.state.template.css.join('')}</style>` : ''
-    stmt = b.declaration('STYLE', b.literal(style))
+    const style = ctx.state.template.style
+    stmt = b.declaration('STYLE', b.template(style))
     stmts1.push(stmt)
 
     // $name

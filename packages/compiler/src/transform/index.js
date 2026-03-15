@@ -19,6 +19,7 @@ import { CustomElement } from './visitors/CustomElement.js'
 import { AssignmentExpression } from './visitors/AssignmentExpression.js'
 import { PropertyDefinition } from './visitors/PropertyDefinition.js'
 import { PrivateIdentifier } from './visitors/PrivateIdentifier.js'
+import { TypeSelector } from './visitors/TypeSelector.js'
 
 const templateVisitors = {
     Template,
@@ -34,6 +35,7 @@ const templateVisitors = {
     IfBlock,
     EachBlock,
     Selector,
+    TypeSelector,
     ...CssTree
 }
 

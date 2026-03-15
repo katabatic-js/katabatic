@@ -1,7 +1,7 @@
 import * as b from '../../builders.js'
 
 export function Template(node, ctx) {
-    const css = []
+    const style = { text: [''], expressions: [] }
     const template = { text: [''], expressions: [] }
     const init = { elem: [], text: [], binding: [] }
     const effects = []
@@ -11,7 +11,7 @@ export function Template(node, ctx) {
 
     ctx.visit(node.fragment, {
         ...ctx.state,
-        css,
+        style,
         template,
         init,
         effects,
@@ -40,5 +40,5 @@ export function Template(node, ctx) {
     const bodyStmt = [...stmts1, ...stmts2, stmt3]
     const block = b.$block(bodyStmt)
 
-    return { type: 'TemplateMod', metadata: node.metadata, css, template, block }
+    return { type: 'TemplateMod', metadata: node.metadata, style, template, block }
 }

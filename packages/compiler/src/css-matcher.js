@@ -36,65 +36,69 @@ function matchSelectors(selectors, template) {
     if (selectors.length === 0) return false
 
     let result = false
-    walk(template, undefined, {
-        Element: (node, ctx) => {
-            ctx.next()
 
-            let scopedIdAttribute
-            let scopedClassAttribute
-            let scopedElement
+    function Visitor(node, ctx) {
+        ctx.next()
 
-            let classAttribute
+        let scopedIdAttribute
+        let scopedClassAttribute
+        let scopedElement
 
-            for (const selector of selectors) {
-                switch (selector.type) {
-                    case 'TypeSelector':
-                        if (selector.name === node.name) {
-                            classAttribute ??= node.attributes.find((a) => a.name === 'class')
-                            scopedElement = node
-                            scopedClassAttribute = classAttribute
-                            break
-                        }
-                        return
-                    case 'PseudoClassSelector':
+        let classAttribute
+
+        for (const selector of selectors) {
+            switch (selector.type) {
+                case 'TypeSelector':
+                    if (selector.name === node.name) {
                         classAttribute ??= node.attributes.find((a) => a.name === 'class')
                         scopedElement = node
                         scopedClassAttribute = classAttribute
                         break
-                    case 'IdSelector':
-                        const idAttribute = node.attributes.find((a) => a.name === 'id')
-                        if (idAttribute?.value[0].data === selector.name) {
-                            scopedIdAttribute = idAttribute
-                            break
-                        }
-                        return
-                    case 'ClassSelector':
-                        classAttribute ??= node.attributes.find((a) => a.name === 'class')
-                        const classes = classAttribute?.value[0].data.split(/\s+/)
+                    }
+                    return
+                case 'PseudoClassSelector':
+                    classAttribute ??= node.attributes.find((a) => a.name === 'class')
+                    scopedElement = node
+                    scopedClassAttribute = classAttribute
+                    break
+                case 'IdSelector':
+                    const idAttribute = node.attributes.find((a) => a.name === 'id')
+                    if (idAttribute?.value[0].data === selector.name) {
+                        scopedIdAttribute = idAttribute
+                        break
+                    }
+                    return
+                case 'ClassSelector':
+                    classAttribute ??= node.attributes.find((a) => a.name === 'class')
+                    const classes = classAttribute?.value[0].data.split(/\s+/)
 
-                        if (classes?.includes(selector.name)) {
-                            scopedClassAttribute = classAttribute
-                            break
-                        }
-                        return
-                }
+                    if (classes?.includes(selector.name)) {
+                        scopedClassAttribute = classAttribute
+                        break
+                    }
+                    return
             }
-
-            if (scopedIdAttribute) {
-                scopedIdAttribute.metadata ??= {}
-                scopedIdAttribute.metadata.isScoped = true
-            }
-            if (scopedClassAttribute) {
-                scopedClassAttribute.metadata ??= {}
-                scopedClassAttribute.metadata.isScoped = true
-            }
-            if (scopedElement) {
-                scopedElement.metadata ??= {}
-                scopedElement.metadata.isScoped = true
-            }
-
-            result = true
         }
+
+        if (scopedIdAttribute) {
+            scopedIdAttribute.metadata ??= {}
+            scopedIdAttribute.metadata.isScoped = true
+        }
+        if (scopedClassAttribute) {
+            scopedClassAttribute.metadata ??= {}
+            scopedClassAttribute.metadata.isScoped = true
+        }
+        if (scopedElement) {
+            scopedElement.metadata ??= {}
+            scopedElement.metadata.isScoped = true
+        }
+
+        result = true
+    }
+
+    walk(template, undefined, {
+        Element: Visitor,
+        CustomElement: Visitor
     })
     return result
 }
