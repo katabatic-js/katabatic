@@ -1,0 +1,14 @@
+<script type="module">
+    import { effect } from '@katabatic/signals'
+    import { log } from './log.js'
+
+    export class Binding extends HTMLElement {
+        value = 10
+    }
+
+    customElements.define('ex-binding', Binding)
+</script>
+
+<template>
+    <div bind="{log()}" val="{value}">{value}</div>
+</template>

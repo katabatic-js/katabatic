@@ -102,30 +102,6 @@ export function $$(customElement) {
         }
     }
 
-    client.getBindingProp = function (object, property, fn) {
-        if (
-            !!Object.getOwnPropertyDescriptor(object, property)?.get ||
-            !!Object.getOwnPropertyDescriptor(Object.getPrototypeOf(object), property)?.get
-        ) {
-            this.locked = true
-            fn(object[property])
-            this.locked = false
-            return true
-        }
-        return false
-    }
-
-    client.setBindingProp = function (object, property, value) {
-        if (
-            !!Object.getOwnPropertyDescriptor(object, property)?.set ||
-            !!Object.getOwnPropertyDescriptor(Object.getPrototypeOf(object), property)?.set
-        ) {
-            if (!this.locked) object[property] = value
-            return true
-        }
-        return false
-    }
-
     return client
 }
 

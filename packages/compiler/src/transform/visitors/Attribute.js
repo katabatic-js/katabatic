@@ -52,21 +52,14 @@ export function Attribute(node, ctx) {
             ])
             ctx.state.effects.push(stmt)
         } else if (bindingId) {
-            const stmt = b.$effect([
-                b.logical(
-                    '||',
-                    b.$setBindingProp(bindingId, node.name, template.expressions[0]),
-                    b.setAttribute(elementId, b.literal(node.name), template.expressions[0])
-                )
+            const stmt1 = b.$effect([
+                b.assignment(b.member(bindingId, node.name), template.expressions[0])
             ])
-            ctx.state.effects.push(stmt)
+            const stmt2 = b.$effect([
+                b.assignment(template.expressions[0], b.member(bindingId, node.name))
+            ])
 
-            const stmt2 = b.$getBindingProp(
-                bindingId,
-                node.name,
-                b.assignment(template.expressions[0], b.id('v'))
-            )
-            ctx.state.changed.push(stmt2)
+            ctx.state.effects.push(stmt1, stmt2)
         } else {
             const stmt = b.$effect([
                 b.setAttribute(elementId, b.literal(node.name), template.expressions[0])

@@ -6,6 +6,7 @@
         "counter": "node ../packages/katabatic/src/index.js --root ./counter -ws --rewriteRelativeImportExtensions",
         "list": "node ../packages/katabatic/src/index.js --root ./list -ws --rewriteRelativeImportExtensions",
         "animation": "node ../packages/katabatic/src/index.js --root ./animation -ws --rewriteRelativeImportExtensions",
+        "binding": "node ../packages/katabatic/src/index.js --root ./binding -ws --rewriteRelativeImportExtensions",
         "site": "node ../packages/katabatic/src/index.js --root ./site -ws --rewriteRelativeImportExtensions"
     },
     "dependencies": {

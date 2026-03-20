@@ -1,3 +1,3 @@
-## Counter example
+## Animation example
 
-A simple web component with reactivity.
+A web component with animations.
