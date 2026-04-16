@@ -42,7 +42,7 @@ export class Animate {
         }
     }
 
-    run(direction) {
+    play(direction) {
         if (this.direction === 'both') {
             this.#build({ direction: 'both' })
             this.#direction(direction)
@@ -53,7 +53,7 @@ export class Animate {
                 this.#build({ direction })
             }
         }
-        return this
+        return this.animation
     }
 
     dispose() {

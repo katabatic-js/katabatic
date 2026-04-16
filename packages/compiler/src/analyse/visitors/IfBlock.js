@@ -8,8 +8,8 @@ export function IfBlock(node, ctx) {
     const program = getProgram(ctx)
     const blocks = getBlocks(ctx)
     matchExpression(node.test, program, blocks)
-    
-    const hasElseif = node.alternate?.nodes.some(is.ifBlock) ?? false
+
+    const hasElseif =  node.alternate?.nodes.some(is.elseIfBlock) ?? false
 
     node.metadata ??= {}
     node.metadata.hasElseif = hasElseif

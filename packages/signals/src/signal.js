@@ -1,6 +1,6 @@
 import { track } from './effect.js'
 import { proxy } from './proxy/index.js'
-import { PropertyTracker } from './tracker.js'
+import { EventTracker, PropertyTracker } from './tracker.js'
 
 export class Signal extends EventTarget {
     constructor(parent, target) {
@@ -30,6 +30,14 @@ export class Signal extends EventTarget {
         return true
     }
 
+    track(tracker) {
+        track?.(tracker)
+    }
+
+    trackEvent(eventName) {
+        track?.(new EventTracker(this, eventName))
+    }
+
     attach(parent) {
         if (this.#parent && this.#parent !== parent) {
             throw new Error('an object cannot be inserted multipletimes in the signal tree')
@@ -53,12 +61,12 @@ export function signal(target) {
     return proxy(target)
 }
 
-function instrument(object, property) {
-    if (!Object.getOwnPropertyDescriptor(object, property)?.get) {
-        let value = object[property]
-        Object.defineProperty(object, property, {
+function instrument(signal, property) {
+    if (!Object.getOwnPropertyDescriptor(signal, property)?.get) {
+        let value = signal[property]
+        Object.defineProperty(signal, property, {
             get: () => {
-                track?.(new PropertyTracker(object, property))
+                track?.(new PropertyTracker(signal, property))
                 return value
             },
             set: (nextValue) => {
@@ -66,7 +74,7 @@ function instrument(object, property) {
                 value = nextValue
 
                 if (hasChange) {
-                    object.dispatchEvent(new SignalEvent('set', { property }))
+                    signal.dispatchEvent(new SignalEvent('set', { property }))
                 }
             }
         })

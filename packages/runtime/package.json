@@ -1,19 +1,27 @@
 {
-    "name": "@katabatic/runtime",
-    "license": "MIT",
-    "version": "1.1.0",
-    "type": "module",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/katabatic-js/katabatic.git",
-        "directory": "packages/runtime"
-    },
-    "exports": {
-        ".": {
-            "import": "./src/index.js"
-        }
-    },
-    "dependencies": {
-        "@katabatic/signals": "^1.0.0"
+  "name": "@katabatic/runtime",
+  "license": "MIT",
+  "version": "1.1.1",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katabatic-js/katabatic.git",
+    "directory": "packages/runtime"
+  },
+  "files": ["/src"],
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
     }
+  },
+  "dependencies": {
+    "@katabatic/signals": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vitest/browser": "^4.1.0",
+    "@vitest/browser-preview": "^4.1.0"
+  },
+  "scripts": {
+    "test": "vitest"
+  }
 }

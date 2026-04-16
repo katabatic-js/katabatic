@@ -3,6 +3,25 @@ export function setAsync(async) {
     ASYNC = async
 }
 
+export class EventTracker {
+    constructor(signal, eventName) {
+        this.signal = signal
+        this.eventName = eventName
+        this.effect = null
+
+        this.signal.addEventListener(eventName, this.callback)
+    }
+
+    callback = (event) => {
+        if (event.signal !== event.currentSignal) return
+        ASYNC && this.effect.async ? this.effect.schedule() : this.effect.run()
+    }
+
+    dispose() {
+        this.signal.removeEventListener(this.eventName, this.callback)
+    }
+}
+
 export class PropertyTracker {
     constructor(signal, property) {
         this.signal = signal

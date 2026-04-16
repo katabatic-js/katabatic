@@ -1,12 +1,7 @@
 import { Client } from './client.js'
 
-export function rootBlock(body) {
+export function rootBlock(fn) {
     const block = new Client()
-    body(block)
-
-    return {
-        dispose() {
-            block.dispose()
-        }
-    }
+    fn(block)
+    return block
 }

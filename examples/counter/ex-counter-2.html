@@ -13,17 +13,14 @@
             })
         }
     }
-
 </script>
 
 <template>
-    <div>
-        {#if test}
-        <button onclick="{count++}">counter is BBB {count} {test}</button>
-        {/if}
-    </div>
+    {#if test}
+    <button onclick="{count++}">counter is BBB {count} {test}</button>
+    {/if}
     <style>
-        div {
+        :host {
             display: flex;
             align-items: center;
             justify-content: center;

@@ -30,7 +30,13 @@ export function CallExpression(node, ctx) {
     }
 
     if (is.defineCustomElement(node)) {
+        const template = getTemplate(ctx)
         const name = node.arguments[0].value
+
+        template.metadata ??= {}
+        template.metadata.customElementName = name
+
         ctx.state.customElement.name = name
+        return
     }
 }

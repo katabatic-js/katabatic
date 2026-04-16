@@ -663,6 +663,21 @@ export function createElement(value) {
     }
 }
 
+export function createComment(value = '') {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: { type: 'Identifier', name: 'document' },
+            property: { type: 'Identifier', name: 'createComment' },
+            computed: false,
+            optional: false
+        },
+        arguments: [{ type: 'Literal', value }],
+        optional: false
+    }
+}
+
 export function $() {
     return {
         type: 'MemberExpression',
@@ -796,31 +811,28 @@ export function insertBefore(node, insertNode) {
     }
 
     return {
-        type: 'ExpressionStatement',
-        expression: {
-            type: 'CallExpression',
-            callee: {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
                 type: 'MemberExpression',
-                object: {
-                    type: 'MemberExpression',
-                    object: node,
-                    property: {
-                        type: 'Identifier',
-                        name: 'parentNode'
-                    },
-                    computed: false,
-                    optional: false
-                },
+                object: node,
                 property: {
                     type: 'Identifier',
-                    name: 'insertBefore'
+                    name: 'parentNode'
                 },
                 computed: false,
                 optional: false
             },
-            arguments: [insertNode, node],
+            property: {
+                type: 'Identifier',
+                name: 'insertBefore'
+            },
+            computed: false,
             optional: false
-        }
+        },
+        arguments: [insertNode, node],
+        optional: false
     }
 }
 

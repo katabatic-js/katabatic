@@ -139,6 +139,6 @@ export function shadowRootModeAttribute(node) {
     return node.type === 'Attribute' && node.name === 'shadowRootMode'
 }
 
-export function ifBlock(node) {
-    return node.type === 'IfBlock'
+export function elseIfBlock(node) {
+    return node.type === 'IfBlock' && node.elseif
 }

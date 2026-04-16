@@ -26,10 +26,12 @@ export class Effect extends Set {
                 track = null
                 add = null
                 this.teardown?.()
+                this.teardown = null
 
                 track = this.track.bind(this)
                 add = this.add.bind(this)
                 this.teardown = this.fn()
+                this.teardown = typeof this.teardown === 'function' ? this.teardown : null
             } finally {
                 track = outerTrack
                 add = outerAdd
@@ -54,9 +56,7 @@ export class Effect extends Set {
         this.add(tracker)
     }
 
-    dispose() {
-        this.fn = null
-
+    pause() {
         // dispose both trackers and nested effects / boundaries
         for (const entry of cleared(this)) {
             entry.dispose()
@@ -68,10 +68,16 @@ export class Effect extends Set {
             track = null
             add = null
             this.teardown?.()
+            this.teardown = null
         } finally {
             track = outerTrack
             add = outerAdd
         }
+    }
+
+    dispose() {
+        this.fn = null
+        this.pause()
     }
 }
 

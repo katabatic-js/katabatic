@@ -32,7 +32,7 @@ export function IfBlock(node, ctx) {
 
                 return [...stmts1, ...stmts2, stmt3]
             }
-            return blocks
+            return [...init.elem, ...blocks]
         }
     }
 
@@ -49,7 +49,11 @@ export function IfBlock(node, ctx) {
         ctx.state.blocks.push(blockStmt)
         appendText(ctx.state.template, '<!-- -->')
     } else {
-        const blockStmt = b.ifBlock(b.id('anchor'), testStmt, consequentStmt, alternateStmt)
+        const anchorId = nextElementId(ctx)
+        const anchorStmt = b.declaration(anchorId, b.insertBefore('anchor', b.createComment()))
+        const blockStmt = b.ifBlock(anchorId, testStmt, consequentStmt, alternateStmt)
+
+        ctx.state.init.elem.push(anchorStmt)
         ctx.state.blocks.push(blockStmt)
     }
 }

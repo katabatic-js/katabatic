@@ -2,7 +2,7 @@
     import './ex-item.html'
     import * as List from './list.js'
 
-    function fade(element, {duration= 1000} = {}, {direction = 'in'} = {}) {
+    function fade(element, {duration= 6000} = {}, {direction = 'in'} = {}) {
         return element.animate(
             [
                 { opacity: direction === 'out' ?  1 : 0 }, // Start with opacity 0

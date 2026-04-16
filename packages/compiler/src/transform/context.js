@@ -70,3 +70,7 @@ function position(fragment, node) {
 export function getProgram(ctx) {
     return ctx.path[0]
 }
+
+export function getTemplate(ctx) {
+    return ctx.path[0]
+}

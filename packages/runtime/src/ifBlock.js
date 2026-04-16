@@ -1,9 +1,9 @@
-import { Effect } from '@katabatic/signals'
+import { compute, Effect } from '@katabatic/signals'
 import { AnimatedClient } from './client.js'
 
 export class IfBlock {
     constructor(anchor, getCondition, concequent, alternate) {
-        this.getCondition = getCondition
+        this.getCondition = compute(getCondition)
         this.concequent = concequent
         this.alternate = alternate
         this.#headBlock = createHeadBlock(anchor)
@@ -44,36 +44,40 @@ export class IfBlock {
     }
 
     init() {
-        let previousCondition
-
-        this.#effect ??= new Effect(
+        this.#effect = new Effect(
             () => {
-                const condition = this.getCondition()
-
-                if (condition === previousCondition) return
-                previousCondition = condition
-
-                if (condition) {
-                    this.#altBlock?.runAnimate('out', () => this.#removeBlock(this.#altBlock))
+                if (this.getCondition()) {
+                    this.#altBlock?.out(() => this.#removeBlock(this.#altBlock))
                     this.#condBlock ??= this.#insertBlock(new Block(), this.concequent)
-                    if (this.#effect) this.#condBlock.runAnimate('in')
+                    if (this.#effect) this.#condBlock.in()
                 } else {
-                    this.#condBlock?.runAnimate('out', () => this.#removeBlock(this.#condBlock))
+                    this.#condBlock?.out(() => this.#removeBlock(this.#condBlock))
                     if (this.alternate) {
                         this.#altBlock ??= this.#insertBlock(new Block(), this.alternate)
-                        if (this.#effect) this.#altBlock.runAnimate('in')
+                        if (this.#effect) this.#altBlock.in()
                     }
                 }
             },
-            { orphaned: true, async: false }
+            { orphaned: true, async: true }
         ).run()
 
         return this
     }
 
+    run() {
+        this.#effect.run()
+    }
+
+    pause() {
+        this.#effect.pause()
+        this.#condBlock?.pause()
+        this.#altBlock?.pause()
+    }
+
     dispose() {
-        this.#effect?.dispose()
+        this.#effect.dispose()
         this.#condBlock?.dispose()
+        this.#altBlock?.dispose()
     }
 }
 
@@ -89,7 +93,9 @@ class Block extends AnimatedClient {
 
 function createHeadBlock(anchor) {
     const block = new Block()
-    block.anchor = anchor.previousSibling
-    block.parentAnchor = block.anchor ? undefined : anchor.parentNode
+
+    block.anchor = document.createComment('')
+    anchor.parentNode.insertBefore(block.anchor, anchor)
+
     return block
 }

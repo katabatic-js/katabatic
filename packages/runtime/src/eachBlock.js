@@ -66,39 +66,53 @@ export class EachBlock extends Map {
     }
 
     init() {
-        this.#effect ??= new Effect(() => {
-            const iterable = this.getIterable()
+        this.#effect = new Effect(
+            () => {
+                const iterable = this.getIterable()
 
-            for (const block of this.#getRemovedBlocks(iterable)) {
-                this.#removeBlock(block)
-            }
-
-            let tail = this.#head
-            let index = 0
-            for (const item of iterable) {
-                const key = this.getKey(item, index)
-                let block = this.get(key)
-
-                if (block) {
-                    if (tail.nextBlock === block) {
-                        tail = updateBlock(block, item)
-                    } else {
-                        tail = updateBlock(this.#moveBlockAfter(block, tail), item)
-                    }
-                } else {
-                    tail = this.#insertBlockAfter(new Block(key, item), tail)
-                    if (this.#effect) tail.runAnimate('in')
+                for (const block of this.#getRemovedBlocks(iterable)) {
+                    this.#removeBlock(block)
                 }
 
-                index++
-            }
-        }, { orphaned: true, async: false }).run()
+                let tail = this.#head
+                let index = 0
+                for (const item of iterable) {
+                    const key = this.getKey(item, index)
+                    let block = this.get(key)
+
+                    if (block) {
+                        if (tail.nextBlock === block) {
+                            tail = updateBlock(block, item)
+                        } else {
+                            tail = updateBlock(this.#moveBlockAfter(block, tail), item)
+                        }
+                    } else {
+                        tail = this.#insertBlockAfter(new Block(key, item), tail)
+                        if (this.#effect) tail.in()
+                    }
+
+                    index++
+                }
+            },
+            { orphaned: true, async: true }
+        ).run()
 
         return this
     }
 
+    run() {
+        this.#effect.run()
+    }
+
+    pause() {
+        this.#effect.pause()
+        for (const entry of this) {
+            entry.pause()
+        }
+    }
+
     dispose() {
-        this.#effect?.dispose()
+        this.#effect.dispose()
         for (const entry of cleared(this)) {
             entry.dispose()
         }

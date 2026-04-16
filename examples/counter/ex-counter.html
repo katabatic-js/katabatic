@@ -7,7 +7,7 @@
         #test = 5
 
         connectedCallback() {
-            const button = this.querySelector('button')
+            const button = this.shadow.querySelector('button')
 
             effect(() => {
                 button.style.color = this.count % 2 ? 'red' : 'blue'
@@ -18,15 +18,13 @@
     customElements.define('ex-counter', Counter)
 </script>
 
-<template>
-    <div>
-        <ex-counter-2></ex-counter-2>
-        {#if test}
-        <button onclick="{count++}">counter is I {count} {test}</button>
-        {/if}
-    </div>
+<template shadowRootMode="open">
+    <ex-counter-2></ex-counter-2>
+    {#if test}
+    <button onclick="{count++}">counter is I {count} {test}</button>
+    {/if}
     <style>
-        div {
+        :host {
             display: flex;
             align-items: center;
             justify-content: center;

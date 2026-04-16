@@ -1,4 +1,5 @@
 import * as b from '../../builders.js'
+import { getTemplate } from '../context.js'
 
 export function Selector(node, ctx) {
     node = CssTreeNodeFix(node, ctx)
@@ -11,6 +12,22 @@ export function Selector(node, ctx) {
                 scope()
                 children.push(child)
                 break
+            case 'PseudoClassSelector':
+                if (child.name === 'host') {
+                    const template = getTemplate(ctx)
+
+                    if (!template.metadata?.shadowRootMode) {
+                        children.push({
+                            type: 'TypeSelector',
+                            name:
+                                template.metadata?.customElementName ??
+                                ctx.state.context.customElementName
+                        })
+                    } else {
+                        children.push(child)
+                    }
+                    break
+                }
             default:
                 unscoped.push(child)
                 break
@@ -35,7 +52,7 @@ export const CssTree = {
     PseudoClassSelector: CssTreeNodeFix
 }
 
-function CssTreeNodeFix(node, ctx) {
+export function CssTreeNodeFix(node, ctx) {
     const children = node.children?.map((c) => ctx.visit(c)) ?? null
     return { ...node, children }
 }
