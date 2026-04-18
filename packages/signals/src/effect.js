@@ -45,8 +45,10 @@ export class Effect extends Set {
         if (!this.microtask) {
             this.microtask = true
             queueMicrotask(() => {
-                this.microtask = false
-                this.run()
+                if (this.microtask) {
+                    this.microtask = false
+                    this.run()
+                }
             })
         }
     }
@@ -57,6 +59,9 @@ export class Effect extends Set {
     }
 
     pause() {
+        // prevent scheduled effect from running
+        this.microtask = false
+
         // dispose both trackers and nested effects / boundaries
         for (const entry of cleared(this)) {
             entry.dispose()

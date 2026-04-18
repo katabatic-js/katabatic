@@ -3,7 +3,7 @@ import { Animate } from './animate.js'
 
 export class Client extends Set {
     effect(fn) {
-        const effect = new Effect(fn, { orphaned: true, async: true }).run()
+        const effect = new Effect(fn, { orphaned: true }).run()
         this.add(effect)
         return effect
     }

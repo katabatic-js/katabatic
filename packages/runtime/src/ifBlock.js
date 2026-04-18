@@ -46,6 +46,7 @@ export class IfBlock {
     init() {
         this.#effect = new Effect(
             () => {
+                console.log
                 if (this.getCondition()) {
                     this.#altBlock?.out(() => this.#removeBlock(this.#altBlock))
                     this.#condBlock ??= this.#insertBlock(new Block(), this.concequent)
@@ -58,7 +59,7 @@ export class IfBlock {
                     }
                 }
             },
-            { orphaned: true, async: true }
+            { orphaned: true }
         ).run()
 
         return this
