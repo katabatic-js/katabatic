@@ -20,6 +20,11 @@ export function matchExpression(expression, program, blocks) {
                         setMetadata(node)
                     }
                     break
+                case 'Property':
+                    if (parentNode.value === node) {
+                        setMetadata(node)
+                    }
+                    break
                 default:
                     setMetadata(node)
             }
