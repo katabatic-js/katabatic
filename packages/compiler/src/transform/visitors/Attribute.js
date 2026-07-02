@@ -1,6 +1,6 @@
 import * as b from '../../builders.js'
 import { clx } from '../../css.js'
-import { appendText, hasExpression } from '../../utils/template.js'
+import { appendText, hasExpression, isEmpty } from '../../utils/template.js'
 
 export function Attribute(node, ctx) {
     let value = node.value
@@ -66,7 +66,9 @@ export function Attribute(node, ctx) {
             ])
             ctx.state.effects.push(stmt)
         }
+    } else if (isEmpty(template)) {
+        appendText(ctx.state.template, ` ${node.name}`)
     } else {
-        appendText(ctx.state.template, ` ${node.name}="${template.text[0] ?? 'true'}"`)
+        appendText(ctx.state.template, ` ${node.name}="${template.text[0]}"`)
     }
 }

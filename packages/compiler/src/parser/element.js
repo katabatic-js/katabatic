@@ -34,7 +34,7 @@ export function parseElement(p) {
 
         return { type, name, attributes, fragment, start, end: p.pos }
     }
-    return { type, name, attributes, start, end: p.pos }
+    return { type, name, attributes, fragment: { type: 'Fragment', nodes: [] }, start, end: p.pos }
 }
 
 /**

@@ -128,11 +128,7 @@ export function bindAttribute(node) {
 }
 
 export function staticAttribute(node) {
-    return (
-        node.type === 'Attribute' &&
-        node.name === 'static' &&
-        (node.value === true || (node.value[0]?.type === 'Text' && node.value[0]?.data === 'true'))
-    )
+    return node.type === 'Attribute' && node.name === 'static'
 }
 
 export function shadowRootModeAttribute(node) {

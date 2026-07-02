@@ -22,12 +22,27 @@ export function parseExpressionTag(p) {
  * @param {Parser} p
  * @returns
  */
-export function parseAttributeExpressionTag(p) {
-    p.expectToken([TokenTypes.quoteBraceL, TokenTypes.doubleQuoteBraceL])
+export function parseQuotedExpressionTag(p) {
+    p.expectToken([TokenTypes.quoteBraceL])
     p.skipWhitespaces()
     const expression = parseExpression(p)
     p.skipWhitespaces()
-    p.expectToken([TokenTypes.braceRQuote, TokenTypes.braceRDoubleQuote])
+    p.expectToken([TokenTypes.braceRQuote])
+
+    return { type: 'ExpressionTag', expression }
+}
+
+/**
+ *
+ * @param {Parser} p
+ * @returns
+ */
+export function parseDoubleQuotedExpressionTag(p) {
+    p.expectToken([TokenTypes.doubleQuoteBraceL])
+    p.skipWhitespaces()
+    const expression = parseExpression(p)
+    p.skipWhitespaces()
+    p.expectToken([TokenTypes.braceRDoubleQuote])
 
     return { type: 'ExpressionTag', expression }
 }

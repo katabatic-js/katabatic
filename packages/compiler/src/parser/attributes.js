@@ -1,4 +1,4 @@
-import { parseAttributeExpressionTag } from './expression.js'
+import { parseDoubleQuotedExpressionTag, parseQuotedExpressionTag } from './expression.js'
 import { Parser } from './parser.js'
 import { TokenTypes } from './tokentype.js'
 
@@ -35,12 +35,16 @@ function parseAttribute(p) {
         let value
         switch (punctToken?.type) {
             case TokenTypes.quoteBraceL:
+                value = [parseQuotedExpressionTag(p)]
+                break
             case TokenTypes.doubleQuoteBraceL:
-                value = [parseAttributeExpressionTag(p)]
+                value = [parseDoubleQuotedExpressionTag(p)]
                 break
             case TokenTypes.quote:
+                value = [parseQuotedText(p)]
+                break
             case TokenTypes.doubleQuote:
-                value = [parseText(p)]
+                value = [parseDoubleQuotedText(p)]
                 break
             default:
                 p.raiseUnexpectedToken()
@@ -48,7 +52,7 @@ function parseAttribute(p) {
         }
         return { type: 'Attribute', name, value, start, end: p.pos }
     }
-    return { type: 'Attribute', name, value: true, start, end: p.pos }
+    return { type: 'Attribute', name, value: [], start, end: p.pos }
 }
 
 /**
@@ -56,11 +60,27 @@ function parseAttribute(p) {
  * @param {Parser} p
  * @returns
  */
-function parseText(p) {
+function parseQuotedText(p) {
     const start = p.pos
-    p.expectToken([TokenTypes.quote, TokenTypes.doubleQuote])
-    p.expectToken([TokenTypes.text])
+    p.expectToken([TokenTypes.quote])
+    p.expectToken([TokenTypes.quotedText])
     const data = p.value
-    p.expectToken([TokenTypes.quote, TokenTypes.doubleQuote])
+    p.expectToken([TokenTypes.quote])
+
+    return { type: 'Text', start, end: p.end, data }
+}
+
+/**
+ *
+ * @param {Parser} p
+ * @returns
+ */
+function parseDoubleQuotedText(p) {
+    const start = p.pos
+    p.expectToken([TokenTypes.doubleQuote])
+    p.expectToken([TokenTypes.doubleQuotedText])
+    const data = p.value
+    p.expectToken([TokenTypes.doubleQuote])
+
     return { type: 'Text', start, end: p.end, data }
 }
