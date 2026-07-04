@@ -5,7 +5,7 @@ import { parseArgs } from 'node:util'
 import { startDevServer } from '@web/dev-server'
 import { hmrPlugin } from '@katabatic/dev-server-hmr'
 import { walkDir } from './utils/files.js'
-import { hash } from './utils/misc.js'
+import { camelCase, hash } from './utils/misc.js'
 import { printHelp, withHelp } from './utils/help.js'
 import { route } from './route.js'
 import { buildIndex, buildModule, buildRouter } from './build.js'
@@ -141,6 +141,7 @@ function resolve(srcFilePath, isModule) {
             ref,
             name,
             customElementName: `${name}-${moduleHash}`,
+            customElementClassName: camelCase(name),
             route,
             isPage,
             isLayout,

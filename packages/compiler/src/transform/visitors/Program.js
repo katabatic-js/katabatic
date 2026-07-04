@@ -8,43 +8,47 @@ export function Program(node, ctx) {
     const stmts1 = []
     const stmts2 = []
 
+    if (!node.metadata?.hasCustomElementClass) {
+        const stmt = ctx.visit(b.customElement(ctx.state.context.customElementClassName))
+        stmts2.push(stmt)
+    }
+
+    if (!node.metadata?.hasDefineCustomElement) {
+        stmt = b.defineCustomElement(
+            ctx.state.context.customElementName,
+            node.metadata?.customElement.className ?? ctx.state.context.customElementClassName
+        )
+        stmts2.push(stmt)
+    }
+
     // import
     stmt = b.importSpecifier('$$', '@katabatic/runtime')
     stmts1.push(stmt)
 
     // html template
-    const template = ctx.state.template.template
-    stmt = b.declaration('TEMPLATE', b.template(template))
-    stmts1.push(stmt)
+    if (ctx.state.template?.template) {
+        const { template } = ctx.state.template
+        stmt = b.declaration('TEMPLATE', b.template(template))
+        stmts1.push(stmt)
+    }
 
     // style
-    const style = ctx.state.template.style
-    stmt = b.declaration('STYLE', b.template(style))
-    stmts1.push(stmt)
+    if (ctx.state.template?.style) {
+        const { style } = ctx.state.template
+        stmt = b.declaration('STYLE', b.template(style))
+        stmts1.push(stmt)
+    }
 
-    // $name
-    stmt = b.exp(
-        b.declaration(
-            '$name',
-            b.literal(node.metadata?.customElement.name ?? ctx.state.context.customElementName)
-        )
-    )
-    stmts1.push(stmt)
-
-    // $class
-    stmt = b.exp(b.declaration('$class', b.id(node.metadata?.customElement.className)))
-    stmts2.push(stmt)
-
-    // $shadowRootMode
-    stmt = b.exp(
-        b.declaration('$shadowRootMode', b.literal(ctx.state.template.metadata?.shadowRootMode))
-    )
-    stmts1.push(stmt)
+    //$hot
+    if (ctx.state.context.hot) {
+        const stmt = $hot({ ...node, body: [...node.body, ...stmts2] })
+        stmts2.push(stmt)
+    }
 
     // $set
     const properties = [
-        ...node.metadata?.customElement.properties,
-        ...node.metadata?.customElement.setters
+        ...(node.metadata?.customElement.properties ?? []),
+        ...(node.metadata?.customElement.setters ?? [])
     ]
     if (properties.length > 0) {
         stmt = b.$setDecl([
@@ -57,19 +61,30 @@ export function Program(node, ctx) {
     } else {
         stmt = b.$setDecl([b.setAttribute('node', 'attribute', 'value')])
     }
-    stmts1.push(stmt)
+    stmts2.push(stmt)
 
-    //$hot
-    if (ctx.state.context.hot) {
-        stmts1.push($hot(node))
-    }
-
-    // defineCustomElement
-    if (!node.metadata?.hasDefineCustomElement) {
-        stmt = b.defineCustomElement(
-            ctx.state.context.customElementName,
-            node.metadata?.customElement.className
+    // $name
+    stmt = b.exp(
+        b.declaration(
+            '$name',
+            b.literal(node.metadata?.customElement.name ?? ctx.state.context.customElementName)
         )
+    )
+    stmts2.push(stmt)
+
+    // $class
+    stmt = b.exp(
+        b.declaration(
+            '$class',
+            b.id(node.metadata?.customElement.className ?? ctx.state.context.customElementClassName)
+        )
+    )
+    stmts2.push(stmt)
+
+    // $shadowRootMode
+    if (ctx.state.template?.metadata?.shadowRootMode) {
+        const { shadowRootMode } = ctx.state.template.metadata
+        stmt = b.exp(b.declaration('$shadowRootMode', b.literal(shadowRootMode)))
         stmts2.push(stmt)
     }
 

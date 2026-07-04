@@ -6,31 +6,8 @@
         #test = 6
 
         connectedCallback() {
-            const button = this.querySelector('button')
-
-            effect(() => {
-                button.style.color = this.count % 2 ? 'red' : 'blue'
-            })
+            console.log('dd')
+           
         }
     }
 </script>
-
-<template>
-    {#if test}
-    <button onclick="{count++}">counter is BBB {count} {test}</button>
-    {/if}
-    <style>
-        :host {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        button {
-            display: block;
-            padding: 0.5rem;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-        }
-    </style>
-</template>

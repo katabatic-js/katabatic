@@ -15,9 +15,11 @@ export function Program(node, ctx) {
 
     ctx.next({ ...ctx.state, modules, customElement })
 
+    const hasCustomElementClass = node.body.some(is.customElement)
     const hasDefineCustomElement = node.body.some(is.defineCustomElement)
 
     node.metadata ??= {}
+    node.metadata.hasCustomElementClass = hasCustomElementClass
     node.metadata.hasDefineCustomElement = hasDefineCustomElement
     node.metadata.modules = modules
     node.metadata.customElement = customElement

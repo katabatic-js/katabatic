@@ -6,7 +6,8 @@ export function MethodDefinition(node, ctx) {
 
     if (node.key.name === 'constructor') {
         const program = getProgram(ctx)
-        const { properties, setters } = program.metadata?.customElement
+        const properties = program.metadata?.customElement.properties ?? []
+        const setters = program.metadata?.customElement.setters ?? []
 
         const stmt1 = b.assignment(b.$(), b.$$())
         const stmts2 = []
@@ -30,18 +31,22 @@ export function MethodDefinition(node, ctx) {
     }
 
     if (node.key.name === 'connectedCallback') {
-        const shadowRootMode = ctx.state.template.metadata?.shadowRootMode
+        const stmts = []
 
-        const stmts1 = []
-        const stmts2 = []
-        if (shadowRootMode) {
-            stmts1.push(b.assignment(b.shadow(), b.attachShadow(shadowRootMode), '??='))
+        if (ctx.state.template?.metadata?.shadowRootMode) {
+            const { shadowRootMode } = ctx.state.template.metadata
+            stmts.push(b.assignment(b.shadow(), b.attachShadow(shadowRootMode), '??='))
         }
+
+        if (ctx.state.template?.block) {
+            stmts.push(ctx.state.template.block)
+        }
+
         if (node.value.body.body.length > 0) {
-            stmts2.push(b.$boundary(node.value.body.body))
+            stmts.push(b.$boundary(node.value.body.body))
         }
 
-        const stmt = b.$lifecycle('connected', [...stmts1, ctx.state.template.block, ...stmts2])
+        const stmt = b.$lifecycle('connected', stmts)
 
         return {
             ...node,

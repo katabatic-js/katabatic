@@ -1,4 +1,5 @@
 import { walk } from 'zimmerframe'
+import * as b from '../builders.js'
 import { Program } from './visitors/Program.js'
 import { Identifier } from './visitors/Identifier.js'
 import { ExpressionTag } from './visitors/ExpressionTag.js'
@@ -51,6 +52,10 @@ const scriptVisitors = {
 }
 
 export function transform(ast, analysis, context) {
-    const template = walk(ast.template, { analysis, context }, templateVisitors)
-    return walk(ast.script.content, { analysis, template, context }, scriptVisitors)
+    let template
+    
+    if (ast.template) {
+        template = walk(ast.template, { analysis, context }, templateVisitors)
+    }
+    return walk(ast.script?.content ?? b.program(), { analysis, template, context }, scriptVisitors)
 }

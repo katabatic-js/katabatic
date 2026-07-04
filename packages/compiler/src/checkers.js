@@ -62,6 +62,14 @@ export function querySelector(node) {
     )
 }
 
+export function customElement(node) {
+    if (node.type === 'ExportNamedDeclaration') {
+        node = node.declaration
+    }
+
+    return node.type === 'ClassDeclaration'
+}
+
 export function defineCustomElement(node) {
     if (node.type === 'ExpressionStatement') {
         node = node.expression

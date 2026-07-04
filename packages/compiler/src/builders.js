@@ -460,6 +460,24 @@ export function includes(object, value) {
     }
 }
 
+export function customElement(name) {
+    return {
+        type: 'ClassDeclaration',
+        id: {
+            type: 'Identifier',
+            name
+        },
+        superClass: {
+            type: 'Identifier',
+            name: 'HTMLElement'
+        },
+        body: {
+            type: 'ClassBody',
+            body: []
+        }
+    }
+}
+
 export function defineCustomElement(elementName, className) {
     return {
         type: 'ExpressionStatement',

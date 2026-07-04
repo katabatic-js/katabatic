@@ -34,6 +34,7 @@ export function matchSelector(selector, template) {
 
 function matchSelectors(selectors, template) {
     if (selectors.length === 0) return false
+    if (!template) return false
 
     let result = false
 

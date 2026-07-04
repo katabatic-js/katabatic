@@ -1,7 +1,7 @@
 import { walk } from 'zimmerframe'
 
 export function matchExpression(expression, program, blocks) {
-    let customElement = program.metadata?.customElement
+    let customElement = program?.metadata?.customElement
 
     walk(expression, undefined, {
         Identifier(node, ctx) {
@@ -34,13 +34,13 @@ export function matchExpression(expression, program, blocks) {
     function setMethodMetadata(node) {
         node.metadata ??= {}
 
-        if (customElement.methods.includes(node.name)) {
+        if (customElement?.methods.includes(node.name)) {
             node.metadata.isPrivate = false
             node.metadata.isMethod = true
             return
         }
 
-        if (customElement.private.methods.includes(node.name)) {
+        if (customElement?.private.methods.includes(node.name)) {
             node.metadata.isPrivate = true
             node.metadata.isMethod = true
             return
@@ -55,13 +55,13 @@ export function matchExpression(expression, program, blocks) {
             return
         }
 
-        if (customElement.properties.includes(node.name)) {
+        if (customElement?.properties.includes(node.name)) {
             node.metadata.isPrivate = false
             node.metadata.isProperty = true
             return
         }
 
-        if (customElement.private.properties.includes(node.name)) {
+        if (customElement?.private.properties.includes(node.name)) {
             node.metadata.isPrivate = true
             node.metadata.isProperty = true
             return

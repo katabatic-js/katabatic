@@ -10,7 +10,7 @@ export function getTemplate(ctx) {
 
 export function getProgram(ctx) {
     const root = ctx.path[0]
-    return root.script.content
+    return root.script?.content
 }
 
 export function getScript(ctx) {
