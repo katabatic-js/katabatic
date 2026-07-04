@@ -88,15 +88,13 @@ export function ifBlock(anchor, getCondition, concequent, alternate) {
 
 class Block extends AnimatedClient {
     get nextNode() {
-        return this.anchor?.nextSibling ?? this.parentAnchor.firstChild
+        return this.anchor?.nextSibling
     }
 }
 
 function createHeadBlock(anchor) {
     const block = new Block()
-
     block.anchor = document.createComment('')
     anchor.parentNode.insertBefore(block.anchor, anchor)
-
     return block
 }

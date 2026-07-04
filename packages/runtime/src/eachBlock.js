@@ -138,8 +138,6 @@ class Block extends AnimatedClient {
 
     /** @type {Node} */
     anchor
-    /** @type {Node} */
-    parentAnchor
 
     setValue(nextValue) {
         const hasChange = this.value !== nextValue
@@ -181,14 +179,14 @@ class Block extends AnimatedClient {
     }
 
     get nextNode() {
-        return this.anchor?.nextSibling ?? this.parentAnchor.firstChild
+        return this.anchor?.nextSibling
     }
 }
 
 function createHeadBlock(anchor) {
     const block = new Block()
-    block.anchor = anchor.previousSibling
-    block.parentAnchor = block.anchor ? undefined : anchor.parentNode
+    block.anchor = document.createComment('')
+    anchor.parentNode.insertBefore(block.anchor, anchor)
     return block
 }
 
