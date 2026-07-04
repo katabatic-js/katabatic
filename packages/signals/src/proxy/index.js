@@ -5,6 +5,7 @@ import { ArrayInstrumentation } from './array.js'
 
 export function proxy(object, parent) {
     if (typeof object !== 'object' || object === null) return object
+    if (object.constructor !== Object && object.constructor !== Array) return object
 
     const proxy = object.$proxy
     if (!proxy) {

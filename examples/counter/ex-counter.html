@@ -4,7 +4,7 @@
 
     export class Counter extends HTMLElement {
         count = 0
-        #test = 5
+        #test = new Map()
         stuff = null
 
         connectedCallback() {
@@ -16,6 +16,7 @@
         }
         print({count}) {
             console.log(count)
+            this.#test.set('aa', count)
         }
     }
 
@@ -27,7 +28,7 @@
     efef {count}
 
     {#if test}
-    <button onclick="{count++}" hello="efe">counter is I {count} {test}</button>
+    <button onclick="{count++}" hello="efe">counter is I {count} {test.get('aa')}</button>
     <button onclick="{print({count})}" hello="efe">test</button>
     {/if}
 
