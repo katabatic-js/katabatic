@@ -14,7 +14,7 @@
                 button.style.color = this.count % 2 ? 'red' : 'blue'
             })
         }
-        print({count}) {
+        print({ count }) {
             console.log(count)
             this.#test.set('aa', count)
         }
@@ -25,7 +25,6 @@
 
 <template shadowRootMode="open">
     <ex-counter-2></ex-counter-2>
-    
 
     {#if test}
     <button onclick="{count++}" hello="efe">counter is I {count} {test.get('aa')}</button>

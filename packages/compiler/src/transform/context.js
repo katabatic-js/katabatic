@@ -58,10 +58,10 @@ function position(fragment, node) {
             (nodes[i - 1]?.type === 'ExpressionTag' || nodes[i - 1]?.type === 'Text')
         ) {
             // Text and ExpressionTag siblings are collapsed in one node in the html template
-            continue
+        } else {
+            position++
         }
 
-        position++
         if (nodes[i] === node) break
     }
     return position
