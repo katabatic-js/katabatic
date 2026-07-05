@@ -1,9 +1,9 @@
 import { print } from 'esrap'
-import { append } from '../../../utils/misc.js'
+import { appendText } from '../../../utils/template.js'
 
 export function Script(node, ctx) {
     node = ctx.next() ?? node
-    
+
     const { code } = print(node.content)
-    append(ctx.state.text, `<script type="module">${code}</script>`)
+    appendText(ctx.state.template, `<script type="module">${code}</script>`)
 }

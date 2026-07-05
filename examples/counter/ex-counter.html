@@ -5,7 +5,7 @@
     export class Counter extends HTMLElement {
         count = 0
         #test = new Map()
-        stuff = null
+        stuff
 
         connectedCallback() {
             const button = this.shadow.querySelector('button')
@@ -25,11 +25,11 @@
 
 <template shadowRootMode="open">
     <ex-counter-2></ex-counter-2>
-    efef {count}
+    
 
     {#if test}
     <button onclick="{count++}" hello="efe">counter is I {count} {test.get('aa')}</button>
-    <button onclick="{print({count})}" hello="efe">test</button>
+    <button onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
     {/if}
 
     <svg

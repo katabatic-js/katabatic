@@ -29,10 +29,19 @@ export function binary(operator, left, right) {
     }
 }
 
-export function template({ text, expressions }) {
+export function template({ text, expressions }, options) {
     if (text.length === expressions.length) {
         // template literals must start and end with a text
         text.push('')
+    }
+
+    if (options?.pretty) {
+        expressions = expressions.map((left) => ({
+            type: 'LogicalExpression',
+            left,
+            operator: '??',
+            right: { type: 'Literal', value: '' }
+        }))
     }
 
     const quasis = text.map((raw) => ({

@@ -1,12 +1,8 @@
-import * as b from '../../../builders.js'
-
 export function Template(node, ctx) {
-    const text = ['']
-    const expressions = []
+    const template = { text: [''], expressions: [] }
     const blocks = []
 
-    ctx.visit(node.fragment, { ...ctx.state, text, expressions, blocks })
+    ctx.visit(node.fragment, { ...ctx.state, template, blocks })
 
-    const template = b.template({ text, expressions })
     return { type: 'TemplateMod', template, blocks }
 }

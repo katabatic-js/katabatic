@@ -1,5 +1,5 @@
-import { append } from '../../../utils/misc.js'
+import { appendText } from '../../../utils/template.js'
 
 export function Text(node, ctx) {
-    append(ctx.state.text, node.data)
+    appendText(ctx.state.template, node.data)
 }

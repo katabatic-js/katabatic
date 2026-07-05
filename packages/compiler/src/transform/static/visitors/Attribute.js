@@ -1,5 +1,5 @@
 import * as b from '../../../builders.js'
-import { append } from '../../../utils/misc.js'
+import { appendText } from '../../../utils/template.js'
 import { clx } from '../../../css.js'
 
 export function Attribute(node, ctx) {
@@ -19,9 +19,12 @@ export function Attribute(node, ctx) {
         }
     }
 
-    append(ctx.state.text, ` ${node.name}="`)
-    for (const val of value) {
-        ctx.visit(val)
+    appendText(ctx.state.template, ` ${node.name}`)
+    if (value.length > 0) {
+        appendText(ctx.state.template, `="`)
+        for (const val of value) {
+            ctx.visit(val)
+        }
+        appendText(ctx.state.template, `"`)
     }
-    append(ctx.state.text, `"`)
 }

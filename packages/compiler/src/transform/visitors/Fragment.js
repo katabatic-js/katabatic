@@ -28,7 +28,7 @@ export function Fragment(node, ctx) {
             ctx.state.init.text.push(textStmt)
 
             const effectStmt = b.$effect([
-                b.assignment(b.textContent(textId), b.template(template))
+                b.assignment(b.textContent(textId), b.template(template, { pretty: true }))
             ])
             ctx.state.effects.push(effectStmt)
 
