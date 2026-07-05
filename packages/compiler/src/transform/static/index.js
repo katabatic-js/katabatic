@@ -13,6 +13,7 @@ import { CssTree, Selector } from '../visitors/Selector.js'
 import { CallExpression } from '../visitors/CallExpression.js'
 import { IfBlock } from './visitors/IfBlock.js'
 import { EachBlock } from './visitors/EachBlock.js'
+import { Identifier } from './visitors/Identifier.js'
 
 const templateVisitors = {
     Attribute,
@@ -21,6 +22,7 @@ const templateVisitors = {
     Text,
     ExpressionTag,
     Template,
+    Identifier,
     Style,
     Script,
     CallExpression,

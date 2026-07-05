@@ -45,6 +45,8 @@ export function matchExpression(expression, program, blocks) {
             node.metadata.isMethod = true
             return
         }
+
+        node.metadata.isData = true
     }
 
     function setMetadata(node) {
@@ -66,5 +68,7 @@ export function matchExpression(expression, program, blocks) {
             node.metadata.isProperty = true
             return
         }
+
+        node.metadata.isData = true
     }
 }

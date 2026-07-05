@@ -1,20 +1,20 @@
 <script type="module">
     export function load(ctx, data) {
-        return { ...data, pageId: ctx.params.id, names: ['guill', 'bob', null] }
+        return { ...data, pageId: ctx.params.id, names: ['guill', 'bob', null], profile: {age: 34} }
     }
 </script>
 
 <template static>
     <article>
-        <span>{data.welcome} page {data.pageId} </span>
-        {#if data.pageId === '1'}
+        <span>{welcome} page {pageId} {profile.age}</span>
+        {#if pageId === '1'}
         <span> [ONE]</span>
-        {:else if data.pageId === '2'}
+        {:else if pageId === '2'}
         <span> [TWO]</span>
         {:else}
         <span> [ANY]</span>
         {/if}
-        {#each data.names as name}
+        {#each names as name}
         <p>{name}</p>
         {/each}
     </article>

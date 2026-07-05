@@ -9,14 +9,15 @@ export function EachBlock(node, ctx) {
 
     const blockId = nextBlockId(ctx)
     const resultId = b.id('_result')
-    const block = b.func(blockId, [
+    const expressionStmt = ctx.visit(node.expression)
+    const bodyStmt = [b.assignment(resultId, b.template(template), '+=')]
+
+    const blockStmt = b.func(blockId, [
         b.declaration(resultId, b.literal(''), 'let'),
-        b.forStmt(node.context, node.expression, [
-            b.assignment(resultId, b.template(template), '+=')
-        ]),
+        b.forStmt(node.context, expressionStmt, bodyStmt),
         b.returnStmt(resultId)
     ])
 
-    ctx.state.blocks.push(block)
+    ctx.state.blocks.push(blockStmt)
     appendExpression(ctx.state.template, b.call(blockId))
 }

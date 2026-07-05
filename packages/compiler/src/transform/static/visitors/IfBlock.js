@@ -3,24 +3,23 @@ import { appendExpression } from '../../../utils/template.js'
 import { nextBlockId } from '../../context.js'
 
 export function IfBlock(node, ctx) {
-    const template = { text: [''], expressions: [] }
+    function branchStmt(node) {
+        if (node) {
+            const template = { text: [''], expressions: [] }
 
-    ctx.visit(node.consequent, { ...ctx.state, template })
-    const stmt1 = b.returnStmt(b.template(template))
-
-    let stmt2
-    if (node.alternate) {
-        const template = { text: [''], expressions: [] }
-
-        ctx.visit(node.alternate, { ...ctx.state, template })
-        stmt2 = b.returnStmt(b.template(template))
-    } else {
-        stmt2 = b.returnStmt(b.literal(''))
+            ctx.visit(node, { ...ctx.state, template })
+            return b.returnStmt(b.template(template))
+        }
+        return b.returnStmt(b.literal(''))
     }
 
-    const blockId = nextBlockId(ctx)
-    const block = b.func(blockId, [b.ifStmt(node.test, [stmt1]), stmt2])
+    const testStmt = ctx.visit(node.test)
+    const consequentStmt = branchStmt(node.consequent)
+    const alternateStmt = branchStmt(node.alternate)
 
-    ctx.state.blocks.push(block)
+    const blockId = nextBlockId(ctx)
+    const blockStmt = b.func(blockId, [b.ifStmt(testStmt, [consequentStmt]), alternateStmt])
+
+    ctx.state.blocks.push(blockStmt)
     appendExpression(ctx.state.template, b.call(blockId))
 }
