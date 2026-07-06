@@ -21,7 +21,7 @@ export function Attribute(node, ctx) {
 
     const template = { text: [''], expressions: [] }
     for (const val of value) {
-        ctx.visit(val, { ...ctx.state, template })
+        ctx.visit(val, { ...ctx.state, template, pretty: false })
     }
 
     if (hasExpression(template)) {

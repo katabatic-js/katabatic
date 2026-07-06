@@ -79,7 +79,8 @@ export async function route(path) {
 function load(modules, context) {
     const data = []
     for (let i = 0; i < modules.length; i++) {
-        data.push(modules[i].load?.(context, { ...data[i - 1] }) ?? { ...data[i - 1] })
+        const parentData = { ...data[i - 1] }
+        data.push(modules[i].load?.(parentData, context) ?? parentData)
     }
     return Promise.all(data)
 }

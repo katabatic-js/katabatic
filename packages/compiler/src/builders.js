@@ -1,3 +1,5 @@
+import { hasExpression, hasOnlyExpression } from './utils/template.js'
+
 export function declaration(id, init, kind = 'const') {
     if (typeof id === 'string') {
         id = { type: 'Identifier', name: id }
@@ -29,19 +31,18 @@ export function binary(operator, left, right) {
     }
 }
 
-export function template({ text, expressions }, options) {
-    if (text.length === expressions.length) {
-        // template literals must start and end with a text
-        text.push('')
+export function template(template) {
+    if (hasOnlyExpression(template)) {
+        return template.expressions[0]
     }
 
-    if (options?.pretty) {
-        expressions = expressions.map((left) => ({
-            type: 'LogicalExpression',
-            left,
-            operator: '??',
-            right: { type: 'Literal', value: '' }
-        }))
+    if (!hasExpression(template)) {
+        return { type: 'Literal', value: template.text[0] }
+    }
+
+    const { text, expressions } = template
+    if (text.length === expressions.length) {
+        text.push('') // template literals must start and end with a text
     }
 
     const quasis = text.map((raw) => ({
@@ -65,7 +66,7 @@ export function assignment(left, right, operator = '=') {
     }
 }
 
-export function member(object, property) {
+export function member(object, property, { optional = false } = {}) {
     if (typeof object === 'string') {
         object = { type: 'Identifier', name: object }
     }
@@ -79,7 +80,7 @@ export function member(object, property) {
         object,
         property,
         computed: false,
-        optional: false
+        optional
     }
 }
 
@@ -169,8 +170,8 @@ export function property(key, value) {
     return { type: 'Property', key, value }
 }
 
-export function object() {
-    return { type: 'ObjectExpression', properties: [] }
+export function object(properties = []) {
+    return { type: 'ObjectExpression', properties }
 }
 
 export function id(name, isPrivate = false) {
@@ -225,8 +226,8 @@ export function array(elements) {
     return { type: 'ArrayExpression', elements }
 }
 
-export function call(callee) {
-    return { type: 'CallExpression', callee, arguments: [], optional: false }
+export function call(callee, args = [], { optional = false } = {}) {
+    return { type: 'CallExpression', callee, arguments: args, optional }
 }
 
 export function ifStmt(test, consequent, alternate) {
@@ -1303,12 +1304,14 @@ export function render(body = []) {
         async: false,
         params: [
             {
-                type: 'Identifier',
-                name: 'data'
+                type: 'AssignmentPattern',
+                left: { type: 'Identifier', name: 'data' },
+                right: { type: 'ObjectExpression', properties: [] }
             },
             {
-                type: 'Identifier',
-                name: 'slot'
+                type: 'AssignmentPattern',
+                left: { type: 'Identifier', name: 'slot' },
+                right: { type: 'ObjectExpression', properties: [] }
             }
         ],
         body: {

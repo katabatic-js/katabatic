@@ -1,10 +1,13 @@
 <script type="module">
-    export function load(ctx, data) {
+    import '../../../app-component.html'
+
+    export function load(data, ctx) {
         return { ...data, pageId: ctx.params.id, names: ['guill', 'bob', null], profile: {age: 34} }
     }
 </script>
 
 <template static>
+    <app-component prop="test" prop2="{pageId}"></app-component>
     <article>
         <span>{welcome} page {pageId} {profile.age}</span>
         {#if pageId === '1'}

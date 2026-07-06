@@ -14,10 +14,13 @@ import { CallExpression } from '../visitors/CallExpression.js'
 import { IfBlock } from './visitors/IfBlock.js'
 import { EachBlock } from './visitors/EachBlock.js'
 import { Identifier } from './visitors/Identifier.js'
+import { CustomElement } from './visitors/CustomElement.js'
+import { ImportDeclaration } from '../visitors/ImportDeclaration.js'
 
 const templateVisitors = {
     Attribute,
     Element,
+    CustomElement,
     SlotElement,
     Text,
     ExpressionTag,
@@ -34,7 +37,8 @@ const templateVisitors = {
 }
 
 const scriptVisitors = {
-    Program
+    Program,
+    ImportDeclaration
 }
 
 export function transform(ast, analysis, context) {
