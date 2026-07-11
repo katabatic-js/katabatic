@@ -1,115 +1,176 @@
 import { track } from '../effect.js'
 import { SignalEvent } from '../signal.js'
-import { PropertyTracker, Tracker } from '../tracker.js'
-import { detatch, proxy } from './index.js'
+import { EventTracker } from '../tracker.js'
+import { proxy, unproxy } from './index.js'
 
-export class ArrayInstrumentation {
-    constructor(signal, target) {
-        this.signal = signal
-        this.target = target
-    }
-
+export class ArrayHandler {
     signal
-    target;
+    proxy
+    instrumentation
 
-    [Symbol.iterator] = () => this.iterator(this.target[Symbol.iterator]())
-    values = () => this.iterator(this.target.values())
-    entries = () => this.iterator(this.target.entries(), true)
+    get(target, prop, receiver) {
+        if (prop === 'addEventListener') return this.signal.addEventListener.bind(this.signal)
+        if (prop === 'removeEventListener') return this.signal.removeEventListener.bind(this.signal)
+        if (prop === 'snapshot') return () => structuredClone(target)
+        if (prop === '$proxy') return this.proxy
+        if (prop === '$target') return target
 
-    at = (i) => {
-        track?.(new PropertyTracker(this.signal, i))
-        return this.target.at(i)
+        const instrument = instrumentation(prop)
+        return instrument(Reflect.get(target, prop, receiver), target, this.signal)
     }
+    set(target, property, nextValue, receiver) {
+        nextValue = unproxy(nextValue)
+        const value = target[property]
+        const result = Reflect.set(target, property, nextValue, receiver)
 
-    forEach = (fn) => {
-        track?.(new Tracker(this.signal))
-        this.target.forEach((v, i, a) => fn(proxy(v, this.signal), i, a))
-    }
-
-    map = (fn) => {
-        track?.(new Tracker(this.signal))
-        return this.target.map((v, i, a) => fn(proxy(v, this.signal), i, a))
-    }
-
-    reduce = (fn, i) => {
-        track?.(new Tracker(this.signal))
-        return this.target.reduce((p, v, i, a) => fn(p, proxy(v, this.signal), i, a), i)
-    }
-
-    reduceRight = (fn, i) => {
-        track?.(new Tracker(this.signal))
-        return this.target.reduceRight((p, v, i, a) => fn(p, proxy(v, this.signal), i, a), i)
-    }
-
-    push = (...items) => {
-        const result = this.target.push(...items)
-        if (result > 0) {
-            this.signal.dispatchEvent(new SignalEvent('push', { items }))
-            this.signal.dispatchEvent(new SignalEvent('change'))
+        if (result && value !== nextValue) {
+            this.signal.dispatchEvent(new SignalEvent('changed'))
         }
         return result
     }
+    deleteProperty(target, property) {
+        const hasPreviousValue = Object.hasOwn(target, property)
+        const result = Reflect.deleteProperty(target, property)
 
-    pop = () => {
-        const item = this.target.pop()
-        if (item !== undefined) {
-            detatch(item)
-
-            this.signal.dispatchEvent(new SignalEvent('pop'))
-            this.signal.dispatchEvent(new SignalEvent('change'))
+        if (result && hasPreviousValue) {
+            this.signal.dispatchEvent(new SignalEvent('changed'))
         }
-        return item
+        return result
+    }
+}
+
+function instrumentation(method) {
+    switch (method) {
+        case [Symbol.iterator]:
+        case 'values':
+            return Instrumentation.callIteratorAccessor
+        case 'entries':
+            return Instrumentation.callEntryIteratorAccessor
+        case 'sort':
+            return Instrumentation.callABCallbackMutation
+        case 'push':
+        case 'pop':
+        case 'shift':
+        case 'unshift':
+            return Instrumentation.callLengthMutation
+        case 'copyWith':
+        case 'fill':
+        case 'reverse':
+        case 'splice':
+            return Instrumentation.callMutation
+        case 'every':
+        case 'forEach':
+        case 'flatMap':
+        case 'filter':
+        case 'find':
+        case 'findIndex':
+        case 'findLast':
+        case 'findLastIndex':
+        case 'map':
+        case 'some':
+            return Instrumentation.callVIACallbackAccessor
+        case 'reduce':
+        case 'reduceRight':
+            return Instrumentation.callPVIACallbackAccessor
+        case 'toSorted':
+            return Instrumentation.callABCallbackAccessor
+        case 'at':
+        case 'concat':
+        case 'flat':
+        case 'includes':
+        case 'indexOf':
+        case 'join':
+        case 'keys':
+        case 'lastIndexOf':
+        case 'toLocaleString':
+        case 'toLocaleString':
+        case 'toReversed':
+        case 'toSpliced':
+        case 'toString':
+        case 'with':
+            return Instrumentation.callAccessor
     }
 
-    shift = () => {
-        const item = this.target.shift()
-        if (item !== undefined) {
-            detatch(item)
-
-            this.signal.dispatchEvent(new SignalEvent('shift'))
-            this.signal.dispatchEvent(new SignalEvent('change'))
-        }
-        return item
+    //fallback to property access
+    return (value, _, signal) => {
+        track(() => new EventTracker(signal, 'changed'))
+        return proxy(value)
     }
+}
 
-    unshift = (...items) => {
-        const length = this.target.unshift(...items)
-        if (items.length > 0) {
-            this.signal.dispatchEvent(new SignalEvent('unshift', { items }))
-            this.signal.dispatchEvent(new SignalEvent('change'))
+const Instrumentation = {
+    callAccessor(value, target, signal) {
+        return (...args) => {
+            track(() => new EventTracker(signal, 'changed'))
+            return value.apply(target, unproxy(args))
         }
-        return length
-    }
+    },
 
-    splice = (start, deleteCount, ...items) => {
-        const deleted = this.target.splice(start, deleteCount, ...items)
-        if (deleted.length > 0 || items?.length > 0) {
-            deleted.forEach((i) => detatch(i))
-
-            this.signal.dispatchEvent(new SignalEvent('splice', { start, deleteCount }))
-            this.signal.dispatchEvent(new SignalEvent('change'))
-        }
-        return deleted
-    }
-
-    reverse = () => {
-        const self = this.target.reverse()
-        if (this.target.size > 1) {
-            this.signal.dispatchEvent(new SignalEvent('reverse'))
-            this.signal.dispatchEvent(new SignalEvent('change'))
-        }
-        return self
-    };
-
-    *iterator(iter, isEntries = false) {
-        track?.(new Tracker(this.signal))
-        for (let item of iter) {
-            if (isEntries) {
-                item[1] = proxy(item[1], this.signal)
-            } else {
-                item = proxy(item, this.signal)
+    callIteratorAccessor(value, target, signal) {
+        return function* () {
+            track(() => new EventTracker(signal, 'changed'))
+            for (let item of value.apply(target)) {
+                yield proxy(item, signal)
             }
-            yield item
+        }
+    },
+
+    callEntryIteratorAccessor(value, target, signal) {
+        return function* () {
+            track(() => new EventTracker(signal, 'changed'))
+            for (let entry of value.apply(target)) {
+                yield [entry[0], proxy(entry[1], signal)]
+            }
+        }
+    },
+
+    callVIACallbackAccessor(value, target, signal) {
+        return (fn, t) => {
+            track(() => new EventTracker(signal, 'changed'))
+            return value.call(target, (v, i, a) => fn(proxy(v), i, a), t)
+        }
+    },
+
+    callPVIACallbackAccessor(value, target, signal) {
+        return (fn, i) => {
+            track(() => new EventTracker(signal, 'changed'))
+            return value.call(target, (p, v, i, a) => fn(p, proxy(v), i, a), i)
+        }
+    },
+
+    callABCallbackAccessor(value, target, signal) {
+        return (fn) => {
+            track(() => new EventTracker(signal, 'changed'))
+            return value.call(target, (a, b) => fn(proxy(a), proxy(b)))
+        }
+    },
+
+    callMutation(value, target, signal) {
+        return (...args) => {
+            const result = value.apply(target, unproxy(args))
+            signal.dispatchEvent(new SignalEvent('changed'))
+            return result
+        }
+    },
+
+    callLengthMutation(value, target, signal) {
+        return (...args) => {
+            const previousLength = target.length
+            const result = value.apply(target, unproxy(args))
+            const length = target.length
+
+            if (length !== previousLength) {
+                signal.dispatchEvent(new SignalEvent('changed'))
+            }
+            return result
+        }
+    },
+
+    callABCallbackMutation(value, target, signal) {
+        return (fn) => {
+            const result = value.call(target, (a, b) => fn(proxy(a), proxy(b)))
+            signal.dispatchEvent(new SignalEvent('changed'))
+            return result
         }
     }
 }

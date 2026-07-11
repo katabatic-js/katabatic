@@ -3,50 +3,26 @@ import { proxy } from './proxy/index.js'
 import { EventTracker, PropertyTracker } from './tracker.js'
 
 export class Signal extends EventTarget {
-    constructor(parent, target) {
+    constructor(target) {
         super()
-        this.#parent = parent ?? null
-        this.#target = target ?? this
+        this.#target = target
 
-        if (this.constructor.observedProperties) {
-            let properties = this.constructor.observedProperties
-            properties = Array.isArray(properties) ? properties : [properties]
-
-            for (const property of properties) {
-                instrument(this, property)
-            }
-        }
+        instrument(this, this.constructor.observedProperties)
     }
 
-    #parent
     #target
 
-    dispatchEvent(event) {
-        event.signal ??= this.#target
-        event.currentSignal = this.#target
-
-        super.dispatchEvent(event)
-        this.#parent?.dispatchEvent(event)
-        return true
+    get target() {
+        return this.#target
     }
 
-    track(tracker) {
-        track?.(tracker)
+    dispatchEvent(event) {
+        event.signalTarget = this.#target ?? this
+        return super.dispatchEvent(event)
     }
 
     trackEvent(eventName) {
-        track?.(new EventTracker(this, eventName))
-    }
-
-    attach(parent) {
-        if (this.#parent && this.#parent !== parent) {
-            throw new Error('an object cannot be inserted multipletimes in the signal tree')
-        }
-        this.#parent = parent
-    }
-
-    detatch() {
-        this.#parent = null
+        track(() => new EventTracker(this, eventName))
     }
 }
 
@@ -57,24 +33,29 @@ export class SignalEvent extends Event {
     }
 }
 
-export function signal(target) {
-    return proxy(target)
+export function signal(object) {
+    return proxy(object)
 }
 
-function instrument(signal, property) {
-    if (!Object.getOwnPropertyDescriptor(signal, property)?.get) {
-        let value = signal[property]
+function instrument(signal, properties = []) {
+    for (const property of properties) {
+        if (property in signal) {
+            // do not override existing properties.
+            // since instrument is clalled in super(), instance properties are not defined yet
+            // and this will match getters and setters on the prototype chain.
+            throw new Error(`Cannot observe property: ${property}`)
+        }
+
+        let value
         Object.defineProperty(signal, property, {
             get: () => {
-                track?.(new PropertyTracker(signal, property))
+                track(() => new PropertyTracker(signal, property))
                 return value
             },
             set: (nextValue) => {
-                const hasChange = value !== nextValue
-                value = nextValue
-
-                if (hasChange) {
-                    signal.dispatchEvent(new SignalEvent('set', { property }))
+                if (nextValue !== value) {
+                    value = nextValue
+                    signal.dispatchEvent(new SignalEvent('propertyChanged', { property }))
                 }
             }
         })

@@ -133,7 +133,7 @@ class Block extends AnimatedClient {
         super()
         this.key = key
         this.value = value
-        this.signal = new Signal(undefined, this)
+        this.signal = new Signal(this)
     }
 
     /** @type {Node} */
@@ -148,7 +148,7 @@ class Block extends AnimatedClient {
     }
 
     getValue = () => {
-        track?.(new Tracker(this.signal))
+        track(() => new Tracker(this.signal))
         return this.value
     }
 

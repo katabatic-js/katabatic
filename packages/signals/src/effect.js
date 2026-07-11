@@ -1,5 +1,8 @@
-export let track
-let add
+let context
+
+export function track(fn) {
+    context?.track?.(fn())
+}
 
 export class Effect extends Set {
     constructor(fn, { orphaned = false, async = true } = {}) {
@@ -9,32 +12,33 @@ export class Effect extends Set {
         this.microtask = false
 
         if (!orphaned) {
-            add?.(this)
+            context?.add(this)
         }
     }
 
     run() {
+        if (context === this) {
+            // prevent infinite loop
+            return this
+        }
+
         if (this.fn) {
             // dispose both trackers and nested effects / boundaries
             for (const entry of cleared(this)) {
                 entry.dispose()
             }
 
-            const outerTrack = track
-            const outerAdd = add
+            const outerContext = context
             try {
-                track = null
-                add = null
+                context = null
                 this.teardown?.()
                 this.teardown = null
 
-                track = this.track.bind(this)
-                add = this.add.bind(this)
+                context = this
                 this.teardown = this.fn()
                 this.teardown = typeof this.teardown === 'function' ? this.teardown : null
             } finally {
-                track = outerTrack
-                add = outerAdd
+                context = outerContext
             }
         }
 
@@ -42,6 +46,11 @@ export class Effect extends Set {
     }
 
     schedule() {
+        if (context === this) {
+            // prevent infinite loop
+            return
+        }
+
         if (!this.microtask) {
             this.microtask = true
             queueMicrotask(() => {
@@ -67,16 +76,13 @@ export class Effect extends Set {
             entry.dispose()
         }
 
-        const outerTrack = track
-        const outerAdd = add
+        const outerContext = context
         try {
-            track = null
-            add = null
+            context = null
             this.teardown?.()
             this.teardown = null
         } finally {
-            track = outerTrack
-            add = outerAdd
+            context = outerContext
         }
     }
 
@@ -96,22 +102,19 @@ export class Boundary extends Set {
         this.fn = fn
 
         if (!orphaned) {
-            add?.(this)
+            context?.add(this)
         }
     }
 
     init() {
         if (this.fn) {
-            const outerTrack = track
-            const outerAdd = add
+            const outerContext = context
             try {
-                track = null
-                add = this.add.bind(this)
+                context = this
                 this.fn()
                 this.fn = null
             } finally {
-                track = outerTrack
-                add = outerAdd
+                context = outerContext
             }
         }
         return this
@@ -130,15 +133,12 @@ export function boundary(fn) {
 }
 
 export function untracked(fn) {
-    const outerTrack = track
-    const outerAdd = add
+    const outerContext = context
     try {
-        track = null
-        add = null
+        context = null
         fn()
     } finally {
-        track = outerTrack
-        add = outerAdd
+        context = outerContext
     }
 }
 

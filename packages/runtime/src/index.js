@@ -20,6 +20,7 @@ export function $$(customElement) {
     }
 
     const client = new Client()
+    const signal = new Signal(customElement)
 
     client.boundary = function (fn) {
         const boundary = new Boundary(fn, { orphaned: true }).init()
@@ -68,22 +69,18 @@ export function $$(customElement) {
     }
 
     client.instrument = function (property) {
-        this.signal ??= new Signal(undefined, customElement)
-
         if (!Object.getOwnPropertyDescriptor(customElement, property)?.get) {
             let value = customElement[property]
+
             Object.defineProperty(customElement, property, {
                 get: () => {
-                    track?.(new PropertyTracker(this.signal, property))
+                    track(() => new PropertyTracker(signal, property))
                     return value
                 },
                 set: (nextValue) => {
-                    const hasChange = value !== nextValue
-                    value = nextValue
-
-                    if (hasChange) {
-                        this.signal.dispatchEvent(new SignalEvent('set', { property }))
-                        this.signal.dispatchEvent(new SignalEvent('change'))
+                    if (nextValue !== value) {
+                        value = nextValue
+                        signal.dispatchEvent(new SignalEvent('propertyChanged', { property }))
                     }
                 }
             })
@@ -91,14 +88,12 @@ export function $$(customElement) {
     }
 
     client.trackAttribute = function (name) {
-        this.signal ??= new Signal(undefined, customElement)
-        track?.(new AttributeTracker(this.signal, name))
+        track(() => new AttributeTracker(signal, name))
     }
 
     client.attributeChanged = function (name, value, nextValue) {
         if (value !== nextValue) {
-            this.signal ??= new Signal(undefined, customElement)
-            this.signal.dispatchEvent(new SignalEvent('attributeChanged', { name }))
+            signal.dispatchEvent(new SignalEvent('attributeChanged', { name }))
         }
     }
 
