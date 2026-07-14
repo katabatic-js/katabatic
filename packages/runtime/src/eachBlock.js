@@ -1,5 +1,4 @@
-import { Signal, SignalEvent, Effect, track } from '@katabatic/signals'
-import { Tracker } from '@katabatic/signals/tracker'
+import { Signal, SignalEvent, Effect } from '@katabatic/signals'
 import { AnimatedClient } from './client.js'
 
 export class EachBlock extends Map {
@@ -143,12 +142,12 @@ class Block extends AnimatedClient {
         const hasChange = this.value !== nextValue
         this.value = nextValue
         if (hasChange) {
-            this.signal.dispatchEvent(new SignalEvent('change'))
+            this.signal.dispatchEvent(new SignalEvent('changed'))
         }
     }
 
     getValue = () => {
-        track(() => new Tracker(this.signal))
+        this.signal.trackEvent('changed')
         return this.value
     }
 

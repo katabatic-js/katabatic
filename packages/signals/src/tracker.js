@@ -3,7 +3,21 @@ export function setAsync(async) {
     ASYNC = async
 }
 
+/**
+ * @typedef Tracker
+ * @property {() => {}} dispose - Disposes the tracker and removes any event listeners from the signal.
+ */
+
+/**
+ * A tracker that listens for a specific event on a signal and runs an effect when the event is dispatched.
+ * @extends Tracker
+ */
 export class EventTracker {
+    /**
+     * Creates an instance of EventTracker.
+     * @param {import('./signal.js').Signal} signal - The signal to listen for events on.
+     * @param {string} eventName - The name of the event to listen for.
+     */
     constructor(signal, eventName) {
         this.signal = signal
         this.eventName = eventName
@@ -21,7 +35,15 @@ export class EventTracker {
     }
 }
 
+/**
+ * A tracker that listens for changes to a specific property on a signal and runs an effect when the property changes.
+ */
 export class PropertyTracker {
+    /**
+     * Creates an instance of PropertyTracker.
+     * @param {import('./signal.js').Signal} signal - The signal to listen for events on.
+     * @param {string} property - The name of the property to track.
+     */
     constructor(signal, property) {
         this.signal = signal
         this.property = property
@@ -40,7 +62,15 @@ export class PropertyTracker {
     }
 }
 
+/**
+ * A tracker that listens for changes to a specific attribute on a signal and runs an effect when the attribute changes.
+ */
 export class AttributeTracker {
+    /**
+     * Creates an instance of AttributeTracker.
+     * @param {import('./signal.js').Signal} signal - The signal to listen for events on.
+     * @param {string} name - The name of the attribute to track.
+     */
     constructor(signal, name) {
         this.signal = signal
         this.name = name
@@ -56,22 +86,5 @@ export class AttributeTracker {
 
     dispose() {
         this.signal.removeEventListener('attributeChanged', this.callback)
-    }
-}
-
-export class Tracker {
-    constructor(signal) {
-        this.signal = signal
-        this.effect = null
-
-        this.signal.addEventListener('change', this.callback)
-    }
-
-    callback = () => {
-        ASYNC && this.effect.async ? this.effect.schedule() : this.effect.run()
-    }
-
-    dispose() {
-        this.signal.removeEventListener('change', this.callback)
     }
 }

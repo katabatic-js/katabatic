@@ -2,7 +2,15 @@ import { track } from './effect.js'
 import { proxy } from './proxy/index.js'
 import { EventTracker, PropertyTracker } from './tracker.js'
 
+/**
+ * A Signal is an object that can dispatch events and track changes.
+ * It extends the EventTarget class, allowing it to dispatch events.
+ */
 export class Signal extends EventTarget {
+    /**
+     * Creates a new Signal instance.
+     * @param {*} target - The target object to associate with the signal.
+     */
     constructor(target) {
         super()
         this.#target = target
@@ -12,6 +20,10 @@ export class Signal extends EventTarget {
 
     #target
 
+    /**
+     * The target object that the signal is associated with.
+     * If no target is provided, the signal itself will be used as the event's signalTarget property.
+     */
     get target() {
         return this.#target
     }
@@ -21,11 +33,22 @@ export class Signal extends EventTarget {
         return super.dispatchEvent(event)
     }
 
-    trackEvent(eventName) {
-        track(() => new EventTracker(this, eventName))
+    /**
+     * Register a tracker if an effect is present in the execution context.
+     * If a string is passed, a new EventTracker will be created with the string as the event type.
+     * @param {(string | () => import('./tracker.js').Tracker)} fn - The event type or a function that returns a Tracker instance.
+     */
+    trackEvent(fn) {
+        if (typeof fn == 'string') {
+            fn = () => new EventTracker(this, fn)
+        }
+        track(fn)
     }
 }
 
+/**
+ * An event that is dispatched by a Signal.
+ */
 export class SignalEvent extends Event {
     constructor(type, dict) {
         super(type)
@@ -33,6 +56,13 @@ export class SignalEvent extends Event {
     }
 }
 
+/**
+ * Creates a signal from an object.
+ * Objects and Arrays are wrapped in a proxy that intercepts property access, allowing for tracking and dispatching events when properties change.
+ * Any other type of object is returned as-is.
+ * @param {*} object - The object to create a signal for.
+ * @returns {Proxy} - A proxy that wraps the object and intercepts property access.
+ */
 export function signal(object) {
     return proxy(object)
 }

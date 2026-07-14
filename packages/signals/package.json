@@ -1,26 +1,33 @@
 {
-  "name": "@katabatic/signals",
-  "license": "MIT",
-  "version": "1.0.3",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/katabatic-js/katabatic.git",
-    "directory": "packages/signals"
-  },
-  "files": ["/src"],
-  "exports": {
-		".": {
-			"import": "./src/index.js"
-		},
-		"./tracker": {
-			"import": "./src/tracker.js"
-		}
-	},
-  "scripts": {
-    "test": "vitest"
-  },
-  "devDependencies": {
-    "vitest": "^3.2.4"
-  }
+    "name": "@katabatic/signals",
+    "license": "MIT",
+    "version": "1.0.3",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/katabatic-js/katabatic.git",
+        "directory": "packages/signals"
+    },
+    "files": [
+        "/src",
+        "/types"
+    ],
+    "exports": {
+        ".": {
+            "types": "./types/index.d.ts",
+            "import": "./src/index.js"
+        },
+        "./tracker": {
+            "types": "./types/tracker.d.ts",
+            "import": "./src/tracker.js"
+        }
+    },
+    "scripts": {
+        "test": "vitest",
+        "types": "tsc"
+    },
+    "devDependencies": {
+        "typescript": "^5.7.3",
+        "vitest": "^3.2.4"
+    }
 }
