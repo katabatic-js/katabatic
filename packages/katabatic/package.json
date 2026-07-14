@@ -1,7 +1,7 @@
 {
   "name": "katabatic",
   "license": "MIT",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@katabatic/compiler": "^1.1.0",
+    "@katabatic/compiler": "^1.1.4",
     "@katabatic/dev-server-hmr": "^1.0.0",
     "@web/dev-server": "^0.4.6"
   }
