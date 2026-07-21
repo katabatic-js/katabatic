@@ -82,11 +82,10 @@ export function Program(node, ctx) {
     stmts2.push(stmt)
 
     // $shadowRootMode
-    if (ctx.state.template?.metadata?.shadowRootMode) {
-        const { shadowRootMode } = ctx.state.template.metadata
-        stmt = b.exp(b.declaration('$shadowRootMode', b.literal(shadowRootMode)))
-        stmts2.push(stmt)
-    }
+    stmt = b.exp(
+        b.declaration('$shadowRootMode', b.literal(ctx.state.template?.metadata?.shadowRootMode))
+    )
+    stmts2.push(stmt)
 
     return {
         ...node,
