@@ -40,7 +40,8 @@ export class Signal extends EventTarget {
      */
     trackEvent(fn) {
         if (typeof fn == 'string') {
-            fn = () => new EventTracker(this, fn)
+            const eventName = fn
+            fn = () => new EventTracker(this, eventName)
         }
         track(fn)
     }

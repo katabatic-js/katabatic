@@ -139,9 +139,8 @@ class Block extends AnimatedClient {
     anchor
 
     setValue(nextValue) {
-        const hasChange = this.value !== nextValue
-        this.value = nextValue
-        if (hasChange) {
+        if (this.value !== nextValue) {
+            this.value = nextValue
             this.signal.dispatchEvent(new SignalEvent('changed'))
         }
     }

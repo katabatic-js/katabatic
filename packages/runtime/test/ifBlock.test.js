@@ -72,37 +72,37 @@ describe('ifBlock', () => {
         expect(anchor.previousSibling?.nodeType).toBe(Node.COMMENT_NODE)
         expect(value).toEqual(true)
     })
-})
 
-describe('ifBlock with animation', () => {
-    it('should dispose unmatched branch block immediately', () => {
-        const anchor = createAnchor()
-        const test = signal({ value: true })
+    describe('with animation', () => {
+        it('should dispose unmatched branch block immediately', () => {
+            const anchor = createAnchor()
+            const test = signal({ value: true })
 
-        let value
+            let value
 
-        ifBlock(
-            anchor,
-            () => test.value,
-            ($, anchor) => {
-                const element = document.createElement('div')
-                element.textContent = 'concequent'
+            ifBlock(
+                anchor,
+                () => test.value,
+                ($, anchor) => {
+                    const element = document.createElement('div')
+                    element.textContent = 'concequent'
 
-                $.animate('out', (o) => fade(element, { duration: 100 }, o))
+                    $.animate('out', (o) => fade(element, { duration: 100 }, o))
 
-                $.effect(() => {
-                    value = test.value
-                })
+                    $.effect(() => {
+                        value = test.value
+                    })
 
-                anchor.parentNode.insertBefore(element, anchor)
-            }
-        )
+                    anchor.parentNode.insertBefore(element, anchor)
+                }
+            )
 
-        expect(anchor.previousSibling).toHaveTextContent('concequent')
-        expect(value).toEqual(true)
-        test.value = false
-        expect(anchor.previousSibling).toHaveTextContent('concequent')
-        expect(value).toEqual(true)
+            expect(anchor.previousSibling).toHaveTextContent('concequent')
+            expect(value).toEqual(true)
+            test.value = false
+            expect(anchor.previousSibling).toHaveTextContent('concequent')
+            expect(value).toEqual(true)
+        })
     })
 })
 
