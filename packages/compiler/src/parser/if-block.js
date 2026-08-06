@@ -49,7 +49,11 @@ export function parseIfBlock(p, elseif = false) {
         p.skipWhitespaces()
         p.expectToken([TokenTypes.braceR])
 
-        if (name !== blockNameClose) throw new Error('wrong closing tag')
+        if (blockNameClose !== name) {
+            throw new Error(
+                `wrong closing block ${blockNameClose} at position ${p.pos}, expected ${name}`
+            )
+        }
     }
 
     return { type: 'IfBlock', elseif, test, consequent, alternate, start, end: p.pos }

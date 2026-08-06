@@ -2,7 +2,7 @@
  * @typedef {Object} TokenType
  * @property {string} label
  * @property {Array<number>} [charCodes]
- * @property {(char: number) => boolean} [test]
+ * @property {(input: string, pos: number) => boolean} [test]
  */
 
 /**
@@ -18,7 +18,7 @@ function charTT(label, charCodes) {
 /**
  *
  * @param {string} label
- * @param {(char: number) => boolean} test
+ * @param {(input: string, pos: number) => boolean} test
  * @returns {TokenType}
  */
 function stringTT(label, test) {
@@ -29,13 +29,16 @@ export const TokenTypes = {
     name: stringTT('name', name),
     quotedText: stringTT('text', quotedText),
     doubleQuotedText: stringTT('text', doubleQuotedText),
+    commentText: stringTT('text', commentText),
     text: stringTT('text', text),
 
     // html punctuation
     lte: charTT('<', [60]),
     gte: charTT('>', [62]),
-    slashGte: charTT('/>', [47, 62]),
     lteSlash: charTT('</', [60, 47]),
+    slashGte: charTT('/>', [47, 62]),
+    lteExclHyph2: charTT('<!--', [60, 33, 45, 45]),
+    hyph2Gte: charTT('-->', [45, 45, 62]),
     eq: charTT('=', [61]),
     quote: charTT("'", [39]),
     doubleQuote: charTT('"', [34]),
@@ -54,7 +57,9 @@ export const TokenTypes = {
     parenthesesR: charTT(')', [41])
 }
 
-function name(code) {
+function name(input, pos) {
+    const code = input.charCodeAt(pos)
+
     // Automatically allow all extended ASCII and UTF-16 surrogate bytes
     if (code > 127) return true
 
@@ -77,15 +82,33 @@ function name(code) {
     return code !== 61 && code !== 62 && code !== 125
 }
 
-function quotedText(code) {
+function quotedText(input, pos) {
+    const code = input.charCodeAt(pos)
     return code > 0 && code !== 39 // Blocks NULL (0) and Single Quote (39)
 }
 
-function doubleQuotedText(code) {
+function doubleQuotedText(input, pos) {
+    const code = input.charCodeAt(pos)
     return code > 0 && code !== 34 // Blocks NULL (0) and Double Quote (34)
 }
 
-function text(code) {
+function commentText(input, pos) {
+    if (
+        input.charCodeAt(pos) === 45 &&
+        input.charCodeAt(pos + 1) === 45 &&
+        input.charCodeAt(pos + 2) === 62
+    ) {
+        // Blocks the sequence "-->"
+        return false
+    }
+
+    const code = input.charCodeAt(pos)
+    return code >= 32 || code === 9 || code === 10 || code === 13 // Allows printable characters and standard whitespace (Tab, LF, CR)
+}
+
+function text(input, pos) {
+    const code = input.charCodeAt(pos)
+
     // Quickly allow all extended ASCII and UTF-16 surrogate bytes
     if (code > 127) return true
 

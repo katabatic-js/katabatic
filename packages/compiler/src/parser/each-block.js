@@ -13,10 +13,10 @@ export function parseEachBlock(p) {
     p.expectToken([TokenTypes.braceLHash, TokenTypes.braceLColumn])
     p.expectToken([TokenTypes.name])
     const name = p.value
-    
+
     p.skipWhitespaces()
     const expression = parseExpression(p)
-    
+
     p.skipWhitespaces()
     p.expectToken([TokenTypes.name])
     const as = p.value
@@ -43,7 +43,11 @@ export function parseEachBlock(p) {
     p.skipWhitespaces()
     p.expectToken([TokenTypes.braceR])
 
-    if (name !== blockNameClose) throw new Error('wrong closing tag')
+    if (blockNameClose !== name) {
+        throw new Error(
+            `wrong closing block ${blockNameClose} at position ${p.pos}, expected ${name}`
+        )
+    }
 
     return { type: 'EachBlock', expression, context, key, body, start, end: p.pos }
 }

@@ -30,11 +30,30 @@ export function parseElement(p) {
         p.skipWhitespaces()
         p.expectToken([TokenTypes.gte])
 
-        if (name !== tagNameClose) throw new Error('wrong closing tag')
+        if (tagNameClose !== name) {
+            throw new Error(
+                `wrong closing tag ${tagNameClose} at position ${p.pos}, expected ${name}`
+            )
+        }
 
         return { type, name, attributes, fragment, start, end: p.pos }
     }
     return { type, name, attributes, fragment: { type: 'Fragment', nodes: [] }, start, end: p.pos }
+}
+
+/**
+ *
+ * @param {Parser} p
+ * @returns
+ */
+export function parseComment(p) {
+    const start = p.pos
+    p.expectToken([TokenTypes.lteExclHyph2])
+    p.expectToken([TokenTypes.commentText])
+    const data = p.value
+    p.expectToken([TokenTypes.hyph2Gte])
+
+    return { type: 'Comment', data, start, end: p.pos }
 }
 
 /**
@@ -47,7 +66,12 @@ export function parseFragment(p, allowScript = false, allowStyle = false) {
 
     p.skipWhitespaces()
     while (!p.peakToken([TokenTypes.lteSlash, TokenTypes.braceLSlash, TokenTypes.braceLColumn])) {
-        const punctToken = p.peakToken([TokenTypes.lte, TokenTypes.braceLHash, TokenTypes.braceL])
+        const punctToken = p.peakToken([
+            TokenTypes.lteExclHyph2,
+            TokenTypes.lte,
+            TokenTypes.braceLHash,
+            TokenTypes.braceL
+        ])
         const nameToken = p.peakToken([TokenTypes.name], punctToken)
 
         switch (punctToken?.type) {
@@ -66,6 +90,9 @@ export function parseFragment(p, allowScript = false, allowStyle = false) {
                 }
 
                 nodes.push(parseElement(p))
+                break
+            case TokenTypes.lteExclHyph2:
+                nodes.push(parseComment(p))
                 break
             case TokenTypes.braceLHash:
                 if (nameToken?.value === 'if') {

@@ -16,6 +16,10 @@
 			"import": "./src/router/index.js"
 		}
 	},
+  "scripts": {
+      "test": "vitest"
+
+  },
   "devDependencies": {
     "@types/css-tree": "^2.3.10",
     "@types/node": "^22.15.21",
