@@ -24,7 +24,7 @@ export function parseRoot(p) {
                 template = parseTemplate(p)
                 break
             default:
-                throw new Error('unexpected html tag at position ' + p.pos)
+                throw new Error(`unexpected html tag ${nameToken.value} at position ${p.pos}`)
         }
         p.skipWhitespaces()
     }

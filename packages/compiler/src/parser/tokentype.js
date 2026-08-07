@@ -2,7 +2,7 @@
  * @typedef {Object} TokenType
  * @property {string} label
  * @property {Array<number>} [charCodes]
- * @property {(input: string, pos: number) => boolean} [test]
+ * @property {(code: number, input: string, pos: number) => boolean} [test]
  */
 
 /**
@@ -18,7 +18,7 @@ function charTT(label, charCodes) {
 /**
  *
  * @param {string} label
- * @param {(input: string, pos: number) => boolean} test
+ * @param {(code: number, input: string, pos: number) => boolean} test
  * @returns {TokenType}
  */
 function stringTT(label, test) {
@@ -57,9 +57,7 @@ export const TokenTypes = {
     parenthesesR: charTT(')', [41])
 }
 
-function name(input, pos) {
-    const code = input.charCodeAt(pos)
-
+function name(code) {
     // Automatically allow all extended ASCII and UTF-16 surrogate bytes
     if (code > 127) return true
 
@@ -82,17 +80,15 @@ function name(input, pos) {
     return code !== 61 && code !== 62 && code !== 125
 }
 
-function quotedText(input, pos) {
-    const code = input.charCodeAt(pos)
+function quotedText(code) {
     return code > 0 && code !== 39 // Blocks NULL (0) and Single Quote (39)
 }
 
-function doubleQuotedText(input, pos) {
-    const code = input.charCodeAt(pos)
+function doubleQuotedText(code) {
     return code > 0 && code !== 34 // Blocks NULL (0) and Double Quote (34)
 }
 
-function commentText(input, pos) {
+function commentText(code, input, pos) {
     if (
         input.charCodeAt(pos) === 45 &&
         input.charCodeAt(pos + 1) === 45 &&
@@ -102,16 +98,13 @@ function commentText(input, pos) {
         return false
     }
 
-    const code = input.charCodeAt(pos)
     return code >= 32 || code === 9 || code === 10 || code === 13 // Allows printable characters and standard whitespace (Tab, LF, CR)
 }
 
-function text(input, pos) {
-    const code = input.charCodeAt(pos)
-
+function text(code) {
     // Quickly allow all extended ASCII and UTF-16 surrogate bytes
     if (code > 127) return true
 
-    // Blocks NULL (0), Less-Than (<), Left-Brace ({) and Ampersand (&)
-    return code !== 0 && code !== 60 && code !== 123 && code !== 38
+    // Blocks NULL (0), Less-Than (<), Left-Brace ({)
+    return code !== 0 && code !== 60 && code !== 123
 }

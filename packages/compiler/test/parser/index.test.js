@@ -8,4 +8,10 @@ describe('parse()', () => {
             expect(ast).not.toBeNull()
         })
     })
+    describe('with template containing &', () => {
+        it('should return an AST succesfully', () => {
+            const ast = parse(`<template><div>&</div></template>`)
+            expect(ast).not.toBeNull()
+        })
+    })
 })

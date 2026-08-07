@@ -62,7 +62,7 @@ export class Parser {
             }
         }
         throw new Error(
-            `wrong token ${this.input[this.pos]} at position ${this.pos}. expected one of ${types
+            `wrong token ${this.input[this.pos]} at position ${this.pos}. expected ${types
                 .map((t) => t.label)
                 .join(', ')}`
         )
@@ -92,8 +92,10 @@ export class Parser {
     readStringToken(type) {
         const start = this.pos
         while (this.pos < this.input.length) {
-            if (!type.test(this.input, this.pos)) break
+            const code = this.input.charCodeAt(this.pos)
+            if (!type.test(code, this.input, this.pos)) break
             this.pos++
+            this.line = code
         }
 
         if (this.pos !== start) {
@@ -118,7 +120,8 @@ export class Parser {
         const start = after?.end ?? this.pos
         let pos = start
         while (pos < this.input.length) {
-            if (!type.test(this.input, pos)) break
+            const code = this.input.charCodeAt(pos)
+            if (!type.test(code, this.input, pos)) break
             pos++
         }
 
@@ -239,20 +242,6 @@ export class Parser {
     isEOF() {
         return this.pos === this.input.length
     }
-}
-
-/**
- *
- * @param {number} code
- * @returns {boolean}
- */
-function isIdentifierChar(code) {
-    if (code < 48) return false
-    if (code < 58) return true
-    if (code < 65) return false
-    if (code < 91) return true
-    if (code < 123) return true
-    return false
 }
 
 /**
