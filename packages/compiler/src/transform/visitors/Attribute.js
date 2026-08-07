@@ -47,13 +47,11 @@ export function Attribute(node, ctx) {
             )
             ctx.state.handlers.push(stmt)
         } else if (moduleId) {
-            const stmt = b.$effect([
-                b.$set(moduleId, elementId, node.name, template.expressions[0])
-            ])
+            const stmt = b.$effect([b.$set(moduleId, elementId, node.name, b.template(template))])
             ctx.state.effects.push(stmt)
         } else if (bindingId) {
             const stmt1 = b.$effect([
-                b.assignment(b.member(bindingId, node.name), template.expressions[0])
+                b.assignment(b.member(bindingId, node.name), b.template(template))
             ])
             const stmt2 = b.$effect([
                 b.assignment(template.expressions[0], b.member(bindingId, node.name))
@@ -62,7 +60,7 @@ export function Attribute(node, ctx) {
             ctx.state.effects.push(stmt1, stmt2)
         } else {
             const stmt = b.$effect([
-                b.setAttribute(elementId, b.literal(node.name), template.expressions[0])
+                b.setAttribute(elementId, b.literal(node.name), b.template(template))
             ])
             ctx.state.effects.push(stmt)
         }

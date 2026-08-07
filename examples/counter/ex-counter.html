@@ -18,6 +18,10 @@
             console.log(count)
             this.#test.set('aa', count)
         }
+
+        getClass(a) {
+            return a.active ? 'active' : ''
+        }
     }
 
     customElements.define('ex-counter', Counter)
@@ -27,8 +31,8 @@
     <ex-counter-2></ex-counter-2>
     <!-- comment -->
     {#if test}
-    <button onclick="{count++}" hello="efe">counter is I {count} {test.get('aa')}</button>
-    <button onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
+    <button onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
+    <button class="{getClass({active: count > 5})}" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
     {/if}
 
     <svg
@@ -54,6 +58,10 @@
             padding: 0.5rem;
             font-size: 1.1rem;
             text-transform: uppercase;
+        }
+
+        button.active {
+            color: red;
         }
     </style>
 </template>

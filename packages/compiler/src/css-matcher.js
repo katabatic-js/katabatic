@@ -71,9 +71,10 @@ function matchSelectors(selectors, template) {
                     return
                 case 'ClassSelector':
                     classAttribute ??= node.attributes.find((a) => a.name === 'class')
-                    const classes = classAttribute?.value[0].data.split(/\s+/)
+                    const expression = classAttribute?.value[0].expression
+                    const classes = classAttribute?.value[0].data?.split(/\s+/)
 
-                    if (classes?.includes(selector.name)) {
+                    if (expression || classes?.includes(selector.name)) {
                         scopedClassAttribute = classAttribute
                         break
                     }
