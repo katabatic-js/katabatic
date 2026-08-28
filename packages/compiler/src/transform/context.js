@@ -58,7 +58,9 @@ function position(fragment, node) {
             (nodes[i - 1]?.type === 'ExpressionTag' || nodes[i - 1]?.type === 'Text')
         ) {
             // Text and ExpressionTag siblings are collapsed in one node in the html template
-        } else {
+        } else if (nodes[i].type === 'Comment') {
+            //  Comments are skiped in the html template
+        } else  {
             position++
         }
 

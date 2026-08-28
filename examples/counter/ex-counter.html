@@ -29,8 +29,8 @@
 
 <template shadowRootMode="open">
     <ex-counter-2></ex-counter-2>
-    <!-- comment -->
     {#if test}
+    <!-- comment -->
     <button onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
     <button class="{getClass({active: count > 5})}" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
     {/if}
@@ -45,8 +45,9 @@
     >
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
     </svg>
-
+<!-- comment -->
     <style>
+        
         :host {
             display: flex;
             align-items: center;
