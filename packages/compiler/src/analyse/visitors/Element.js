@@ -3,6 +3,7 @@ import * as is from '../../checkers.js'
 export function Element(node, ctx) {
     ctx.next()
 
+    const isVoid = is.voidElement(node)
     const hasClass = node.attributes.some(is.classAttribute)
 
     const bindAttribute = node.attributes.find(is.bindAttribute)
@@ -10,6 +11,7 @@ export function Element(node, ctx) {
     const bindExpression = bindAttribute?.value[0].expression
 
     node.metadata ??= {}
+    node.metadata.isVoid = isVoid
     node.metadata.hasClass = hasClass
     node.metadata.hasBinding = hasBinding
     node.metadata.bindExpression = bindExpression

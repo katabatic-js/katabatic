@@ -37,9 +37,13 @@ export function Element(node, ctx) {
     for (const attribute of attributes) {
         ctx.visit(attribute, { ...ctx.state, getElementId, getBindingId, changed })
     }
-    appendText(ctx.state.template, '>')
-    ctx.visit(node.fragment, { ...ctx.state, getElementId })
-    appendText(ctx.state.template, `</${node.name}>`)
+    if (node.metadata?.isVoid) {
+        appendText(ctx.state.template, '/>')
+    } else {
+        appendText(ctx.state.template, '>')
+        ctx.visit(node.fragment, { ...ctx.state, getElementId })
+        appendText(ctx.state.template, `</${node.name}>`)
+    }
 
     if (changed.length > 0) {
         const stmt = b.addEventListener(bindingId, 'changed', changed)

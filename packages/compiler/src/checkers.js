@@ -146,3 +146,24 @@ export function shadowRootModeAttribute(node) {
 export function elseIfBlock(node) {
     return node.type === 'IfBlock' && node.elseif
 }
+
+export function voidElement(node) {
+    return (
+        node.type === 'Element' && [
+            'area',
+            'base',
+            'br',
+            'col',
+            'embed',
+            'hr',
+            'img',
+            'input',
+            'link',
+            'meta',
+            'param',
+            'source',
+            'track',
+            'wbr'
+        ].includes(node.name)
+    )
+}
