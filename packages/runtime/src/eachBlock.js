@@ -67,7 +67,7 @@ export class EachBlock extends Map {
     init() {
         this.#effect = new Effect(
             () => {
-                const iterable = this.getIterable()
+                const iterable = [...this.getIterable() ?? []]
 
                 for (const block of this.#getRemovedBlocks(iterable)) {
                     this.#removeBlock(block)
