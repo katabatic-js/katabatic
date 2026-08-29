@@ -54,21 +54,21 @@ function matchSelectors(selectors, template) {
                         classAttribute ??= node.attributes.find((a) => a.name === 'class')
                         scopedElement = node
                         scopedClassAttribute = classAttribute
-                        break
                     }
-                    return
+                    break
                 case 'PseudoClassSelector':
-                    classAttribute ??= node.attributes.find((a) => a.name === 'class')
-                    scopedElement = node
-                    scopedClassAttribute = classAttribute
+                    if (selector.name !== 'host') {
+                        classAttribute ??= node.attributes.find((a) => a.name === 'class')
+                        scopedElement = node
+                        scopedClassAttribute = classAttribute
+                    }
                     break
                 case 'IdSelector':
                     const idAttribute = node.attributes.find((a) => a.name === 'id')
                     if (idAttribute?.value[0].data === selector.name) {
                         scopedIdAttribute = idAttribute
-                        break
                     }
-                    return
+                    break
                 case 'ClassSelector':
                     classAttribute ??= node.attributes.find((a) => a.name === 'class')
                     const expression = classAttribute?.value[0].expression
@@ -76,9 +76,8 @@ function matchSelectors(selectors, template) {
 
                     if (expression || classes?.includes(selector.name)) {
                         scopedClassAttribute = classAttribute
-                        break
                     }
-                    return
+                    break
             }
         }
 
