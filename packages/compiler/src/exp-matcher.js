@@ -12,21 +12,28 @@ export function matchExpression(expression, program, blocks) {
                     if (parentNode.callee === node) {
                         setMethodMetadata(node)
                     } else {
-                        setMetadata(node)
+                        setMetadata(node, blocks)
                     }
                     break
                 case 'MemberExpression':
                     if (parentNode.object === node) {
+                        setMetadata(node, blocks)
+                    }
+                    break
+                case 'AssignmentExpression':
+                    if (parentNode.left === node) {
                         setMetadata(node)
+                    } else {
+                        setMetadata(node, blocks)
                     }
                     break
                 case 'Property':
                     if (parentNode.value === node) {
-                        setMetadata(node)
+                        setMetadata(node, blocks)
                     }
                     break
                 default:
-                    setMetadata(node)
+                    setMetadata(node, blocks)
             }
         }
     })
@@ -49,10 +56,10 @@ export function matchExpression(expression, program, blocks) {
         node.metadata.isData = true
     }
 
-    function setMetadata(node) {
+    function setMetadata(node, blocks) {
         node.metadata ??= {}
 
-        if (blocks.some((b) => b.context?.name === node.name)) {
+        if (blocks?.some((b) => b.context?.name === node.name)) {
             node.metadata.isBlockVar = true
             return
         }
