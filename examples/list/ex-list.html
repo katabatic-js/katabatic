@@ -30,7 +30,7 @@
                 {List.items.length}
                 {#each List.items as item (item.name)}
                 <ex-item
-                    animate="{fade()}"
+                    :animate="{fade()}"
                     item="{item}"
                     color="{`hsla(240, 100%, ${List.items.length}0%, 50%)`}"
                 ></ex-item>

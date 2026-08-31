@@ -4,13 +4,23 @@ import { nextElementId, pathStmt } from '../context.js'
 
 export function EachBlock(node, ctx) {
     const template = { text: [''], expressions: [] }
-    const init = { elem: [], text: [], binding: [] }
+    const init = { elem: [], text: [] }
+    const binds = []
     const effects = []
     const animates = []
-    const handlers = []
+    const eventListeners = []
     const blocks = []
 
-    ctx.visit(node.body, { ...ctx.state, template, init, effects, animates, handlers, blocks })
+    ctx.visit(node.body, {
+        ...ctx.state,
+        template,
+        init,
+        binds,
+        effects,
+        animates,
+        eventListeners,
+        blocks
+    })
 
     const stmts1 = [
         b.declaration('template', b.createElement('template')),
@@ -19,10 +29,10 @@ export function EachBlock(node, ctx) {
     const stmts2 = [
         ...init.elem,
         ...init.text,
-        ...init.binding,
+        ...binds,
         ...effects,
         ...animates,
-        ...handlers,
+        ...eventListeners,
         ...blocks
     ]
     const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))

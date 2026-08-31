@@ -6,13 +6,23 @@ export function IfBlock(node, ctx) {
     function branchStmt(node, hasElseif = false) {
         if (node) {
             const template = { text: [''], expressions: [] }
-            const init = { elem: [], text: [], binding: [] }
+            const init = { elem: [], text: [] }
+            const binds = []
             const effects = []
             const animates = []
-            const handlers = []
+            const eventListeners = []
             const blocks = []
 
-            ctx.visit(node, { ...ctx.state, template, init, effects, animates, handlers, blocks })
+            ctx.visit(node, {
+                ...ctx.state,
+                template,
+                init,
+                binds,
+                effects,
+                animates,
+                eventListeners,
+                blocks
+            })
 
             if (!hasElseif) {
                 const stmts1 = [
@@ -22,10 +32,10 @@ export function IfBlock(node, ctx) {
                 const stmts2 = [
                     ...init.elem,
                     ...init.text,
-                    ...init.binding,
+                    ...binds,
                     ...effects,
                     ...animates,
-                    ...handlers,
+                    ...eventListeners,
                     ...blocks
                 ]
                 const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))

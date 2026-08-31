@@ -9,13 +9,10 @@ export function CustomElement(node, ctx) {
     }
 
     let elementId
-    function getElementId() {
-        if (!elementId) {
-            elementId = nextElementId(ctx)
-            const stmt = b.declaration(elementId, pathStmt(ctx))
-            ctx.state.init.elem.push(stmt)
-        }
-        return elementId
+    if (node.metadata?.hasExpressionAttribute) {
+        elementId = nextElementId(ctx)
+        const stmt = b.declaration(elementId, pathStmt(ctx, node))
+        ctx.state.init.elem.push(stmt)
     }
 
     if (node.metadata?.isModule) {
@@ -24,7 +21,11 @@ export function CustomElement(node, ctx) {
         appendText(ctx.state.template, '<')
         appendExpression(ctx.state.template, b.$name(moduleId))
         for (const attribute of attributes) {
-            ctx.visit(attribute, { ...ctx.state, getElementId, getModuleId: () => moduleId })
+            ctx.visit(attribute, {
+                ...ctx.state,
+                getElementId: () => elementId,
+                getModuleId: () => moduleId
+            })
         }
         appendText(ctx.state.template, '>')
         ctx.visit(node.fragment)
@@ -34,7 +35,7 @@ export function CustomElement(node, ctx) {
     } else {
         appendText(ctx.state.template, `<${node.name}`)
         for (const attribute of attributes) {
-            ctx.visit(attribute, { ...ctx.state, getElementId })
+            ctx.visit(attribute, { ...ctx.state, getElementId: () => elementId })
         }
         appendText(ctx.state.template, '>')
         ctx.visit(node.fragment)

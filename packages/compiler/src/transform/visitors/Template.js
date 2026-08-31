@@ -3,10 +3,11 @@ import * as b from '../../builders.js'
 export function Template(node, ctx) {
     const style = { text: [''], expressions: [] }
     const template = { text: [''], expressions: [] }
-    const init = { elem: [], text: [], binding: [] }
+    const init = { elem: [], text: [] }
+    const binds = []
     const effects = []
     const animates = []
-    const handlers = []
+    const eventListeners = []
     const blocks = []
 
     ctx.visit(node.fragment, {
@@ -14,9 +15,10 @@ export function Template(node, ctx) {
         style,
         template,
         init,
+        binds,
         effects,
         animates,
-        handlers,
+        eventListeners,
         blocks
     })
 
@@ -29,10 +31,10 @@ export function Template(node, ctx) {
     const stmts2 = [
         ...init.elem,
         ...init.text,
-        ...init.binding,
+        ...binds,
         ...effects,
         ...animates,
-        ...handlers,
+        ...eventListeners,
         ...blocks
     ]
     const stmt3 = b.replaceChildren(rootId, b.member('template', 'content'))

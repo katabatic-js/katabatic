@@ -24,47 +24,73 @@ export function Attribute(node, ctx) {
         ctx.visit(val, { ...ctx.state, template, pretty: false })
     }
 
+    if (node.name === ':in' || node.name === ':out' || node.name === ':animate') {
+        const elementId = ctx.state.getElementId()
+        const expression = template.expressions[0]
+        const direction = node.name === ':animate' ? 'both' : node.name.slice(1)
+        const stmt = b.$animate(direction, {
+            ...expression,
+            arguments: [elementId, expression.arguments[0] ?? b.object(), b.id('o')]
+        })
+        ctx.state.animates.push(stmt)
+        return
+    }
+
+    if (node.name === ':use') {
+        const elementId = ctx.state.getElementId()
+        const expression = template.expressions[0]
+        const bindExpression = {
+            ...expression,
+            arguments: [elementId, b.call('opts', expression.arguments[0])]
+        }
+        const stmt = b.$bind(elementId, bindExpression)
+        ctx.state.binds.push(stmt)
+        return
+    }
+
+    if (node.name.startsWith(':on')) {
+        const elementId = ctx.state.getElementId()
+        const expression = template.expressions[0]
+        const event = node.name.slice(3)
+        const stmt = b.addEventListener(b.$getBinding(elementId), event, [expression], {
+            optional: true
+        })
+        ctx.state.eventListeners.push(stmt)
+        return
+    }
+
+    if (node.name.startsWith(':')) {
+        const elementId = ctx.state.getElementId()
+        const property = node.name.slice(1)
+        const stmt = b.$effect([
+            b.assignment(b.member(b.$getBinding(elementId), property), b.template(template))
+        ])
+        ctx.state.effects.push(stmt)
+        return
+    }
+
+    if (node.name.startsWith('on')) {
+        const elementId = ctx.state.getElementId()
+        const expression = template.expressions[0]
+        const event = node.name.slice(2)
+        const stmt = b.addEventListener(elementId, event, [expression])
+        ctx.state.eventListeners.push(stmt)
+        return
+    }
+
     if (hasExpression(template)) {
-        // expression attribute
         const elementId = ctx.state.getElementId()
         const moduleId = ctx.state.getModuleId?.()
-        const bindingId = ctx.state.getBindingId?.()
 
-        if (node.name === 'bind') {
-            // binding handled in element visitor
-        } else if (node.name === 'in' || node.name === 'out' || node.name === 'animate') {
-            const direction = node.name === 'animate' ? 'both' : node.name
-            const animateExpression = template.expressions[0]
-            const stmt = b.$animate(direction, {
-                ...animateExpression,
-                arguments: [elementId, animateExpression.arguments[0] ?? b.object(), b.id('o')]
-            })
-            ctx.state.animates.push(stmt)
-        } else if (node.name.startsWith('on')) {
-            const stmt = b.assignment(
-                b.member(elementId, node.name),
-                b.eventListener(template.expressions[0])
-            )
-            ctx.state.handlers.push(stmt)
-        } else if (moduleId) {
-            const stmt = b.$effect([b.$set(moduleId, elementId, node.name, b.template(template))])
-            ctx.state.effects.push(stmt)
-        } else if (bindingId) {
-            const stmt1 = b.$effect([
-                b.assignment(b.member(bindingId, node.name), b.template(template))
-            ])
-            const stmt2 = b.$effect([
-                b.assignment(template.expressions[0], b.member(bindingId, node.name))
-            ])
+        const setStmt = moduleId
+            ? b.$set(moduleId, elementId, b.literal(node.name), b.template(template))
+            : b.setAttribute(elementId, b.literal(node.name), b.template(template))
+        const stmt = b.$effect([setStmt])
+        ctx.state.effects.push(stmt)
+        return
+    }
 
-            ctx.state.effects.push(stmt1, stmt2)
-        } else {
-            const stmt = b.$effect([
-                b.setAttribute(elementId, b.literal(node.name), b.template(template))
-            ])
-            ctx.state.effects.push(stmt)
-        }
-    } else if (isEmpty(template)) {
+    if (isEmpty(template)) {
         appendText(ctx.state.template, ` ${node.name}`)
     } else {
         appendText(ctx.state.template, ` ${node.name}="${template.text[0]}"`)

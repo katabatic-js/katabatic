@@ -121,18 +121,16 @@ export function classAttribute(node, withExpressionTag) {
     return result
 }
 
+export function expressionAttribute(node) {
+    return node.type === 'Attribute' && node.value[0]?.type === 'ExpressionTag'
+}
+
 export function idAttribute(node, withExpressionTag) {
     let result = node.type === 'Attribute' && node.name === 'id'
     if (withExpressionTag === true) {
         result &&= node.value[0]?.type === 'ExpressionTag'
     }
     return result
-}
-
-export function bindAttribute(node) {
-    return (
-        node.type === 'Attribute' && node.name === 'bind' && node.value[0]?.type === 'ExpressionTag'
-    )
 }
 
 export function staticAttribute(node) {
@@ -149,7 +147,8 @@ export function elseIfBlock(node) {
 
 export function voidElement(node) {
     return (
-        node.type === 'Element' && [
+        node.type === 'Element' &&
+        [
             'area',
             'base',
             'br',

@@ -1,14 +1,16 @@
-import { Signal } from '@katabatic/signals'
+class Log extends EventTarget {
+    val = 0
 
-class Log extends Signal {
-    static observedProperties = ['val']
-
-    constructor() {
+    constructor(element, opts) {
         super()
-        setInterval(() => this.val++, 1000)
+        setInterval(() => {
+            console.log(opts.getBinding(element))
+            this.val++
+            this.dispatchEvent(new CustomEvent('val'))
+        }, 1000)
     }
 }
 
-export function log(element) {
-    return new Log()
+export function log(element, opts) {
+    return new Log(element, opts)
 }

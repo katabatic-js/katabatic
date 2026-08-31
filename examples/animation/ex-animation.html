@@ -48,11 +48,11 @@
 <template>
     <div>
         {#if count > 3}
-        <p animate="{fade({duration: 3000})}">block 1 {count}</p>
+        <p :animate="{fade({duration: 3000})}">block 1 {count}</p>
         {:else}
-        <div animate="{fade({duration: 3000})}">
+        <div :animate="{fade({duration: 3000})}">
         {#if count > 1}
-        <p animate="{fade({duration: 3000})}">block 2 {count}</p>
+        <p :animate="{fade({duration: 3000})}">block 2 {count}</p>
         {/if}
         </div>
         {/if}

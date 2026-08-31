@@ -21,6 +21,7 @@ export function $$(customElement) {
 
     const client = new Client()
     const signal = new Signal(customElement)
+    const bindings = new WeakMap()
 
     client.boundary = function (fn) {
         const boundary = new Boundary(fn, { orphaned: true }).init()
@@ -95,6 +96,26 @@ export function $$(customElement) {
         if (value !== nextValue) {
             signal.dispatchEvent(new SignalEvent('attributeChanged', { name }))
         }
+    }
+
+    client.bind = function(element, fn, _client) {
+        function opts(value) {
+            return {...value, getBinding: client.getBinding}
+        }
+
+        const binding = fn(opts)
+        bindings.set(element, binding)
+        _client.add(binding)
+        return binding
+    }
+
+    client.getBinding = function (element) {
+        let binding = bindings.get(element)
+        if (!binding) {
+            binding = {}
+            bindings.set(element, binding)
+        }
+        return binding
     }
 
     return client

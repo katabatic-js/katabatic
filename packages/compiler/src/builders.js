@@ -227,6 +227,10 @@ export function array(elements) {
 }
 
 export function call(callee, args = [], { optional = false } = {}) {
+    if (typeof callee === 'string') {
+        callee = { type: 'Identifier', name: callee }
+    }
+
     return { type: 'CallExpression', callee, arguments: args, optional }
 }
 
@@ -577,14 +581,7 @@ export function $set(object, nodeId, attribute, value) {
             computed: false,
             optional: false
         },
-        arguments: [
-            nodeId,
-            {
-                type: 'Literal',
-                value: attribute
-            },
-            value
-        ],
+        arguments: [nodeId, attribute, value],
         optional: false
     }
 }
@@ -1064,6 +1061,82 @@ export function $effect(body) {
     }
 }
 
+export function $bind(elementId, body) {
+    return {
+        type: 'ExpressionStatement',
+        expression: {
+            type: 'CallExpression',
+            callee: {
+                type: 'MemberExpression',
+                object: {
+                    type: 'MemberExpression',
+                    object: {
+                        type: 'ThisExpression'
+                    },
+                    property: {
+                        type: 'Identifier',
+                        name: '$'
+                    },
+                    computed: false,
+                    optional: false
+                },
+                property: {
+                    type: 'Identifier',
+                    name: 'bind'
+                },
+                computed: false,
+                optional: false
+            },
+            arguments: [
+                elementId,
+                {
+                    type: 'ArrowFunctionExpression',
+                    id: null,
+                    expression: false,
+                    generator: false,
+                    async: false,
+                    params: [{ type: 'Identifier', name: 'opts' }],
+                    body
+                },
+                {
+                    type: 'Identifier',
+                    name: '$'
+                }
+            ],
+            optional: false
+        }
+    }
+}
+
+export function $getBinding(elementId) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'MemberExpression',
+                object: {
+                    type: 'ThisExpression'
+                },
+                property: {
+                    type: 'Identifier',
+                    name: '$'
+                },
+                computed: false,
+                optional: false
+            },
+            property: {
+                type: 'Identifier',
+                name: 'getBinding'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [elementId],
+        optional: false
+    }
+}
+
 export function $animate(value, body) {
     return {
         type: 'ExpressionStatement',
@@ -1099,7 +1172,7 @@ export function $animate(value, body) {
     }
 }
 
-export function addEventListener(object, value, body) {
+export function addEventListener(object, value, body, { optional = false } = {}) {
     return {
         type: 'ExpressionStatement',
         expression: {
@@ -1134,7 +1207,7 @@ export function addEventListener(object, value, body) {
                     }
                 }
             ],
-            optional: false
+            optional
         }
     }
 }

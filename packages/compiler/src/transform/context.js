@@ -12,10 +12,6 @@ export function nextBlockId(ctx) {
     return b.id(`block_${ctx.state.blocks.length + 1}`)
 }
 
-export function nextBindingId(ctx) {
-    return b.id(`binding_${ctx.state.init.binding.length + 1}`)
-}
-
 export function pathStmt(ctx, nodes) {
     const subPath = []
 

@@ -5,14 +5,10 @@ export function Element(node, ctx) {
 
     const isVoid = is.voidElement(node)
     const hasClass = node.attributes.some(is.classAttribute)
-
-    const bindAttribute = node.attributes.find(is.bindAttribute)
-    const hasBinding = !!bindAttribute
-    const bindExpression = bindAttribute?.value[0].expression
+    const hasExpressionAttribute = node.attributes.some(is.expressionAttribute)
 
     node.metadata ??= {}
     node.metadata.isVoid = isVoid
     node.metadata.hasClass = hasClass
-    node.metadata.hasBinding = hasBinding
-    node.metadata.bindExpression = bindExpression
+    node.metadata.hasExpressionAttribute = hasExpressionAttribute
 }
