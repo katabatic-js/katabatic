@@ -113,6 +113,17 @@ export function observedAttributes(node) {
     )
 }
 
+export function propertyAttribute(node, elementNode) {
+    if (node.type === 'Attribute' && elementNode?.type === 'Element') {
+        if (elementNode.name === 'input' && ['value', 'checked'].includes(node.name)) return true
+        if (elementNode.name === 'textarea' && node.name === 'value') return true
+        if (elementNode.name === 'select' && ['value', 'selectedindex'].includes(node.name))
+            return true
+        if (elementNode.name === 'option' && node.name === 'selected') return true
+    }
+    return false
+}
+
 export function classAttribute(node, withExpressionTag) {
     let result = node.type === 'Attribute' && node.name === 'class'
     if (withExpressionTag === true) {

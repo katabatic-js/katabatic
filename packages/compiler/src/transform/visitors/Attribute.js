@@ -39,9 +39,10 @@ export function Attribute(node, ctx) {
     if (node.name === ':use') {
         const elementId = ctx.state.getElementId()
         const expression = template.expressions[0]
+
         const bindExpression = {
             ...expression,
-            arguments: [elementId, b.call('opts', expression.arguments[0])]
+            arguments: [elementId, b.call('opts', [expression.arguments[0]])]
         }
         const stmt = b.$bind(elementId, bindExpression)
         ctx.state.binds.push(stmt)
@@ -82,9 +83,15 @@ export function Attribute(node, ctx) {
         const elementId = ctx.state.getElementId()
         const moduleId = ctx.state.getModuleId?.()
 
-        const setStmt = moduleId
-            ? b.$set(moduleId, elementId, b.literal(node.name), b.template(template))
-            : b.setAttribute(elementId, b.literal(node.name), b.template(template))
+        let setStmt
+        if (moduleId) {
+            setStmt = b.$set(moduleId, elementId, b.literal(node.name), b.template(template))
+        } else if (node.metadata?.isProperty) {
+            setStmt = b.assignment(b.member(elementId, node.name), b.template(template))
+        } else {
+            setStmt = b.setAttribute(elementId, b.literal(node.name), b.template(template))
+        }
+
         const stmt = b.$effect([setStmt])
         ctx.state.effects.push(stmt)
         return

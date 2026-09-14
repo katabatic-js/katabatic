@@ -13,6 +13,10 @@ export function getProgram(ctx) {
     return root.script?.content
 }
 
+export function getElement(ctx) {
+    return ctx.path.toReversed().find((n) => n.type === 'Element')
+}
+
 export function getScript(ctx) {
     return ctx.path.toReversed().find((n) => n.type === 'Script')
 }

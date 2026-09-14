@@ -10,5 +10,5 @@
 </script>
 
 <template>
-    <div :use="{log()}" :val="{value}" :onval="{value = event.target.val}">{value}</div>
+    <div :use="{log({test: 123})}" :val="{value}" :onval="{value = event.target.val}">{value}</div>
 </template>
