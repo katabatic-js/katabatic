@@ -13,5 +13,7 @@ export function MethodDefinition(node, ctx) {
         customElement.methods.push(node.key.name)
     } else if (node.kind === 'set') {
         customElement.setters.push(node.key.name)
+    } else if (node.kind === 'get') {
+        customElement.getters.push(node.key.name)
     }
 }

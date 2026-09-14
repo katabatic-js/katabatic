@@ -6,10 +6,12 @@ export function Program(node, ctx) {
         properties: [],
         methods: ['getAttribute'],
         setters: [],
+        getters: [],
         private: {
             properties: [],
             methods: [],
-            setters: []
+            setters: [],
+            getters: []
         }
     }
 

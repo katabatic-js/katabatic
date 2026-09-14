@@ -64,13 +64,19 @@ export function matchExpression(expression, program, blocks) {
             return
         }
 
-        if (customElement?.properties.includes(node.name)) {
+        if (
+            customElement?.properties.includes(node.name) ||
+            customElement?.getters.includes(node.name)
+        ) {
             node.metadata.isPrivate = false
             node.metadata.isProperty = true
             return
         }
 
-        if (customElement?.private.properties.includes(node.name)) {
+        if (
+            customElement?.private.properties.includes(node.name) ||
+            customElement?.private.getters.includes(node.name)
+        ) {
             node.metadata.isPrivate = true
             node.metadata.isProperty = true
             return
