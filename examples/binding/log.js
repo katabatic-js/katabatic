@@ -4,7 +4,7 @@ class Log extends EventTarget {
     constructor(element, opts) {
         super()
         setInterval(() => {
-            console.log(opts.getBinding(element))
+            console.log(this.getBinding(element))
             this.val++
             this.dispatchEvent(new CustomEvent('val'))
         }, 1000)

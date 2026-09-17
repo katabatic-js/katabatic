@@ -7,12 +7,12 @@
         #test = new Map()
         stuff
 
-        connectedCallback() {
+        connectedCallback() {/*
             const button = this.shadow.querySelector('button')
 
             effect(() => {
                 button.style.color = this.count % 2 ? 'red' : 'blue'
-            })
+            })*/
         }
         print({ count }) {
             console.log(count)
@@ -27,8 +27,7 @@
     customElements.define('ex-counter', Counter)
 </script>
 
-<template shadowRootMode="open">
-    <ex-counter-2></ex-counter-2>
+<template >
     {#if test}
     <!-- comment -->
     <br/>
@@ -36,6 +35,12 @@
     <button onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
     <button class="{getClass({active: count > 5})}" style="font-weight:{count * 100};" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
     {/if}
+
+    
+        <ex-counter-2></ex-counter-2>
+        
+    
+        
 
     <svg
         xmlns="http://www.w3.org/2000/svg"

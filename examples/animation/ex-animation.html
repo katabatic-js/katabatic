@@ -15,10 +15,16 @@
         )
     }
 
-    function fade(element, { duration = 1000 } = {}, { direction = 'in' } = {}) {
+    function fade(element, { duration = 1000, direction = 'in'  } = {}) {
+        function op() {
+            const opacity = getComputedStyle(element).opacity
+            console.log(opacity)
+            return opacity
+        }
+
         return element.animate(
             [
-                { opacity: direction === 'out' ? 1 : 0 }, // Start with opacity 0
+                { opacity: direction === 'out' ? op() : 0 }, // Start with opacity 0
                 { opacity: direction === 'out' ? 0 : 1 } // End with opacity 1
             ],
             {

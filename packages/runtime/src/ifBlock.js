@@ -46,15 +46,16 @@ export class IfBlock {
     init() {
         this.#effect = new Effect(
             () => {
-                console.log
                 if (this.getCondition()) {
                     this.#altBlock?.out(() => this.#removeBlock(this.#altBlock))
-                    this.#condBlock ??= this.#insertBlock(new Block(), this.concequent)
+                    this.#condBlock?.finish()
+                    this.#condBlock = this.#insertBlock(new Block(), this.concequent)
                     if (this.#effect) this.#condBlock.in()
                 } else {
                     this.#condBlock?.out(() => this.#removeBlock(this.#condBlock))
                     if (this.alternate) {
-                        this.#altBlock ??= this.#insertBlock(new Block(), this.alternate)
+                        this.#altBlock?.finish()
+                        this.#altBlock = this.#insertBlock(new Block(), this.alternate)
                         if (this.#effect) this.#altBlock.in()
                     }
                 }
@@ -63,16 +64,6 @@ export class IfBlock {
         ).run()
 
         return this
-    }
-
-    run() {
-        this.#effect.run()
-    }
-
-    pause() {
-        this.#effect.pause()
-        this.#condBlock?.pause()
-        this.#altBlock?.pause()
     }
 
     dispose() {

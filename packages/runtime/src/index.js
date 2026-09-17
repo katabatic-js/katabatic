@@ -98,22 +98,13 @@ export function $$(customElement) {
         }
     }
 
-    client.bind = function (element, fn, _client) {
-        function opts(value) {
-            return { ...value, getBinding: client.getBinding }
-        }
-
-        const binding = fn(opts)
-        if (binding) {
-            bindings.set(element, binding)
-            _client.add(binding)
-            return binding
-        }
+    client.setBinding = function(element, binding) {
+        bindings.set(element, binding)
     }
 
-    client.getBinding = function (element) {
+    client.getBinding = function (element, create) {
         let binding = bindings.get(element)
-        if (!binding) {
+        if (!binding && create) {
             binding = {}
             bindings.set(element, binding)
         }

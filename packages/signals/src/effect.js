@@ -73,7 +73,7 @@ export class Effect extends Set {
             return
         }
 
-        if (!this.microtask) {
+        if (this.fn && !this.microtask) {
             this.microtask = true
             queueMicrotask(() => {
                 if (this.microtask) {
@@ -94,9 +94,14 @@ export class Effect extends Set {
         this.add(tracker)
     }
 
-    pause() {
-        // prevent scheduled effect from running
-        this.microtask = false
+    /**
+     * Disposes the effect, stopping it from tracking any further events.
+     * This method should be called when the effect is no longer needed to prevent memory leaks.
+     * Only the outermost effect or boundary needs to be disposed to stop tracking events.
+     */
+    dispose() {
+        this.fn = null
+        this.microtask = false // prevent scheduled effect from running
 
         // dispose both trackers and nested effects / boundaries
         for (const entry of cleared(this)) {
@@ -111,16 +116,6 @@ export class Effect extends Set {
         } finally {
             context = outerContext
         }
-    }
-
-    /**
-     * Disposes the effect, stopping it from tracking any further events.
-     * This method should be called when the effect is no longer needed to prevent memory leaks.
-     * Only the outermost effect or boundary needs to be disposed to stop tracking events.
-     */
-    dispose() {
-        this.fn = null
-        this.pause()
     }
 }
 

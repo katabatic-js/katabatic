@@ -27,11 +27,9 @@ export function Attribute(node, ctx) {
     if (node.name === ':in' || node.name === ':out' || node.name === ':animate') {
         const elementId = ctx.state.getElementId()
         const expression = template.expressions[0]
-        const direction = node.name === ':animate' ? 'both' : node.name.slice(1)
-        const stmt = b.$animate(direction, {
-            ...expression,
-            arguments: [elementId, expression.arguments[0] ?? b.object(), b.id('o')]
-        })
+        const options = expression.arguments[0] ?? b.object()
+        const direction = b.literal(node.name === ':animate' ? 'inout' : node.name.slice(1))
+        const stmt = b.$animate(elementId, expression.callee, options, direction)
         ctx.state.animates.push(stmt)
         return
     }
@@ -39,12 +37,8 @@ export function Attribute(node, ctx) {
     if (node.name === ':use') {
         const elementId = ctx.state.getElementId()
         const expression = template.expressions[0]
-
-        const bindExpression = {
-            ...expression,
-            arguments: [elementId, b.call('opts', [expression.arguments[0]])]
-        }
-        const stmt = b.$bind(elementId, bindExpression)
+        const options = expression.arguments[0] ?? b.object()
+        const stmt = b.$bind(elementId, expression.callee, options)
         ctx.state.binds.push(stmt)
         return
     }

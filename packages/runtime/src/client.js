@@ -1,5 +1,4 @@
 import { Effect } from '@katabatic/signals'
-import { Animate } from './animate.js'
 
 export class Client extends Set {
     effect(fn) {
@@ -8,22 +7,14 @@ export class Client extends Set {
         return effect
     }
 
-    in() {}
-
-    out(callback) {
-        callback()
-    }
-
-    run() {
-        for (const entry of this) {
-            entry.run?.()
+    bind(element, fn, options, registry) {
+        const binding = fn(element, options)
+        if (binding) {
+            binding.getBinding = registry.getBinding
+            this.add(binding)
+            registry.setBinding(element, binding)
         }
-    }
-
-    pause() {
-        for (const entry of this) {
-            entry.pause?.()
-        }
+        return binding
     }
 
     dispose() {
@@ -34,65 +25,115 @@ export class Client extends Set {
 }
 
 export class AnimatedClient extends Client {
-    animate(direction, fn) {
-        const animate = new Animate(fn, direction)
+    #animations = []
+    #in
+    #out
+    #callback
+
+    animate(element, fn, options, direction) {
+        const animate = new Animate(fn, element, options, direction)
         this.add(animate)
         return animate
     }
 
     in() {
-        if (!this.playingIn) {
-            const playingIn = this.#playAnimates('in')?.then(() => {
-                if (this.playingIn === playingIn) {
-                    this.playingIn = undefined
-                }
-            })
-
-            if (this.playingOut) {
-                this.run()
+        if (!this.#in) {
+            for (const entry of this) {
+                const animation = entry.play?.('in')
+                if (animation) this.#animations.push(animation)
             }
 
-            this.playingIn = playingIn
-            this.playingOut = undefined
+            if (this.#animations.length > 0) {
+                this.#in = Promise.all(this.#animations.map((a) => a.finished))
+                    .finally(() => {
+                        this.#in = undefined
+                        this.#animations = []
+                    })
+                    .catch(() => {})
+            }
         }
     }
 
     out(callback) {
-        if (!this.playingOut) {
-            const playingOut = this.#playAnimates('out')?.then((completed) => {
-                if (this.playingOut === playingOut) {
-                    if (completed) {
-                        callback()
-                    }
-                    this.playingOut = undefined
-                }
-            })
-
-            if (playingOut) {
-                this.pause()
-            } else {
-                callback()
+        if (!this.#out) {
+            // pause in animations
+            for (const animation of this.#clearedAnimations()) {
+                animation.pause()
+                animation.commitStyles()
+                animation.cancel()
             }
 
-            this.playingOut = playingOut
-            this.playingIn = undefined
+            // play out animations and dispose everything else
+            for (const entry of [...this]) {
+                const animation = entry.play?.('out')
+                if (animation) {
+                    this.#animations.push(animation)
+                } else {
+                    entry.dispose?.()
+                    this.delete(entry)
+                }
+            }
+
+            if (this.#animations.length > 0) {
+                this.#callback = callback
+                this.#out = Promise.all(this.#animations.map((a) => a.finished))
+                    .finally(() => {
+                        this.#callback?.()
+                        this.#callback = undefined
+                        this.#out = undefined
+                        this.#animations = []
+                    })
+                    .catch(() => {})
+                return
+            }
+            callback?.()
         }
     }
 
-    #playAnimates(direction) {
-        const playingPromises = []
-        for (const entry of this) {
-            const animation = entry.play?.(direction)
-            if (animation) {
-                playingPromises.push(animation.finished)
-            }
-        }
+    finish() {
+        if (this.#out) {
+            this.#callback?.()
+            this.#callback = undefined
 
-        if (playingPromises.length > 0) {
-            return Promise.all(playingPromises)
-                .then(() => true)
-                .catch(() => false)
+            for (const animation of this.#clearedAnimations()) {
+                animation.finish()
+            }
+            return true
         }
+        return false
+    }
+
+    #clearedAnimations() {
+        const entries = this.#animations
+        this.#animations = []
+        return entries
+    }
+}
+
+class Animate {
+    constructor(fn, element, options, direction) {
+        this.fn = fn
+        this.element = element
+        this.options = options
+        this.direction = direction
+    }
+
+    play(direction) {
+        if (this.fn && this.direction.includes(direction)) {
+            this.animation = this.fn(this.element, { ...this.options, direction })
+            this.animation.finished.finally(() => (this.animation = undefined)).catch(() => {})
+            return this.animation
+        }
+    }
+
+    dispose() {
+        this.fn = undefined
+        this.element = undefined
+        this.options = undefined
+        this.direction = undefined
+
+        this.animation?.finish()
+        this.animation = undefined
     }
 }
 

@@ -6,7 +6,10 @@
         #test = 6
 
         connectedCallback() {
-            console.log('dd')
+            console.log('Sub comp connect')
+            console.log(this.parentElement)
+            console.log(this.parentElement.parentElement)
+            console.log(this.getRootNode())
            
         }
     }

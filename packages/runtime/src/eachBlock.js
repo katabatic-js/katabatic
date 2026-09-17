@@ -67,10 +67,10 @@ export class EachBlock extends Map {
     init() {
         this.#effect = new Effect(
             () => {
-                const iterable = [...this.getIterable() ?? []]
+                const iterable = [...(this.getIterable() ?? [])]
 
                 for (const block of this.#getRemovedBlocks(iterable)) {
-                    this.#removeBlock(block)
+                    block.out(() => this.#removeBlock(block))
                 }
 
                 let tail = this.#head
@@ -79,7 +79,7 @@ export class EachBlock extends Map {
                     const key = this.getKey(item, index)
                     let block = this.get(key)
 
-                    if (block) {
+                    if (block && !block.finish()) {
                         if (tail.nextBlock === block) {
                             tail = updateBlock(block, item)
                         } else {
@@ -97,17 +97,6 @@ export class EachBlock extends Map {
         ).run()
 
         return this
-    }
-
-    run() {
-        this.#effect.run()
-    }
-
-    pause() {
-        this.#effect.pause()
-        for (const entry of this) {
-            entry.pause()
-        }
     }
 
     dispose() {

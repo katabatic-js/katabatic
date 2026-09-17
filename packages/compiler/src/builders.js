@@ -1061,7 +1061,7 @@ export function $effect(body) {
     }
 }
 
-export function $bind(elementId, body) {
+export function $bind(...args) {
     return {
         type: 'ExpressionStatement',
         expression: {
@@ -1069,6 +1069,19 @@ export function $bind(elementId, body) {
             callee: {
                 type: 'MemberExpression',
                 object: {
+                    type: 'Identifier',
+                    name: '$'
+                },
+                property: {
+                    type: 'Identifier',
+                    name: 'bind'
+                },
+                computed: false,
+                optional: false
+            },
+            arguments: [
+                ...args,
+                {
                     type: 'MemberExpression',
                     object: {
                         type: 'ThisExpression'
@@ -1079,28 +1092,6 @@ export function $bind(elementId, body) {
                     },
                     computed: false,
                     optional: false
-                },
-                property: {
-                    type: 'Identifier',
-                    name: 'bind'
-                },
-                computed: false,
-                optional: false
-            },
-            arguments: [
-                elementId,
-                {
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    expression: false,
-                    generator: false,
-                    async: false,
-                    params: [{ type: 'Identifier', name: 'opts' }],
-                    body
-                },
-                {
-                    type: 'Identifier',
-                    name: '$'
                 }
             ],
             optional: false
@@ -1132,12 +1123,12 @@ export function $getBinding(elementId) {
             computed: false,
             optional: false
         },
-        arguments: [elementId],
+        arguments: [elementId, { type: 'Literal', value: true }],
         optional: false
     }
 }
 
-export function $animate(value, body) {
+export function $animate(...args) {
     return {
         type: 'ExpressionStatement',
         expression: {
@@ -1155,18 +1146,7 @@ export function $animate(value, body) {
                 computed: false,
                 optional: false
             },
-            arguments: [
-                { type: 'Literal', value },
-                {
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    expression: false,
-                    generator: false,
-                    async: false,
-                    params: [{ type: 'Identifier', name: 'o' }],
-                    body
-                }
-            ],
+            arguments: args,
             optional: false
         }
     }
