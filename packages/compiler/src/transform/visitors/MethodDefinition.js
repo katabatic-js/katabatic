@@ -38,6 +38,13 @@ export function MethodDefinition(node, ctx) {
             stmts.push(b.assignment(b.shadow(), b.attachShadow(shadowRootMode), '??='))
         }
 
+        if (ctx.state.template?.style) {
+            const styleRootId = ctx.state.template?.metadata?.shadowRootMode
+                ? b.shadow()
+                : b.getRootNode()
+            stmts.push(b.$$adoptStyleSheet(styleRootId, 'SHEET'))
+        }
+
         if (ctx.state.template?.block) {
             stmts.push(ctx.state.template.block)
         }

@@ -613,6 +613,57 @@ export function $setDecl(body) {
     }
 }
 
+export function $$cssStyleSheet(text) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'cssStyleSheet'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [text],
+        optional: false
+    }
+}
+
+export function $$adoptStyleSheet(node, name) {
+    if (typeof name === 'string') {
+        name = {
+            type: 'CallExpression',
+            callee: { type: 'Identifier', name },
+            arguments: [],
+            optional: false
+        }
+    }
+
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'adoptStyleSheet'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [node, name],
+        optional: false
+    }
+}
+
 export function $$init(property, value) {
     const argumentsStmts = [
         { type: 'ThisExpression' },
@@ -730,6 +781,19 @@ export function $$() {
     }
 }
 
+export function adoptedStyleSheets(object) {
+    return {
+        type: 'MemberExpression',
+        object,
+        property: {
+            type: 'Identifier',
+            name: 'adoptedStyleSheets'
+        },
+        computed: false,
+        optional: false
+    }
+}
+
 export function shadow() {
     return {
         type: 'MemberExpression',
@@ -780,6 +844,24 @@ export function attachShadow(value = 'open') {
                 ]
             }
         ],
+        optional: false
+    }
+}
+
+export function getRootNode() {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: { type: 'ThisExpression' },
+            property: {
+                type: 'Identifier',
+                name: 'getRootNode'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [],
         optional: false
     }
 }

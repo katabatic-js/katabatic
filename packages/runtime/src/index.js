@@ -98,7 +98,7 @@ export function $$(customElement) {
         }
     }
 
-    client.setBinding = function(element, binding) {
+    client.setBinding = function (element, binding) {
         bindings.set(element, binding)
     }
 
@@ -126,4 +126,21 @@ $$.init = function (object, property, value) {
         }
     }
     return value
+}
+
+$$.cssStyleSheet = function (text) {
+    let sheet
+    return () => {
+        if (!sheet) {
+            sheet = new CSSStyleSheet()
+            sheet.replaceSync(text)
+        }
+        return sheet
+    }
+}
+
+$$.adoptStyleSheet = function (node, sheet) {
+    if (!node.adoptedStyleSheets.includes(sheet)) {
+        node.adoptedStyleSheets.push(sheet)
+    }
 }

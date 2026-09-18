@@ -5,8 +5,7 @@ import { appendExpression, appendText } from '../../utils/template.js'
 export function Style(node, ctx) {
     node = ctx.next() ?? node
 
-    const css = generate(node.content)
-    const style = css.length > 0 ? `<style>${css}</style>` : ''
+    const style = generate(node.content)
 
     // handle modules
     const tokens = style.split(/(\$Module_\d+)/)

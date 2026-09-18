@@ -35,7 +35,7 @@ export function Program(node, ctx) {
     // style
     if (ctx.state.template?.style) {
         const { style } = ctx.state.template
-        stmt = b.declaration('STYLE', b.template(style))
+        stmt = b.declaration('SHEET', b.$$cssStyleSheet(b.template(style)))
         stmts1.push(stmt)
     }
 

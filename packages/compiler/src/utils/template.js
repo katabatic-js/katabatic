@@ -19,5 +19,5 @@ export function hasOnlyExpression(template) {
 }
 
 export function isEmpty(template) {
-    return template.expressions.length == 0 && template.text[0] === ''
+    return !template || (template.expressions.length == 0 && template.text[0] === '')
 }

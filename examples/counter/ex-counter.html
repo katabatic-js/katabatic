@@ -36,8 +36,9 @@
     <button class="{getClass({active: count > 5})}" style="font-weight:{count * 100};" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
     {/if}
 
-    
+    {#if count >=2}
         <ex-counter-2></ex-counter-2>
+    {/if}
         
     
         

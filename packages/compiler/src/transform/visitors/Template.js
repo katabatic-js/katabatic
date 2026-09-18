@@ -1,8 +1,8 @@
 import * as b from '../../builders.js'
 
 export function Template(node, ctx) {
-    const style = { text: [''], expressions: [] }
-    const template = { text: [''], expressions: [] }
+    let style = { text: [''], expressions: [] }
+    let template = { text: [''], expressions: [] }
     const init = { elem: [], text: [] }
     const binds = []
     const effects = []
@@ -26,7 +26,7 @@ export function Template(node, ctx) {
 
     const stmts1 = [
         b.declaration('template', b.createElement('template')),
-        b.assignment(b.innerHTML('template'), b.binary('+', b.id('TEMPLATE'), b.id('STYLE')))
+        b.assignment(b.innerHTML('template'), b.id('TEMPLATE'))
     ]
     const stmts2 = [
         ...init.elem,
