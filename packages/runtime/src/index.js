@@ -128,6 +128,17 @@ $$.init = function (object, property, value) {
     return value
 }
 
+$$.template = function (text) {
+    let template
+    return () => {
+        if (!template) {
+            template = document.createElement('template')
+            template.innerHTML = text
+        }
+        return template
+    }
+}
+
 $$.cssStyleSheet = function (text) {
     let sheet
     return () => {

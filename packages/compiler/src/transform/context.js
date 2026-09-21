@@ -1,5 +1,9 @@
 import * as b from '../builders.js'
 
+export function nextTemplateId(ctx) {
+    return b.id(`TEMPLATE_${ctx.state.templates.length + 1}`)
+}
+
 export function nextElementId(ctx) {
     return b.id(`elem_${ctx.state.init.elem.length + 1}`)
 }
@@ -24,7 +28,7 @@ export function pathStmt(ctx, nodes) {
         subPath.push(...(Array.isArray(nodes) ? nodes : [nodes]))
     }
 
-    let stmt = b.member('template', 'content')
+    let stmt = b.id('fragment')
     let fragment
     for (const node of subPath) {
         switch (node.type) {

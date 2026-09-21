@@ -1,6 +1,6 @@
 import * as b from '../../builders.js'
 import { appendText } from '../../utils/template.js'
-import { nextElementId, pathStmt } from '../context.js'
+import { nextElementId, nextTemplateId, pathStmt } from '../context.js'
 
 export function IfBlock(node, ctx) {
     function branchStmt(node, hasElseif = false) {
@@ -25,10 +25,14 @@ export function IfBlock(node, ctx) {
             })
 
             if (!hasElseif) {
-                const stmts1 = [
-                    b.declaration('template', b.createElement('template')),
-                    b.assignment(b.innerHTML('template'), b.template(template))
-                ]
+                const templateId = nextTemplateId(ctx)
+                const templateStmt = b.declaration(templateId, b.$$template(b.template(template)))
+                ctx.state.templates.push(templateStmt)
+
+                const stmt1 = b.declaration(
+                    'fragment',
+                    b.importNode(b.member(b.call(templateId), 'content'))
+                )
                 const stmts2 = [
                     ...init.elem,
                     ...init.text,
@@ -38,9 +42,9 @@ export function IfBlock(node, ctx) {
                     ...eventListeners,
                     ...blocks
                 ]
-                const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))
+                const stmt3 = b.insertBefore('anchor', b.id('fragment'))
 
-                return [...stmts1, ...stmts2, stmt3]
+                return [stmt1, ...stmts2, stmt3]
             }
             return [...init.elem, ...blocks]
         }

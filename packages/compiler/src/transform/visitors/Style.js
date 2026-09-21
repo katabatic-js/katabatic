@@ -5,15 +5,19 @@ import { appendExpression, appendText } from '../../utils/template.js'
 export function Style(node, ctx) {
     node = ctx.next() ?? node
 
-    const style = generate(node.content)
+    const css = generate(node.content)
+    const style = { text: [''], expressions: [] }
 
     // handle modules
-    const tokens = style.split(/(\$Module_\d+)/)
+    const tokens = css.split(/(\$Module_\d+)/)
     for (const token of tokens) {
         token.startsWith('$Module_')
-            ? appendExpression(ctx.state.style, b.$name(token))
-            : appendText(ctx.state.style, token)
+            ? appendExpression(style, b.$name(token))
+            : appendText(style, token)
     }
+
+    const styleStmt = b.declaration('SHEET', b.$$cssStyleSheet(b.template(style)))
+    ctx.state.styles.push(styleStmt)
 
     appendText(ctx.state.template, '<!-- -->')
 }

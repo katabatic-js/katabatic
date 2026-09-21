@@ -1,6 +1,6 @@
 import * as b from '../../builders.js'
 import { appendText } from '../../utils/template.js'
-import { nextElementId, pathStmt } from '../context.js'
+import { nextElementId, nextTemplateId, pathStmt } from '../context.js'
 
 export function EachBlock(node, ctx) {
     const template = { text: [''], expressions: [] }
@@ -22,10 +22,11 @@ export function EachBlock(node, ctx) {
         blocks
     })
 
-    const stmts1 = [
-        b.declaration('template', b.createElement('template')),
-        b.assignment(b.innerHTML('template'), b.template(template))
-    ]
+    const templateId = nextTemplateId(ctx)
+    const templateStmt = b.declaration(templateId, b.$$template(b.template(template)))
+    ctx.state.templates.push(templateStmt)
+
+    const stmt1 = b.declaration('fragment', b.importNode(b.member(b.call(templateId), 'content')))
     const stmts2 = [
         ...init.elem,
         ...init.text,
@@ -35,10 +36,10 @@ export function EachBlock(node, ctx) {
         ...eventListeners,
         ...blocks
     ]
-    const stmt3 = b.insertBefore('anchor', b.member('template', 'content'))
+    const stmt3 = b.insertBefore('anchor', b.id('fragment'))
 
     const anchorId = nextElementId(ctx)
-    const bodyStmt = [...stmts1, ...stmts2, stmt3]
+    const bodyStmt = [stmt1, ...stmts2, stmt3]
     const expressionStmt = ctx.visit(node.expression)
     const anchorStmt = b.declaration(anchorId, pathStmt(ctx, node))
     const blockStmt = b.eachBlock(anchorId, expressionStmt, node.context, node.key, bodyStmt)

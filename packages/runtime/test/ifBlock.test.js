@@ -87,7 +87,7 @@ describe('ifBlock', () => {
                     const element = document.createElement('div')
                     element.textContent = 'concequent'
 
-                    $.animate('out', (o) => fade(element, { duration: 100 }, o))
+                    $.animate(element, fade, { duration: 100 }, 'out')
 
                     $.effect(() => {
                         value = test.value
@@ -114,7 +114,7 @@ function createAnchor() {
     return anchor
 }
 
-function fade(element, { duration = 1000 } = {}, { direction = 'in' } = {}) {
+function fade(element, { duration = 1000, direction = 'in' } = {}) {
     return element.animate(
         [{ opacity: direction === 'out' ? 1 : 0 }, { opacity: direction === 'out' ? 0 : 1 }],
         {

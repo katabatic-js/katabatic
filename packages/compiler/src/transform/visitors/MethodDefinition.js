@@ -38,7 +38,7 @@ export function MethodDefinition(node, ctx) {
             stmts.push(b.assignment(b.shadow(), b.attachShadow(shadowRootMode), '??='))
         }
 
-        if (ctx.state.template?.style) {
+        if (ctx.state.template?.styles[0]) {
             const styleRootId = ctx.state.template?.metadata?.shadowRootMode
                 ? b.shadow()
                 : b.getRootNode()

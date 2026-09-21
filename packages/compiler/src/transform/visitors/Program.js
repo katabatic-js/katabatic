@@ -25,18 +25,14 @@ export function Program(node, ctx) {
     stmt = b.importSpecifier('$$', '@katabatic/runtime')
     stmts1.push(stmt)
 
-    // html template
-    if (ctx.state.template?.template) {
-        const { template } = ctx.state.template
-        stmt = b.declaration('TEMPLATE', b.template(template))
-        stmts1.push(stmt)
-    }
-
     // style
-    if (ctx.state.template?.style) {
-        const { style } = ctx.state.template
-        stmt = b.declaration('SHEET', b.$$cssStyleSheet(b.template(style)))
-        stmts1.push(stmt)
+    if (ctx.state.template?.styles[0]) {
+        stmts1.push(ctx.state.template.styles[0])
+    }
+    
+    // templates
+    if (ctx.state.template?.templates) {
+        stmts1.push(...ctx.state.template.templates)
     }
 
     //$hot

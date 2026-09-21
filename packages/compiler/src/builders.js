@@ -311,6 +311,58 @@ export function textContent(object) {
     }
 }
 
+export function importNode(node) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: 'document'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'importNode'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [node, { type: 'Literal', value: true }],
+        optional: false
+    }
+}
+
+export function cloneNode(object) {
+    if (typeof object === 'string') {
+        object = { type: 'Identifier', name: object }
+    }
+
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'MemberExpression',
+                object,
+                property: {
+                    type: 'Identifier',
+                    name: 'content'
+                },
+                computed: false,
+                optional: false
+            },
+            property: {
+                type: 'Identifier',
+                name: 'cloneNode'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [{ type: 'Literal', value: true }],
+        optional: false
+    }
+}
+
 export function innerHTML(object) {
     if (typeof object === 'string') {
         object = { type: 'Identifier', name: object }
@@ -610,6 +662,27 @@ export function $setDecl(body) {
         },
         specifiers: [],
         source: null
+    }
+}
+
+export function $$template(text) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'template'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [text],
+        optional: false
     }
 }
 
