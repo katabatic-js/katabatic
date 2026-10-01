@@ -10,5 +10,5 @@ export function Attribute(node, ctx) {
 
     node.metadata ??= {}
     node.metadata.isProperty = isProperty
-    node.metadata.isScoped = isScoped
+    node.metadata.isScoped ||= isScoped
 }

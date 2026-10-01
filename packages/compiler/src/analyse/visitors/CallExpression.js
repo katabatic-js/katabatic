@@ -1,7 +1,8 @@
 import * as is from '../../checkers.js'
 import { matchQuerySelector } from '../../css-matcher.js'
+import { matchQuerySelector as matchModuleQuerySelector } from '../../module-matcher.js'
 import { matchElementById } from '../../id-matcher.js'
-import { getTemplate } from '../context.js'
+import { getProgram, getTemplate } from '../context.js'
 
 export function CallExpression(node, ctx) {
     ctx.next()
@@ -20,10 +21,11 @@ export function CallExpression(node, ctx) {
     if (is.querySelector(node)) {
         const selector = node.arguments[0].value
         const template = getTemplate(ctx)
-        const [isScoped, selectorList] = matchQuerySelector(selector, template)
+        let [isScoped, selectorList] = matchQuerySelector(selector, template)
+        isScoped = matchModuleQuerySelector(selectorList, ctx.state.modules) || isScoped
 
         node.metadata ??= {}
-        node.metadata.isQuerySelector= true
+        node.metadata.isQuerySelector = true
         node.metadata.isScoped = isScoped
         node.metadata.selectorList = selectorList
         return

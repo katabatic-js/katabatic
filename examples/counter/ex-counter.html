@@ -7,12 +7,12 @@
         #test = new Map()
         stuff
 
-        connectedCallback() {/*
-            const button = this.shadow.querySelector('button')
+        connectedCallback() {
+            const button = document.getElementById('hop')
 
             effect(() => {
                 button.style.color = this.count % 2 ? 'red' : 'blue'
-            })*/
+            })
         }
         print({ count }) {
             console.log(count)
@@ -28,17 +28,14 @@
 </script>
 
 <template >
-    {#if test}
     <!-- comment -->
     <br/>
     <input value="{count}" />
-    <button onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
+    <button id="hop" onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
     <button class="{getClass({active: count > 5})}" style="font-weight:{count * 100};" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
-    {/if}
 
-    {#if count >=2}
         <ex-counter-2></ex-counter-2>
-    {/if}
+    
         
     
         

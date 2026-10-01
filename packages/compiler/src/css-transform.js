@@ -1,6 +1,9 @@
 import { generate, parse } from 'css-tree'
 import { walk } from 'zimmerframe'
+import * as b from './builders.js'
 import { Selector, CssTree } from './transform/visitors/Selector.js'
+import { TypeSelector } from './transform/visitors/TypeSelector.js'
+import { appendExpression, appendText } from './utils/template.js'
 
 export function transformQuerySelector(selectorList, context) {
     if (typeof selectorList === 'string') {
@@ -13,9 +16,21 @@ export function transformQuerySelector(selectorList, context) {
         { context },
         {
             Selector,
+            TypeSelector,
             ...CssTree
         }
     )
 
-    return generate(selectorList)
+    const css = generate(selectorList)
+    const style = { text: [''], expressions: [] }
+
+    // handle modules
+    const tokens = css.split(/(\$Module_\d+)/)
+    for (const token of tokens) {
+        token.startsWith('$Module_')
+            ? appendExpression(style, b.$name(token))
+            : appendText(style, token)
+    }
+
+    return b.template(style)
 }

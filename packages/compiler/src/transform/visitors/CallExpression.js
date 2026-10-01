@@ -11,7 +11,7 @@ export function CallExpression(node, ctx) {
 
     if (node.metadata?.isQuerySelector && node.metadata?.isScoped) {
         const selectorList = node.metadata.selectorList
-        const query = transformQuerySelector(selectorList, ctx.state.context)
-        return { ...node, arguments: [b.literal(query)] }
+        const queryStmt = transformQuerySelector(selectorList, ctx.state.context)
+        return { ...node, arguments: [queryStmt] }
     }
 }

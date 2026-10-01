@@ -1,11 +1,14 @@
 import { matchSelector } from '../../css-matcher.js'
-import { getTemplate } from '../context.js'
+import { matchSelector as matchModuleSelector } from '../../module-matcher.js'
+import { getProgram, getTemplate } from '../context.js'
 
 export function Selector(node, ctx) {
     node = CssTreeNodeFix(node, ctx)
 
     const template = getTemplate(ctx)
+    const program = getProgram(ctx)
     const isUsed = matchSelector(node, template)
+    matchModuleSelector(node, program)
 
     node.metadata ??= {}
     node.metadata.isUsed = isUsed
