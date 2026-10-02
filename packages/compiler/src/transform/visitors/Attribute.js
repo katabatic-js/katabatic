@@ -14,8 +14,6 @@ export function Attribute(node, ctx) {
     if (node.name === 'class' && node.metadata?.isScoped) {
         if (value[0].type === 'Text') {
             value = [b.text(clx(value[0].data, `ktb-${ctx.state.context.hash}`))]
-        } else {
-            value = [...value, b.text(` ktb-${ctx.state.context.hash}`)]
         }
     }
 
@@ -80,10 +78,20 @@ export function Attribute(node, ctx) {
         let setStmt
         if (moduleId) {
             setStmt = b.$set(moduleId, elementId, b.literal(node.name), b.template(template))
+        } else if (node.name === 'class') {
+            setStmt = b.$$setClass(
+                elementId,
+                b.template(template),
+                b.literal(`ktb-${ctx.state.context.hash}`)
+            )
+        } else if (node.name === 'style') {
+            setStmt = b.$$setStyle(elementId, b.template(template))
         } else if (node.metadata?.isProperty) {
             setStmt = b.assignment(b.member(elementId, node.name), b.template(template))
+        } else if (node.metadata?.isBoolean) {
+            setStmt = b.$$setBoolAttribute(elementId, b.literal(node.name), b.template(template))
         } else {
-            setStmt = b.setAttribute(elementId, b.literal(node.name), b.template(template))
+            setStmt = b.$$setAttribute(elementId, b.literal(node.name), b.template(template))
         }
 
         const stmt = b.$effect([setStmt])

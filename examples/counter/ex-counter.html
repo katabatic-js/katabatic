@@ -20,7 +20,8 @@
         }
 
         getClass(a) {
-            return a.active ? 'active' : ''
+            return a.active ? 'active' : '  '
+            //return {active: a.active}
         }
     }
 
@@ -32,7 +33,7 @@
     <br/>
     <input value="{count}" />
     <button id="hop" onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
-    <button class="{getClass({active: count > 5})}" style="font-weight:{count * 100};" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
+    <button disabled="{count > 3 && count < 5 ? 'e' : 0}" class="{getClass({active: count > 5 && count < 7})}" style="{{fontWeight: count * 100}}" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
 
         <ex-counter-2></ex-counter-2>
     

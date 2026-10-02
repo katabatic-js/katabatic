@@ -737,6 +737,90 @@ export function $$adoptStyleSheet(node, name) {
     }
 }
 
+export function $$setAttribute(element, attribute, value) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'setAttribute'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [element, attribute, value],
+        optional: false
+    }
+}
+
+export function $$setBoolAttribute(element, attribute, value) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'setBoolAttribute'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [element, attribute, value],
+        optional: false
+    }
+}
+
+export function $$setStyle(element, value) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'setStyle'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [element, value],
+        optional: false
+    }
+}
+
+export function $$setClass(element, value, scope) {
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'setClass'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [element, value, scope],
+        optional: false
+    }
+}
+
 export function $$init(property, value) {
     const argumentsStmts = [
         { type: 'ThisExpression' },

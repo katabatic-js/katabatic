@@ -124,6 +124,38 @@ export function propertyAttribute(node, elementNode) {
     return false
 }
 
+export function booleanAttribute(node) {
+    return (
+        node.type === 'Attribute' &&
+        [
+            'allowfullscreen',
+            'async',
+            'autofocus',
+            'autoplay',
+            'checked',
+            'controls',
+            'default',
+            'defer',
+            'disabled',
+            'formnovalidate',
+            'inert',
+            'ismap',
+            'itemscope',
+            'loop',
+            'multiple',
+            'muted',
+            'nomodule',
+            'novalidate',
+            'open',
+            'playsinline',
+            'readonly',
+            'required',
+            'reversed',
+            'selected'
+        ].includes(node.name)
+    )
+}
+
 export function classAttribute(node, withExpressionTag) {
     let result = node.type === 'Attribute' && node.name === 'class'
     if (withExpressionTag === true) {

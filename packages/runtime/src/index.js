@@ -155,3 +155,51 @@ $$.adoptStyleSheet = function (node, sheet) {
         node.adoptedStyleSheets.push(sheet)
     }
 }
+
+$$.setAttribute = function (element, name, value) {
+    if (value === null || value === undefined) {
+        element.removeAttribute(name)
+    } else {
+        element.setAttribute(name, value)
+    }
+}
+
+$$.setBoolAttribute = function (element, name, value) {
+    if (!value) {
+        element.removeAttribute(name)
+    } else {
+        element.setAttribute(name, '')
+    }
+}
+
+$$.setClass = function (element, value) {
+    if (value === null || value === undefined) {
+        element.removeAttribute(name)
+    } else {
+        element.setAttribute(name, value)
+    }
+}
+
+$$.setStyle = function (element, value) {
+    if (typeof value === 'string') {
+        element.style.cssText = value
+    } else if (typeof value === 'object') {
+        for (const [key, val] of Object.entries(value)) {
+            element.style[key] = val ?? ''
+        }
+    }
+}
+
+$$.setClass = function (element, value, scope) {
+    if (typeof value === 'string') {
+        element.className = value + ' ' + scope
+    } else if (Array.isArray(value)) {
+        value = value.filter((v) => v).join(' ')
+        element.className = value + ' ' + scope
+    } else if (typeof value === 'object') {
+        element.classList.add(scope)
+        for (const [key, val] of Object.entries(value)) {
+            element.classList.toggle(key, !!val)
+        }
+    }
+}
