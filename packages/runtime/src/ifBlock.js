@@ -1,4 +1,4 @@
-import { compute, Effect } from '@katabatic/signals'
+import { compute, Effect, untracked } from '@katabatic/signals'
 import { AnimatedClient } from './client.js'
 
 export class IfBlock {
@@ -16,18 +16,17 @@ export class IfBlock {
 
     #insertBlock(block, fn) {
         const alternate = fn === this.alternate
-        const previousBlock = alternate ? this.#condBlock ?? this.#headBlock : this.#headBlock
+        const previousBlock = alternate ? (this.#condBlock ?? this.#headBlock) : this.#headBlock
         const anchor = previousBlock.nextNode
 
-        fn(block, anchor)
+        untracked(() => fn(block, anchor))
         block.anchor = anchor.previousSibling
-
         return block
     }
 
     #removeBlock(block) {
         const alternate = block === this.#altBlock
-        const previousBlock = alternate ? this.#condBlock ?? this.#headBlock : this.#headBlock
+        const previousBlock = alternate ? (this.#condBlock ?? this.#headBlock) : this.#headBlock
 
         let node = previousBlock.nextNode
         while (true) {

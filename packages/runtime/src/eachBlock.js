@@ -1,4 +1,4 @@
-import { Signal, SignalEvent, Effect } from '@katabatic/signals'
+import { Signal, SignalEvent, Effect, untracked } from '@katabatic/signals'
 import { AnimatedClient } from './client.js'
 
 export class EachBlock extends Map {
@@ -15,12 +15,12 @@ export class EachBlock extends Map {
 
     #insertBlockAfter(block, tail) {
         const anchor = tail.nextNode
-        this.fn(block, anchor, block.getValue)
+
+        untracked(() => this.fn(block, anchor, block.getValue))
         block.anchor = anchor.previousSibling
 
         tail.insertAfter(block)
         this.set(block.key, block)
-
         return block
     }
 

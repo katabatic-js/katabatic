@@ -1,4 +1,4 @@
-import { Signal, SignalEvent, Boundary, track } from '@katabatic/signals'
+import { Signal, SignalEvent, Boundary, track, untracked } from '@katabatic/signals'
 import { AttributeTracker, PropertyTracker } from '@katabatic/signals/tracker'
 import { Client } from './client.js'
 
@@ -18,7 +18,7 @@ export class RootClient extends Set {
 
     block(fn) {
         const block = new Client()
-        fn(block)
+        untracked(() => fn(block))
         this.add(block)
         return block
     }

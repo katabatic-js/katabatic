@@ -31,12 +31,13 @@
 <template >
     <!-- comment -->
     <br/>
+    {#if count >= 0}
     <input value="{count}" />
-    <button id="hop" onclick="{count++}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
+    <button id="hop" onclick="{count = count + 1}" class="active" hello="efe">counter is I {count} {test.get('aa')}</button>
     <button disabled="{count > 3 && count < 5 ? 'e' : 0}" class="{getClass({active: count > 5 && count < 7})}" style="{{fontWeight: count * 100}}" onclick="{print({count})}" hello="{`${stuff} h`}">efef {stuff}</button>
 
         <ex-counter-2></ex-counter-2>
-    
+    {/if}
         
     
         

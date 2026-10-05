@@ -79,14 +79,6 @@ $$.setBoolAttribute = function (element, name, value) {
     }
 }
 
-$$.setClass = function (element, value) {
-    if (value === null || value === undefined) {
-        element.removeAttribute(name)
-    } else {
-        element.setAttribute(name, value)
-    }
-}
-
 $$.setStyle = function (element, value) {
     if (typeof value === 'string') {
         element.style.cssText = value
