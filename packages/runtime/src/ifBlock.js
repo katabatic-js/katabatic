@@ -1,9 +1,9 @@
-import { compute, Effect, untracked } from '@katabatic/signals'
+import { Effect, untracked } from '@katabatic/signals'
 import { AnimatedClient } from './client.js'
 
 export class IfBlock {
     constructor(anchor, getCondition, concequent, alternate) {
-        this.getCondition = compute(getCondition)
+        this.getCondition = getCondition
         this.concequent = concequent
         this.alternate = alternate
         this.#headBlock = createHeadBlock(anchor)
@@ -45,17 +45,23 @@ export class IfBlock {
     init() {
         this.#effect = new Effect(
             () => {
-                if (this.getCondition()) {
-                    this.#altBlock?.out(() => this.#removeBlock(this.#altBlock))
-                    this.#condBlock?.finish()
-                    this.#condBlock = this.#insertBlock(new Block(), this.concequent)
-                    if (this.#effect) this.#condBlock.in()
-                } else {
-                    this.#condBlock?.out(() => this.#removeBlock(this.#condBlock))
-                    if (this.alternate) {
-                        this.#altBlock?.finish()
-                        this.#altBlock = this.#insertBlock(new Block(), this.alternate)
-                        if (this.#effect) this.#altBlock.in()
+                const nextCondition = this.getCondition()
+
+                if (this.condition !== !!nextCondition) {
+                    this.condition = !!nextCondition
+
+                    if (this.condition) {
+                        this.#altBlock?.out(() => this.#removeBlock(this.#altBlock))
+                        this.#condBlock?.finish()
+                        this.#condBlock = this.#insertBlock(new Block(), this.concequent)
+                        if (this.#effect) this.#condBlock.in()
+                    } else {
+                        this.#condBlock?.out(() => this.#removeBlock(this.#condBlock))
+                        if (this.alternate) {
+                            this.#altBlock?.finish()
+                            this.#altBlock = this.#insertBlock(new Block(), this.alternate)
+                            if (this.#effect) this.#altBlock.in()
+                        }
                     }
                 }
             },
