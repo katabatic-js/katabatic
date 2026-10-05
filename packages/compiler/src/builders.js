@@ -235,6 +235,10 @@ export function call(callee, args = [], { optional = false } = {}) {
 }
 
 export function ifStmt(test, consequent, alternate) {
+    if (typeof test === 'string') {
+        test = { type: 'Identifier', name: test }
+    }
+
     return {
         type: 'IfStatement',
         test,
@@ -603,6 +607,21 @@ export function getCustomElement(value) {
     }
 }
 
+export function $hot(body = []) {
+    return {
+        type: 'FunctionDeclaration',
+        id:{ type: 'Identifier', name: '$hot' },
+        expression: false,
+        generator: false,
+        async: false,
+        params: [{ type: 'Identifier', name: 'dispose' }],
+        body: {
+            type: 'BlockStatement',
+            body
+        }
+    }
+}
+
 export function $name(object) {
     if (typeof object === 'string') {
         object = { type: 'Identifier', name: object }
@@ -728,6 +747,36 @@ export function $$adoptStyleSheet(node, name) {
             property: {
                 type: 'Identifier',
                 name: 'adoptStyleSheet'
+            },
+            computed: false,
+            optional: false
+        },
+        arguments: [node, name],
+        optional: false
+    }
+}
+
+export function $$removeStyleSheet(node, name) {
+    if (typeof name === 'string') {
+        name = {
+            type: 'CallExpression',
+            callee: { type: 'Identifier', name },
+            arguments: [],
+            optional: false
+        }
+    }
+
+    return {
+        type: 'CallExpression',
+        callee: {
+            type: 'MemberExpression',
+            object: {
+                type: 'Identifier',
+                name: '$$'
+            },
+            property: {
+                type: 'Identifier',
+                name: 'removeStyleSheet'
             },
             computed: false,
             optional: false

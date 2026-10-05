@@ -37,7 +37,7 @@ export function Program(node, ctx) {
 
     //$hot
     if (ctx.state.context.hot) {
-        const stmt = $hot({ ...node, body: [...node.body, ...stmts2] })
+        const stmt = $hot({ ...node, body: [...node.body, ...stmts2] }, ctx)
         stmts2.push(stmt)
     }
 

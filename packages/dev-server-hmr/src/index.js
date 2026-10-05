@@ -90,6 +90,7 @@ if (import.meta.hot) {
             }
 
             document.querySelectorAll('$1').forEach((node) => {
+                node.$hot(true)
                 node.disconnectedCallback()
             })
 

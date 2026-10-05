@@ -63,6 +63,13 @@ $$.adoptStyleSheet = function (node, sheet) {
     }
 }
 
+$$.removeStyleSheet = function (node, sheet) {
+    const index = node.adoptedStyleSheets.indexOf(sheet)
+    if (index !== -1) {
+        node.adoptedStyleSheets.splice(index, 1)
+    }
+}
+
 $$.setAttribute = function (element, name, value) {
     if (value === null || value === undefined) {
         element.removeAttribute(name)

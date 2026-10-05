@@ -2,15 +2,28 @@ import { walk } from 'zimmerframe'
 import * as b from './builders.js'
 import * as is from './checkers.js'
 
-export function $hot(program) {
+export function $hot(program, ctx) {
     const stmts1 = []
     const stmts2 = []
+    const stmts3 = []
+
+    const sheetStmts = []
+    if (ctx.state.template?.styles[0]) {
+        const styleRootId = ctx.state.template?.metadata?.shadowRootMode
+            ? b.shadow()
+            : b.getRootNode()
+        const stmt = b.$$removeStyleSheet(styleRootId, 'SHEET')
+        sheetStmts.push(stmt)
+    }
+
+    const stmt = b.ifStmt('dispose', [...sheetStmts, b.returnStmt()])
+    stmts1.push(stmt)
 
     walk(program, undefined, {
         PropertyDefinition: (node) => {
             if (!node.static) {
                 const stmt = b.assignment(b.thisMember(node.key), node.value, '??=')
-                stmts1.push(stmt)
+                stmts2.push(stmt)
             }
         },
         MethodDefinition: (node) => {
@@ -24,14 +37,14 @@ export function $hot(program) {
                         _node = is.expression(_node) ? _node.expression : _node
 
                         const stmt = { ..._node, operator: '??=' }
-                        stmts2.push(stmt)
+                        stmts3.push(stmt)
                         continue
                     }
-                    stmts2.push(_node)
+                    stmts3.push(_node)
                 }
             }
         }
     })
 
-    return b.exp(b.func('$hot', [...stmts1, ...stmts2]))
+    return b.exp(b.$hot([...stmts1, ...stmts2, ...stmts3]))
 }
