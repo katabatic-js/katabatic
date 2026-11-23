@@ -6,7 +6,10 @@ Katabatic is a compiler that transforms HTML modules into JavaScript, providing 
 
 Inspired by Svelte's declarative syntax and reactive programming model, Katabatic builds on native browser technologies, including Web Components and standard JavaScript APIs, rather than introducing its own framework or component model.
 
-It provides the tools to build complete reactive web applications while keeping the development model close to the web platform itself.
+- :sparkles: **Framework-free** — Build modern web applications without a framework runtime or framework-specific programming model.
+- :heart: **Native Web Components** — Use standard Custom Elements as the building blocks of your application.
+- :zap: **Fine-grained reactivity** — Build reactive interfaces with an efficient signals-based system.
+- :rocket: **Vite integration** — Enjoy a smooth development workflow with Vite, including Hot Module Replacement.
 
 ```html
 <script type="module">
@@ -18,11 +21,7 @@ It provides the tools to build complete reactive web applications while keeping 
 </script>
 
 <template>
-    <div>
-        <button onclick="{count++}">
-            Counter is {count}
-        </button>
-    </div>
+    <button onclick="{count++}">Counter is {count}</button>
 
     <style>
         button {
@@ -31,17 +30,6 @@ It provides the tools to build complete reactive web applications while keeping 
     </style>
 </template>
 ```
-
-## Features
-
-- **Framework-free** — Build modern web applications without a framework runtime or framework-specific programming model.
-- **Native Web Components** — Use standard Custom Elements as the building blocks of your application.
-- **Declarative templates** — Write expressive HTML templates enhanced with familiar JavaScript expressions and control-flow blocks.
-- **Fine-grained reactivity** — Build reactive interfaces with an efficient signals-based system.
-- **Element bindings** — Extend DOM elements with custom behavior and interact with them through bindings.
-- **Animations** — Add enter, leave, and custom animations using the native Web Animations API.
-- **Scoped CSS** — Keep component styles local without having to write special selectors or manage scope identifiers.
-- **Vite integration** — Enjoy a smooth development workflow with Vite, including Hot Module Replacement.
 
 ## Getting started
 
@@ -116,6 +104,8 @@ Use the component as an ordinary HTML element:
     </body>
 </html>
 ```
+
+See the [examples](https://github.com/katabatic-js/katabatic/tree/master/examples) for a closer look.
 
 ## Components
 
@@ -444,7 +434,7 @@ Katabatic handles `:host` according to whether Shadow DOM is enabled, preserving
 
 ### Katabatic CLI
 
-Katabatic also provides a CLI for compiling HTML modules without using Vite.
+Katabatic also provides a [CLI](https://github.com/katabatic-js/katabatic/tree/master/packages/katabatic) for compiling HTML modules without using Vite.
 
 Vite is the recommended approach for application development. The CLI is primarily useful when developing libraries or when a standalone compilation and development workflow is preferred.
 
