@@ -1,0 +1,38 @@
+<script type="module">
+    import { effect } from '@katabatic/signals'
+
+    export class Counter extends HTMLElement {
+        count = 0
+
+        connectedCallback() {
+            const button = document.getElementById('my-button')
+
+            effect(() => {
+                console.log('count changed:', this.count)
+                button.style.color = this.count % 2 ? 'red' : 'blue'
+            })
+        }
+    }
+
+    customElements.define('ex-counter', Counter)
+</script>
+
+<template >
+    <button id="my-button" onclick="{count++}">counter is {count}</button>
+        
+    <style>
+        :host {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        button {
+            display: block;
+            padding: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+    </style>
+</template>

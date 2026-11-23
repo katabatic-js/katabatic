@@ -6,21 +6,16 @@
 
         item
 
-        constructor() {
-            super()
-            console.log('CONST')
-        }
-
         connectedCallback() {
-            console.log('CONN')
+            console.log('ExItem connected:', this.item.name)
         }
 
         disconnectedCallback() {
-            console.log('DISC')
+            console.log('ExItem disconnected:', this.item.name)
         }
 
         connectedMoveCallback() {
-            console.log('MOVED')
+            console.log('ExItem moved:', this.item.name)
         }
     }
 </script>

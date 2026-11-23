@@ -1,6 +1,6 @@
 <script type="module">
     import { effect } from '@katabatic/signals'
-    import { log } from './log.js'
+    import { increment } from './increment.js'
 
     export class Binding extends HTMLElement {
         value = 10
@@ -10,5 +10,10 @@
 </script>
 
 <template>
-    <div :use="{log({test: 123})}" :val="{value}" :onval="{value = event.target.val}">{value}</div>
+    <div
+        :use="{increment()}"
+        :value="{value}"
+        :onincrement="{value = event.target.value}">
+        {value}
+    </div>
 </template>

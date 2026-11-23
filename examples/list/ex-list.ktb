@@ -1,0 +1,52 @@
+<script type="module">
+    import { fade } from './animations.js'
+    import * as List from './list.js'
+    import './ex-item.ktb'
+
+    export class ExList extends HTMLElement {}
+
+    customElements.define('ex-list', ExList)
+</script>
+
+<template shadowRootMode="open">
+    <article>
+        <ul>
+            {#each List.items as item (item.name)}
+            <ex-item
+                :animate="{fade()}"
+                item="{item}"
+                color="{`hsla(240, 100%, ${List.items.length}0%, 50%)`}">
+            </ex-item>
+            {/each}
+        </ul>
+        <button onclick="{List.add()}">add</button>
+    </article>
+    <style>
+        :host {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        article {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        ex-item {
+            align-items: center;
+            font-size: 32px;
+        }
+        button {
+            display: block;
+            padding: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+    </style>
+</template>

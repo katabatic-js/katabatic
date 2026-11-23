@@ -1,0 +1,52 @@
+<script type="module">
+    function fade(element, { duration = 1000, direction = 'in' } = {}) {
+        function op() {
+            return getComputedStyle(element).opacity
+        }
+
+        return element.animate(
+            [{ opacity: direction === 'out' ? op() : 0 }, { opacity: direction === 'out' ? 0 : 1 }],
+            { duration, easing: 'ease-in-out', fill: 'forwards' }
+        )
+    }
+
+    export class Animation extends HTMLElement {
+        toggle = true
+    }
+
+    customElements.define('ex-animation', Animation)
+</script>
+
+<template>
+    <div>
+        {#if toggle}
+        <p :in="{fade({duration: 600})}">block 1</p>
+        {:else}
+        <p :in="{fade({duration: 600})}">block 2</p>
+        {/if}
+        <button onclick="{toggle = !toggle}">Toggle</button>
+    </div>
+    <style>
+        div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        p {
+            box-sizing: border-box;
+            display: block;
+            width: 20rem;
+            padding: 2rem;
+            background-color: aqua;
+        }
+        button {
+            display: block;
+            width: 20rem;
+            padding: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+    </style>
+</template>
