@@ -1,46 +1,20 @@
+# Katabatic CLI
 
+[Katabatic](https://github.com/katabatic-js/katabatic) CLI.
 
-# Katabatic
+``` bash
 
-A simple and efficient way to develop Web Components !
+npx katabatic -h
+usage: katabatic [options]
 
-Katabatic is a compiler that transforms HTML modules into JavaScript.
-Its goal is to provide a modern, framework-free web development experience by relying solely on standard APIs.
-
-- :sparkles: No API ! Write plain HTML, CSS and JS without having to learn yet an other framework.
-- :heart: Web Components without the complexity
-- :zap: Reactive with signals
-
-```html
-<script type="module">
-    export class Counter extends HTMLElement {
-        count = 0
-    }
-
-    customElements.define('my-counter', Counter);
-</script>
-
-<template>
-    <div>
-        <button onclick="{count++}">counter is {count}</button>
-    </div>
-    <style>
-        button {
-            padding: 0.5rem;
-            text-transform: uppercase;
-        }
-    </style>
-</template>
+    -r, --root           project root directory (default: .)
+    --srcDir             src files directory (default .)
+    --outDir             out files directory (default .)
+    --routesDir          page and layout files directory when using the file system router (default ./routes)
+    -h, --help           get help
+    -w, --watch          watches the file system
+    -s, --serve          starts the development server
+    --hot                generate code to support hot module replacement
+    --rewriteRelativeImportExtensions
+                         rewrite imported katabatic files extension (.html or .ktb) in .js
 ```
-
-## Getting started
-
-```
-npm i katabatic -D
-npm i @katabatic/runtime
-
-npx katabatic
-
-```
-
-See the [examples](examples)
